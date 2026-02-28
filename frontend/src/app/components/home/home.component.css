@@ -1,0 +1,47 @@
+.home-container {
+  max-width: 600px;
+  margin: 4rem auto;
+  padding: 0 1rem;
+  font-family: sans-serif;
+  text-align: center;
+}
+
+.home-title {
+  font-size: 2rem;
+  margin-bottom: 2rem;
+  color: #1a1a2e;
+}
+
+.status-text {
+  color: #555;
+}
+
+.status-text.error {
+  color: #c0392b;
+}
+
+.league-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.league-link {
+  display: block;
+  padding: 0.85rem 1.5rem;
+  background: #f4f4f8;
+  border-radius: 8px;
+  text-decoration: none;
+  color: #16213e;
+  font-weight: 500;
+  font-size: 1rem;
+  transition: background 0.15s, color 0.15s;
+}
+
+.league-link:hover {
+  background: #3a86ff;
+  color: #fff;
+}
