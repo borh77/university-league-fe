@@ -10,6 +10,10 @@ export const serverRoutes: ServerRoute[] = [
     renderMode: RenderMode.Server,
   },
   {
+    path: 'leagues/:leagueId/results',
+    renderMode: RenderMode.Server,
+  },
+  {
     path: 'teams/:teamId',
     renderMode: RenderMode.Server,
   },

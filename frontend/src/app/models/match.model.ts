@@ -9,4 +9,5 @@ export interface Match {
   awayTeamName: string;
   awayTeamLogoUrl: string;
   scheduledAt: string; // ISO 8601 datetime string
+  result?: string | null; // e.g. "2:1", present only on played matches
 }

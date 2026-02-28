@@ -10,10 +10,12 @@
   } @else {
     <ul class="league-list">
       @for (league of leagues; track league.id) {
-        <li>
-          <a [routerLink]="['/leagues', league.id, 'schedule']" class="league-link">
-            {{ league.name }}
-          </a>
+        <li class="league-item">
+          <span class="league-name">{{ league.name }}</span>
+          <div class="league-actions">
+            <a [routerLink]="['/leagues', league.id, 'schedule']" class="league-link">Raspored</a>
+            <a [routerLink]="['/leagues', league.id, 'results']" class="league-link">Rezultati</a>
+          </div>
         </li>
       }
     </ul>

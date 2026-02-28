@@ -13,4 +13,8 @@ export class LeagueService {
   getSchedule(leagueId: number): Observable<Match[]> {
     return this.http.get<Match[]>(`${this.baseUrl}/${leagueId}/schedule`);
   }
+
+  getResults(leagueId: number): Observable<Match[]> {
+    return this.http.get<Match[]>(`${this.baseUrl}/${leagueId}/results`);
+  }
 }
