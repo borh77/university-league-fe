@@ -10,5 +10,11 @@
     "secure": false,
     "changeOrigin": true,
     "logLevel": "debug"
+  },
+  "/players": {
+    "target": "https://localhost:44333",
+    "secure": false,
+    "changeOrigin": true,
+    "logLevel": "debug"
   }
 }
