@@ -1,0 +1,55 @@
+<div class="team-detail-container">
+  @if (loading) {
+    <p class="status-text">Učitavanje tima...</p>
+  } @else if (error) {
+    <p class="status-text error">{{ error }}</p>
+  } @else if (team) {
+    <div class="team-header">
+      <img
+        [src]="team.logoUrl ?? 'assets/placeholder-team.svg'"
+        [alt]="team.name"
+        class="team-logo"
+        (error)="onLogoError($event)"
+      />
+      <h2 class="team-name">{{ team.name }}</h2>
+    </div>
+
+    <section class="players-section">
+      <h3 class="section-title">Igrači</h3>
+
+      @if (team.players.length === 0) {
+        <p class="status-text">Ovaj tim trenutno nema prijavljenih igrača.</p>
+      } @else {
+        <table class="players-table">
+          <thead>
+            <tr>
+              <th class="photo-col"></th>
+              <th class="number-col">#</th>
+              <th class="name-col">Ime i prezime</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (player of team.players; track player.id) {
+              <tr class="player-row">
+                <td class="photo-col">
+                  <img
+                    [src]="player.imageUrl ?? 'assets/placeholder-player.svg'"
+                    [alt]="player.firstName + ' ' + player.lastName"
+                    class="player-photo"
+                    (error)="onPlayerImageError($event)"
+                  />
+                </td>
+                <td class="number-col">
+                  <span class="jersey-number">{{ player.jerseyNumber }}</span>
+                </td>
+                <td class="name-col">
+                  {{ player.firstName }} {{ player.lastName }}
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      }
+    </section>
+  }
+</div>

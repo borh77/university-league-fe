@@ -1,6 +1,8 @@
-import { Component, OnInit, inject } from '@angular/core';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ChangeDetectorRef, Component, OnInit, inject, DestroyRef } from '@angular/core';
+import { ActivatedRoute, ParamMap, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { catchError, of, finalize } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { LeagueService } from '../../services/league.service';
 import { Match } from '../../models/match.model';
 
@@ -19,23 +21,57 @@ interface Round {
 export class LeagueScheduleComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly leagueService = inject(LeagueService);
+  private readonly destroyRef = inject(DestroyRef);
+  private readonly cdr = inject(ChangeDetectorRef);
 
   rounds: Round[] = [];
   loading = true;
   error: string | null = null;
 
   ngOnInit(): void {
-    const leagueId = Number(this.route.snapshot.paramMap.get('leagueId'));
-    this.leagueService.getSchedule(leagueId).subscribe({
-      next: (matches) => {
-        this.rounds = this.groupByRound(matches);
-        this.loading = false;
-      },
-      error: () => {
-        this.error = 'Greška pri učitavanju rasporeda.';
-        this.loading = false;
-      },
-    });
+    this.loadSchedule(this.route.snapshot.paramMap);
+
+    this.route.paramMap
+      .pipe(
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe((params) => this.loadSchedule(params));
+  }
+
+  private loadSchedule(params: ParamMap): void {
+    this.loading = true;
+    this.error = null;
+    this.rounds = [];
+
+    const leagueId = Number(params.get('leagueId'));
+    if (!Number.isFinite(leagueId)) {
+      this.error = 'Neispravan ID lige.';
+      this.loading = false;
+      return;
+    }
+
+    this.leagueService
+      .getSchedule(leagueId)
+      .pipe(
+        catchError(() => {
+          this.error = 'Greška pri učitavanju rasporeda.';
+          return of([] as Match[]);
+        }),
+        finalize(() => {
+          this.loading = false;
+          this.cdr.detectChanges();
+        }),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe((matches) => {
+        try {
+          this.rounds = this.groupByRound(matches);
+        } catch {
+          this.rounds = [];
+          this.error = 'Greška pri obradi rasporeda.';
+        }
+        this.cdr.detectChanges();
+      });
   }
 
   onLogoError(event: Event): void {
@@ -47,7 +83,10 @@ export class LeagueScheduleComponent implements OnInit {
 
   private groupByRound(matches: Match[]): Round[] {
     const map = new Map<number, Match[]>();
-    for (const match of matches) {
+    for (const match of matches ?? []) {
+      if (!match || typeof match.roundNumber !== 'number') {
+        continue;
+      }
       const existing = map.get(match.roundNumber) ?? [];
       existing.push(match);
       map.set(match.roundNumber, existing);
