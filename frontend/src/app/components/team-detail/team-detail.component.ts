@@ -22,6 +22,7 @@ export class TeamDetailComponent implements OnInit {
   team: Team | null = null;
   loading = true;
   error: string | null = null;
+  notFound = false;
 
   ngOnInit(): void {
     this.loadTeam(this.route.snapshot.paramMap);
@@ -36,6 +37,7 @@ export class TeamDetailComponent implements OnInit {
   private loadTeam(params: ParamMap): void {
     this.loading = true;
     this.error = null;
+    this.notFound = false;
     this.team = null;
 
     const teamId = Number(params.get('teamId'));
@@ -50,8 +52,11 @@ export class TeamDetailComponent implements OnInit {
       .getTeam(teamId)
       .pipe(
         catchError((err) => {
-          this.error =
-            err.status === 404 ? 'Tim nije pronađen.' : 'Greška pri učitavanju tima.';
+          if (err.status === 404) {
+            this.notFound = true;
+          } else {
+            this.error = 'Greška pri učitavanju tima.';
+          }
           return of(null);
         }),
         finalize(() => {

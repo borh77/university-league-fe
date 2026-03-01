@@ -1,6 +1,8 @@
 <div class="team-detail-container">
   @if (loading) {
     <p class="status-text">Učitavanje tima...</p>
+  } @else if (notFound) {
+    <p class="status-text">Nema podataka za izabrani tim.</p>
   } @else if (error) {
     <p class="status-text error">{{ error }}</p>
   } @else if (team) {
