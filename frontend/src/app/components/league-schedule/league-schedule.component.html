@@ -8,7 +8,20 @@
   } @else if (rounds.length === 0) {
     <p class="status-text">Nema zakazanih mečeva za ovu ligu.</p>
   } @else {
-    @for (round of rounds; track round.roundNumber) {
+    <div class="round-selector" aria-label="Izbor kola">
+      @for (round of rounds; track round.roundNumber) {
+        <button
+          type="button"
+          class="round-button"
+          [class.active]="round.roundNumber === selectedRoundNumber"
+          (click)="selectRound(round.roundNumber)"
+        >
+          Kolo {{ round.roundNumber }}
+        </button>
+      }
+    </div>
+
+    @if (selectedRound; as round) {
       <section class="round-section">
         <h3 class="round-title">Kolo {{ round.roundNumber }}</h3>
         <table class="matches-table">
@@ -54,6 +67,8 @@
           </tbody>
         </table>
       </section>
+    } @else {
+      <p class="status-text">Nema mečeva za izabrano kolo.</p>
     }
   }
 </div>

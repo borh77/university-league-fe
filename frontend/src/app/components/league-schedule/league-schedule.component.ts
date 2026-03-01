@@ -25,8 +25,13 @@ export class LeagueScheduleComponent implements OnInit {
   private readonly cdr = inject(ChangeDetectorRef);
 
   rounds: Round[] = [];
+  selectedRoundNumber = 1;
   loading = true;
   error: string | null = null;
+
+  get selectedRound(): Round | null {
+    return this.rounds.find((round) => round.roundNumber === this.selectedRoundNumber) ?? null;
+  }
 
   ngOnInit(): void {
     this.loadSchedule(this.route.snapshot.paramMap);
@@ -66,12 +71,17 @@ export class LeagueScheduleComponent implements OnInit {
       .subscribe((matches) => {
         try {
           this.rounds = this.groupByRound(matches);
+          this.initializeSelectedRound();
         } catch {
           this.rounds = [];
           this.error = 'Greška pri obradi rasporeda.';
         }
         this.cdr.detectChanges();
       });
+  }
+
+  selectRound(roundNumber: number): void {
+    this.selectedRoundNumber = roundNumber;
   }
 
   onLogoError(event: Event): void {
@@ -94,5 +104,15 @@ export class LeagueScheduleComponent implements OnInit {
     return Array.from(map.entries())
       .sort(([a], [b]) => a - b)
       .map(([roundNumber, matches]) => ({ roundNumber, matches }));
+  }
+
+  private initializeSelectedRound(): void {
+    if (this.rounds.length === 0) {
+      this.selectedRoundNumber = 1;
+      return;
+    }
+
+    const hasRoundOne = this.rounds.some((round) => round.roundNumber === 1);
+    this.selectedRoundNumber = hasRoundOne ? 1 : this.rounds[0].roundNumber;
   }
 }
