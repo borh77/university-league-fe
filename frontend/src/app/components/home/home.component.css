@@ -1,0 +1,69 @@
+.home-container {
+  max-width: 600px;
+  margin: 4rem auto;
+  padding: 0 1rem;
+  font-family: sans-serif;
+  text-align: center;
+}
+
+.home-title {
+  font-size: 2rem;
+  margin-bottom: 2rem;
+  color: #1a1a2e;
+}
+
+.status-text {
+  color: #555;
+}
+
+.status-text.error {
+  color: #c0392b;
+}
+
+.league-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.league-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1.25rem;
+  background: #f4f4f8;
+  border-radius: 8px;
+}
+
+.league-name {
+  font-weight: 600;
+  color: #16213e;
+  font-size: 1rem;
+}
+
+.league-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.league-link {
+  display: inline-block;
+  padding: 0.4rem 0.9rem;
+  background: #fff;
+  border: 1px solid #d0d0e0;
+  border-radius: 6px;
+  text-decoration: none;
+  color: #16213e;
+  font-weight: 500;
+  font-size: 0.9rem;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+
+.league-link:hover {
+  background: #3a86ff;
+  color: #fff;
+  border-color: #3a86ff;
+}

@@ -1,0 +1,23 @@
+<div class="home-container">
+  <h1 class="home-title">University League</h1>
+
+  @if (loading) {
+    <p class="status-text">Učitavanje liga...</p>
+  } @else if (error) {
+    <p class="status-text error">{{ error }}</p>
+  } @else if (leagues.length === 0) {
+    <p class="status-text">Nema dostupnih liga.</p>
+  } @else {
+    <ul class="league-list">
+      @for (league of leagues; track league.id) {
+        <li class="league-item">
+          <span class="league-name">{{ league.name }}</span>
+          <div class="league-actions">
+            <a [routerLink]="['/leagues', league.id, 'schedule']" class="league-link">Raspored</a>
+            <a [routerLink]="['/leagues', league.id, 'results']" class="league-link">Rezultati</a>
+          </div>
+        </li>
+      }
+    </ul>
+  }
+</div>
