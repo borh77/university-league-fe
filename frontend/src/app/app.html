@@ -1,1 +1,62 @@
-<router-outlet></router-outlet>
+<header class="app-header">
+
+  <!-- Navbar 1: izbor sporta -->
+  <nav class="nav-sports">
+    @for (s of sports; track s.key) {
+    <button type="button"
+            class="sport-btn"
+            [class.active]="selection.snapshot.sport === s.key"
+            (click)="setSport(s.key)">
+      {{ s.label }}
+    </button>
+    }
+
+    @if (selection.snapshot.sport === 'volleyball') {
+    <div class="gender-toggle">
+      <button type="button"
+              class="gender-btn"
+              [class.active]="selection.snapshot.gender === 'male'"
+              (click)="setVolleyballGender('male')">
+        Male
+      </button>
+      <button type="button"
+              class="gender-btn"
+              [class.active]="selection.snapshot.gender === 'female'"
+              (click)="setVolleyballGender('female')">
+        Female
+      </button>
+    </div>
+    }
+  </nav>
+
+  <!-- Navbar 2: izbor funkcionalnosti -->
+  <nav class="nav-pages">
+    <a routerLink="/"
+       routerLinkActive="active"
+       [routerLinkActiveOptions]="{ exact: true }"
+       class="page-link">
+      Standings
+    </a>
+
+    @if (currentLeagueId()) {
+    <a [routerLink]="['/leagues', currentLeagueId(), 'results']"
+       routerLinkActive="active"
+       class="page-link">
+      Results
+    </a>
+    <a [routerLink]="['/leagues', currentLeagueId(), 'schedule']"
+       routerLinkActive="active"
+       class="page-link">
+      Schedule
+    </a>
+    } @else {
+    <span class="page-link disabled">Results</span>
+    <span class="page-link disabled">Schedule</span>
+    }
+  </nav>
+
+</header>
+
+<main class="app-main">
+  <router-outlet></router-outlet>
+</main>

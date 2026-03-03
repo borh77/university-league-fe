@@ -1,0 +1,114 @@
+/* ── App shell ───────────────────────────────────────────── */
+.app-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: #16213e;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+}
+
+.app-main {
+  padding: 2rem 1rem;
+}
+
+/* ── Navbar 1 – sport selection ──────────────────────────── */
+.nav-sports {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.5rem 1.25rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.sport-btn {
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.65);
+  font-size: 0.9rem;
+  font-weight: 500;
+  padding: 0.45rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+  letter-spacing: 0.02em;
+}
+
+  .sport-btn:hover {
+    background: rgba(255, 255, 255, 0.08);
+    color: #fff;
+  }
+
+  .sport-btn.active {
+    background: #3a86ff;
+    color: #fff;
+  }
+
+/* volleyball gender toggle */
+.gender-toggle {
+  display: flex;
+  gap: 0.25rem;
+  margin-left: 0.75rem;
+  padding-left: 0.75rem;
+  border-left: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.gender-btn {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  color: rgba(255, 255, 255, 0.65);
+  font-size: 0.82rem;
+  font-weight: 500;
+  padding: 0.35rem 0.8rem;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+
+  .gender-btn:hover {
+    border-color: rgba(255, 255, 255, 0.5);
+    color: #fff;
+  }
+
+  .gender-btn.active {
+    background: #3a86ff;
+    border-color: #3a86ff;
+    color: #fff;
+  }
+
+/* ── Navbar 2 – page selection ───────────────────────────── */
+.nav-pages {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  padding: 0 1rem;
+  background: #0f3460;
+}
+
+.page-link {
+  display: inline-block;
+  padding: 0.7rem 1.4rem;
+  color: rgba(255, 255, 255, 0.65);
+  font-size: 0.88rem;
+  font-weight: 600;
+  text-decoration: none;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  border-bottom: 3px solid transparent;
+  transition: color 0.15s, border-color 0.15s;
+}
+
+  .page-link:hover:not(.disabled) {
+    color: #fff;
+    border-bottom-color: rgba(255, 255, 255, 0.3);
+  }
+
+  .page-link.active {
+    color: #fff;
+    border-bottom-color: #3a86ff;
+  }
+
+  .page-link.disabled {
+    color: rgba(255, 255, 255, 0.25);
+    cursor: not-allowed;
+    pointer-events: none;
+  }
