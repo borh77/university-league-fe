@@ -3,12 +3,37 @@
   position: sticky;
   top: 0;
   z-index: 100;
-  background: #16213e;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
 }
 
 .app-main {
   padding: 2rem 1rem;
+}
+
+.top-brand-panel {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.85rem;
+  padding: 0.6rem 1.25rem;
+  background: #fff;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.brand-logo {
+  width: 52px;
+  height: 52px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.brand-title {
+  color: #16213e;
+  font-size: 0.88rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
 }
 
 /* ── Navbar 1 – sport selection ──────────────────────────── */
@@ -17,13 +42,14 @@
   align-items: center;
   gap: 0.25rem;
   padding: 0.5rem 1.25rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  background: #fff;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
 }
 
 .sport-btn {
   background: transparent;
   border: none;
-  color: rgba(255, 255, 255, 0.65);
+  color: rgba(0, 0, 0, 0.55);
   font-size: 0.9rem;
   font-weight: 500;
   padding: 0.45rem 1rem;
@@ -34,8 +60,8 @@
 }
 
   .sport-btn:hover {
-    background: rgba(255, 255, 255, 0.08);
-    color: #fff;
+    background: rgba(0, 0, 0, 0.06);
+    color: #16213e;
   }
 
   .sport-btn.active {
@@ -49,13 +75,13 @@
   gap: 0.25rem;
   margin-left: 0.75rem;
   padding-left: 0.75rem;
-  border-left: 1px solid rgba(255, 255, 255, 0.15);
+  border-left: 1px solid rgba(0, 0, 0, 0.12);
 }
 
 .gender-btn {
   background: transparent;
-  border: 1px solid rgba(255, 255, 255, 0.25);
-  color: rgba(255, 255, 255, 0.65);
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  color: rgba(0, 0, 0, 0.55);
   font-size: 0.82rem;
   font-weight: 500;
   padding: 0.35rem 0.8rem;
@@ -65,8 +91,8 @@
 }
 
   .gender-btn:hover {
-    border-color: rgba(255, 255, 255, 0.5);
-    color: #fff;
+    border-color: rgba(0, 0, 0, 0.4);
+    color: #16213e;
   }
 
   .gender-btn.active {
@@ -81,13 +107,14 @@
   align-items: center;
   gap: 0;
   padding: 0 1rem;
-  background: #0f3460;
+  background: #fff;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
 }
 
 .page-link {
   display: inline-block;
   padding: 0.7rem 1.4rem;
-  color: rgba(255, 255, 255, 0.65);
+  color: rgba(0, 0, 0, 0.55);
   font-size: 0.88rem;
   font-weight: 600;
   text-decoration: none;
@@ -98,17 +125,17 @@
 }
 
   .page-link:hover:not(.disabled) {
-    color: #fff;
-    border-bottom-color: rgba(255, 255, 255, 0.3);
+    color: #16213e;
+    border-bottom-color: rgba(0, 0, 0, 0.2);
   }
 
   .page-link.active {
-    color: #fff;
+    color: #3a86ff;
     border-bottom-color: #3a86ff;
   }
 
   .page-link.disabled {
-    color: rgba(255, 255, 255, 0.25);
+    color: rgba(0, 0, 0, 0.25);
     cursor: not-allowed;
     pointer-events: none;
   }

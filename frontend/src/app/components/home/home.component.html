@@ -1,5 +1,5 @@
 <div class="home-container">
-  <h1 class="home-title">Standings</h1>
+  <h1 class="home-title">Tabela</h1>
 
   @if (loading) {
   <p class="status-text">Učitavanje tabele...</p>
@@ -12,20 +12,20 @@
     <thead>
       <tr>
         <th>#</th>
-        <th>Team</th>
-        <th>P</th>
-        <th>W</th>
-        <th>D</th>
-        <th>L</th>
-        <th>GF</th>
-        <th>GA</th>
-        <th>GD</th>
-        <th>Pts</th>
+        <th>Tim</th>
+        <th>U</th>
+        <th>Pob</th>
+        <th>Ner</th>
+        <th>Por</th>
+        <th>DG</th>
+        <th>PG</th>
+        <th>RG</th>
+        <th>Bod</th>
 
         @if (isVolleyball()) {
-        <th>SW</th>
-        <th>SL</th>
-        <th>SD</th>
+        <th>DO</th>
+        <th>PO</th>
+        <th>RO</th>
         }
       </tr>
     </thead>
