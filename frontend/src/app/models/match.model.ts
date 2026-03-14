@@ -1,3 +1,15 @@
+export interface QuarterScore {
+  quarterNumber: number;
+  homeScore: number;
+  awayScore: number;
+}
+
+export interface SetScore {
+  setNumber: number;
+  homeScore: number;
+  awayScore: number;
+}
+
 export interface Match {
   id: number;
   leagueId: number;
@@ -10,4 +22,6 @@ export interface Match {
   awayTeamLogoUrl: string;
   scheduledAt: string; // ISO 8601 datetime string
   result?: string | null; // e.g. "2:1", present only on played matches
+  quarters?: QuarterScore[] | null;
+  sets?: SetScore[] | null;
 }
