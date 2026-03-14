@@ -48,19 +48,23 @@
                   </a>
                 </td>
                 <td class="result-col">
-                  @if (hasDetail(match)) {
-                    <button
-                      type="button"
-                      class="result-badge expandable"
-                      [class.open]="expandedMatchId === match.id"
-                      (click)="toggleMatch(match.id)"
-                      [attr.aria-expanded]="expandedMatchId === match.id"
-                    >
-                      {{ match.result }}
-                      <span class="expand-icon">{{ expandedMatchId === match.id ? '▲' : '▼' }}</span>
-                    </button>
+                  @if (match.result) {
+                    @if (hasDetail(match)) {
+                      <button
+                        type="button"
+                        class="result-badge expandable"
+                        [class.open]="expandedMatchId === match.id"
+                        (click)="toggleMatch(match.id)"
+                        [attr.aria-expanded]="expandedMatchId === match.id"
+                      >
+                        {{ match.result }}
+                        <span class="expand-icon">{{ expandedMatchId === match.id ? '▲' : '▼' }}</span>
+                      </button>
+                    } @else {
+                      <span class="result-badge">{{ match.result }}</span>
+                    }
                   } @else {
-                    <span class="result-badge">{{ match.result }}</span>
+                    <span class="result-placeholder">-</span>
                   }
                 </td>
                 <td class="team-col away-col">
@@ -82,7 +86,49 @@
               @if (expandedMatchId === match.id && hasDetail(match)) {
                 <tr class="detail-row">
                   <td colspan="4">
-                    @if (match.quarters?.length) {
+                    @if (match.goals?.length) {
+                      <div class="detail-wrapper">
+                        <div class="goals-layout">
+                          <div class="goals-side home-goals-side">
+                            <div class="goals-team-name">{{ match.homeTeamName }}</div>
+                            <div class="goals-events">
+                              @for (goal of match.goals!; track $index) {
+                                @if (goal.isHomeTeamGoal) {
+                                  <div class="goal-event-line">
+                                    <span class="goal-scorer">{{ goal.scorerName }}</span>
+                                    <span class="goal-minute">({{ goal.minute }}')</span>
+                                  </div>
+                                }
+                              }
+                              @if (!(parseTotalScore(match.result)[0] > 0)) {
+                                <div class="goals-empty">-</div>
+                              }
+                            </div>
+                          </div>
+
+                          <div class="goals-center">
+                            <div class="goals-center-score">{{ match.result }}</div>
+                          </div>
+
+                          <div class="goals-side away-goals-side">
+                            <div class="goals-team-name">{{ match.awayTeamName }}</div>
+                            <div class="goals-events">
+                              @for (goal of match.goals!; track $index) {
+                                @if (!goal.isHomeTeamGoal) {
+                                  <div class="goal-event-line">
+                                    <span class="goal-scorer">{{ goal.scorerName }}</span>
+                                    <span class="goal-minute">({{ goal.minute }}')</span>
+                                  </div>
+                                }
+                              }
+                              @if (!(parseTotalScore(match.result)[1] > 0)) {
+                                <div class="goals-empty">-</div>
+                              }
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    } @else if (match.quarters?.length) {
                       <div class="detail-wrapper">
                         <table class="detail-table">
                           <thead>
@@ -122,9 +168,7 @@
                           </tbody>
                         </table>
                       </div>
-                    }
-
-                    @if (match.sets?.length) {
+                    } @else if (match.sets?.length) {
                       <div class="detail-wrapper">
                         <table class="detail-table">
                           <thead>

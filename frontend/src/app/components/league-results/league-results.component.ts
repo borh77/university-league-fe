@@ -92,7 +92,7 @@ export class LeagueResultsComponent implements OnInit {
   }
 
   hasDetail(match: Match): boolean {
-    return !!(match.quarters?.length || match.sets?.length);
+    return !!(match.goals?.length || match.quarters?.length || match.sets?.length);
   }
 
   parseTotalScore(result: string | null | undefined): [number, number] {

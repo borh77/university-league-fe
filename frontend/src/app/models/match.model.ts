@@ -10,6 +10,13 @@ export interface SetScore {
   awayScore: number;
 }
 
+export interface Goal {
+  scorerName: string;
+  teamName: string;
+  isHomeTeamGoal: boolean;
+  minute: number;
+}
+
 export interface Match {
   id: number;
   leagueId: number;
@@ -22,6 +29,7 @@ export interface Match {
   awayTeamLogoUrl: string;
   scheduledAt: string; // ISO 8601 datetime string
   result?: string | null; // e.g. "2:1", present only on played matches
+  goals?: Goal[] | null;
   quarters?: QuarterScore[] | null;
   sets?: SetScore[] | null;
 }
