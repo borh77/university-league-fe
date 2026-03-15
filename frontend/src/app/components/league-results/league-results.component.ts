@@ -28,6 +28,7 @@ export class LeagueResultsComponent implements OnInit {
   selectedRoundNumber = 1;
   loading = true;
   error: string | null = null;
+  expandedMatchId: number | null = null;
 
   get selectedRound(): Round | null {
     return this.rounds.find((round) => round.roundNumber === this.selectedRoundNumber) ?? null;
@@ -47,6 +48,7 @@ export class LeagueResultsComponent implements OnInit {
     this.loading = true;
     this.error = null;
     this.rounds = [];
+    this.expandedMatchId = null;
 
     const leagueId = Number(params.get('leagueId'));
     if (!Number.isFinite(leagueId)) {
@@ -82,6 +84,20 @@ export class LeagueResultsComponent implements OnInit {
 
   selectRound(roundNumber: number): void {
     this.selectedRoundNumber = roundNumber;
+    this.expandedMatchId = null;
+  }
+
+  toggleMatch(matchId: number): void {
+    this.expandedMatchId = this.expandedMatchId === matchId ? null : matchId;
+  }
+
+  hasDetail(match: Match): boolean {
+    return !!(match.goals?.length || match.quarters?.length || match.sets?.length);
+  }
+
+  parseTotalScore(result: string | null | undefined): [number, number] {
+    const parts = result?.split(':') ?? [];
+    return [parseInt(parts[0] ?? '0', 10), parseInt(parts[1] ?? '0', 10)];
   }
 
   onLogoError(event: Event): void {

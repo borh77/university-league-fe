@@ -1,1 +1,72 @@
-<router-outlet></router-outlet>
+<header class="app-header">
+
+  <div class="top-brand-panel">
+    <img
+      src="/logos/univerzitet-u-novom-sadu.png"
+      alt="Univerzitet u Novom Sadu"
+      class="brand-logo"
+      (error)="onBrandLogoError($event)"
+    />
+    <span class="brand-title">Univerzitetska sportska liga u Novom Sadu</span>
+  </div>
+
+  <!-- Navbar 1: izbor sporta -->
+  <nav class="nav-sports">
+    @for (s of sports; track s.key) {
+    <button type="button"
+            class="sport-btn"
+            [class.active]="selection.snapshot.sport === s.key"
+            (click)="setSport(s.key)">
+      {{ s.label }}
+    </button>
+    }
+
+    @if (selection.snapshot.sport === 'volleyball') {
+    <div class="gender-toggle">
+      <button type="button"
+              class="gender-btn"
+              [class.active]="selection.snapshot.gender === 'male'"
+              (click)="setVolleyballGender('male')">
+        Muškarci
+      </button>
+      <button type="button"
+              class="gender-btn"
+              [class.active]="selection.snapshot.gender === 'female'"
+              (click)="setVolleyballGender('female')">
+        Žene
+      </button>
+    </div>
+    }
+  </nav>
+
+  <!-- Navbar 2: izbor funkcionalnosti -->
+  <nav class="nav-pages">
+    <a routerLink="/"
+       routerLinkActive="active"
+       [routerLinkActiveOptions]="{ exact: true }"
+       class="page-link">
+      Tabela
+    </a>
+
+    @if (currentLeagueId()) {
+    <a [routerLink]="['/leagues', currentLeagueId(), 'results']"
+       routerLinkActive="active"
+       class="page-link">
+      Rezultati
+    </a>
+    <a [routerLink]="['/leagues', currentLeagueId(), 'schedule']"
+       routerLinkActive="active"
+       class="page-link">
+      Raspored
+    </a>
+    } @else {
+    <span class="page-link disabled">Rezultati</span>
+    <span class="page-link disabled">Raspored</span>
+    }
+  </nav>
+
+</header>
+
+<main class="app-main">
+  <router-outlet></router-outlet>
+</main>

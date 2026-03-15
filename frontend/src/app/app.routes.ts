@@ -22,4 +22,5 @@ export const routes: Routes = [
     path: 'teams/:teamId',
     component: TeamDetailComponent,
   },
+
 ];

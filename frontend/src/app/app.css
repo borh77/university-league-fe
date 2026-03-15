@@ -1,0 +1,141 @@
+/* ── App shell ───────────────────────────────────────────── */
+.app-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+}
+
+.app-main {
+  padding: 2rem 1rem;
+}
+
+.top-brand-panel {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.85rem;
+  padding: 0.6rem 1.25rem;
+  background: #fff;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.brand-logo {
+  width: 52px;
+  height: 52px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.brand-title {
+  color: #16213e;
+  font-size: 0.88rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+/* ── Navbar 1 – sport selection ──────────────────────────── */
+.nav-sports {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.5rem 1.25rem;
+  background: #fff;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.sport-btn {
+  background: transparent;
+  border: none;
+  color: rgba(0, 0, 0, 0.55);
+  font-size: 0.9rem;
+  font-weight: 500;
+  padding: 0.45rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+  letter-spacing: 0.02em;
+}
+
+  .sport-btn:hover {
+    background: rgba(0, 0, 0, 0.06);
+    color: #16213e;
+  }
+
+  .sport-btn.active {
+    background: #3a86ff;
+    color: #fff;
+  }
+
+/* volleyball gender toggle */
+.gender-toggle {
+  display: flex;
+  gap: 0.25rem;
+  margin-left: 0.75rem;
+  padding-left: 0.75rem;
+  border-left: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+.gender-btn {
+  background: transparent;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  color: rgba(0, 0, 0, 0.55);
+  font-size: 0.82rem;
+  font-weight: 500;
+  padding: 0.35rem 0.8rem;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+
+  .gender-btn:hover {
+    border-color: rgba(0, 0, 0, 0.4);
+    color: #16213e;
+  }
+
+  .gender-btn.active {
+    background: #3a86ff;
+    border-color: #3a86ff;
+    color: #fff;
+  }
+
+/* ── Navbar 2 – page selection ───────────────────────────── */
+.nav-pages {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  padding: 0 1rem;
+  background: #fff;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.page-link {
+  display: inline-block;
+  padding: 0.7rem 1.4rem;
+  color: rgba(0, 0, 0, 0.55);
+  font-size: 0.88rem;
+  font-weight: 600;
+  text-decoration: none;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  border-bottom: 3px solid transparent;
+  transition: color 0.15s, border-color 0.15s;
+}
+
+  .page-link:hover:not(.disabled) {
+    color: #16213e;
+    border-bottom-color: rgba(0, 0, 0, 0.2);
+  }
+
+  .page-link.active {
+    color: #3a86ff;
+    border-bottom-color: #3a86ff;
+  }
+
+  .page-link.disabled {
+    color: rgba(0, 0, 0, 0.25);
+    cursor: not-allowed;
+    pointer-events: none;
+  }

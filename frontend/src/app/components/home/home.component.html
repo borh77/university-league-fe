@@ -1,23 +1,58 @@
 <div class="home-container">
-  <h1 class="home-title">University League</h1>
+  <h1 class="home-title">Tabela</h1>
 
   @if (loading) {
-    <p class="status-text">Učitavanje liga...</p>
+  <p class="status-text">Učitavanje tabele...</p>
   } @else if (error) {
-    <p class="status-text error">{{ error }}</p>
-  } @else if (leagues.length === 0) {
-    <p class="status-text">Nema dostupnih liga.</p>
+  <p class="status-text error">{{ error }}</p>
+  } @else if (rows.length === 0) {
+  <p class="status-text">Nema podataka za izabrani sport.</p>
   } @else {
-    <ul class="league-list">
-      @for (league of leagues; track league.id) {
-        <li class="league-item">
-          <span class="league-name">{{ league.name }}</span>
-          <div class="league-actions">
-            <a [routerLink]="['/leagues', league.id, 'schedule']" class="league-link">Raspored</a>
-            <a [routerLink]="['/leagues', league.id, 'results']" class="league-link">Rezultati</a>
-          </div>
-        </li>
+  <table class="standings-table">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Tim</th>
+        <th>U</th>
+        <th>Pob</th>
+        <th>Ner</th>
+        <th>Por</th>
+        <th>DG</th>
+        <th>PG</th>
+        <th>RG</th>
+        <th>Bod</th>
+
+        @if (isVolleyball()) {
+        <th>DO</th>
+        <th>PO</th>
+        <th>RO</th>
+        }
+      </tr>
+    </thead>
+    <tbody>
+      @for (r of rows; track r.teamId) {
+      <tr>
+        <td>{{ r.position }}</td>
+        <td>
+          <a [routerLink]="['/teams', r.teamId]">{{ r.teamName }}</a>
+        </td>
+        <td>{{ r.played }}</td>
+        <td>{{ r.won }}</td>
+        <td>{{ r.drawn }}</td>
+        <td>{{ r.lost }}</td>
+        <td>{{ r.scored }}</td>
+        <td>{{ r.conceded }}</td>
+        <td>{{ r.difference }}</td>
+        <td><b>{{ r.points }}</b></td>
+
+        @if (isVolleyball()) {
+        <td>{{ r.setWon ?? '-' }}</td>
+        <td>{{ r.setLost ?? '-' }}</td>
+        <td>{{ r.setDifference ?? '-' }}</td>
+        }
+      </tr>
       }
-    </ul>
+    </tbody>
+  </table>
   }
 </div>
