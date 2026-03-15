@@ -59,9 +59,19 @@
        class="page-link">
       Raspored
     </a>
+    @if (isFootballSelected()) {
+    <a [routerLink]="['/leagues', currentLeagueId(), 'top-scorers']"
+       routerLinkActive="active"
+       class="page-link">
+      Strelci
+    </a>
+    }
     } @else {
     <span class="page-link disabled">Rezultati</span>
     <span class="page-link disabled">Raspored</span>
+    @if (isFootballSelected()) {
+    <span class="page-link disabled">Strelci</span>
+    }
     }
   </nav>
 

@@ -1,0 +1,88 @@
+.top-scorers-container {
+  max-width: 900px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+  font-family: sans-serif;
+}
+
+.top-scorers-title {
+  font-size: 1.75rem;
+  margin-bottom: 1.5rem;
+  color: #1a1a2e;
+}
+
+.status-text {
+  color: #555;
+  font-size: 1rem;
+}
+
+.status-text.error {
+  color: #c0392b;
+}
+
+.scorers-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+}
+
+.scorers-table thead tr {
+  background: #f4f4f8;
+  text-align: left;
+}
+
+.scorers-table th,
+.scorers-table td {
+  padding: 0.7rem 0.85rem;
+  font-size: 0.92rem;
+}
+
+.scorers-table tbody tr:not(:last-child) {
+  border-bottom: 1px solid #ececec;
+}
+
+.scorers-table tbody tr:hover {
+  background: #f9f9fb;
+}
+
+.position-col {
+  width: 70px;
+  text-align: center;
+}
+
+.number-col {
+  width: 150px;
+  text-align: center;
+}
+
+.team-cell {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.team-logo {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+  border-radius: 50%;
+}
+
+@media (max-width: 768px) {
+  .scorers-table th,
+  .scorers-table td {
+    padding: 0.55rem 0.5rem;
+    font-size: 0.85rem;
+  }
+
+  .position-col {
+    width: 50px;
+  }
+
+  .number-col {
+    width: 110px;
+  }
+}
