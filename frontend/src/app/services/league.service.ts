@@ -6,6 +6,7 @@ import { Team } from '../models/team.model';
 import { StandingsRow } from '../models/standings-row.model';
 import { SportKey, VolleyballGender } from './sport-selection.service';
 import { LeagueListItem } from '../models/league.model';
+import { TopScorer } from '../models/top-scorer.model';
 
 @Injectable({
   providedIn: 'root',
@@ -27,6 +28,10 @@ export class LeagueService {
 
   getResults(leagueId: number): Observable<Match[]> {
     return this.http.get<Match[]>(`${this.leaguesBaseUrl}/${leagueId}/results`);
+  }
+
+  getTopScorers(leagueId: number): Observable<TopScorer[]> {
+    return this.http.get<TopScorer[]>(`${this.leaguesBaseUrl}/${leagueId}/top-scorers`);
   }
 
   getTeam(teamId: number): Observable<Team> {

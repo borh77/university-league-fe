@@ -45,6 +45,10 @@ export class App implements OnInit {
     { key: 'volleyball', label: 'Odbojka' },
   ];
 
+  isFootballSelected(): boolean {
+    return this.sportSelection.snapshot.sport === 'football';
+  }
+
   ngOnInit(): void {
     if (!isPlatformBrowser(this.platformId)) return;
 
@@ -78,6 +82,12 @@ export class App implements OnInit {
           this.router.navigate(['/leagues', newLeagueId, 'results']);
         } else if (url.includes('/schedule')) {
           this.router.navigate(['/leagues', newLeagueId, 'schedule']);
+        } else if (url.includes('/top-scorers')) {
+          if (sel.sport === 'football') {
+            this.router.navigate(['/leagues', newLeagueId, 'top-scorers']);
+          } else {
+            this.router.navigate(['/leagues', newLeagueId, 'results']);
+          }
         }
         // na standings (/) ne treba navigacija - HomeComponent vec slusa selection$
       });
