@@ -23,6 +23,33 @@
   border-bottom: 2px solid #e0e0e0;
 }
 
+.round-selector {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 0.85rem;
+}
+
+.round-button {
+  border: 1px solid #d6d6de;
+  background: #fff;
+  color: #1a1a2e;
+  border-radius: 6px;
+  padding: 0.4rem 0.75rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.round-button:hover {
+  border-color: #3a86ff;
+}
+
+.round-button.active {
+  background: #eef4ff;
+  border-color: #3a86ff;
+}
+
 .status-text {
   color: #555;
   font-size: 1rem;
@@ -36,7 +63,7 @@
   width: 100%;
   border-collapse: collapse;
   background: #fff;
-  min-width: 460px;
+  min-width: 300px;
 }
 
 .matches-table {
@@ -79,15 +106,42 @@
 }
 
 .result-col {
-  width: 8%;
+  width: 18%;
   text-align: center;
 }
 
 .date-col {
-  width: 20%;
-  text-align: center;
-  color: #444;
+  font-size: 0.85rem;
+  color: #666;
   white-space: nowrap;
+  text-align: center;
+}
+
+.vs-col {
+  white-space: nowrap;
+}
+
+td.vs-col {
+  text-align: center;
+  padding-left: 0;
+}
+
+.vs-date {
+  display: block;
+  font-weight: 600;
+  font-size: 0.75rem;
+  color: #5c6280;
+  line-height: 1.2;
+  text-align: center;
+}
+
+.vs-time {
+  display: block;
+  margin-top: 0.06rem;
+  font-size: 0.75rem;
+  color: #5c6280;
+  line-height: 1.2;
+  text-align: center;
 }
 
 .team-link {
@@ -191,23 +245,172 @@
   border: 1px solid #9acc9a;
 }
 
+.ranking-legend-title {
+  margin: 0.5rem 0 0.25rem;
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: #1f2742;
+}
+
+.ranking-legend-list {
+  margin: 0;
+  padding-left: 1.2rem;
+  font-size: 0.9rem;
+  color: #3a3f56;
+  line-height: 1.35;
+}
+
+.ranking-legend-list li {
+  margin: 0.1rem 0;
+}
+
+.ranking-legend-note {
+  margin: 0.4rem 0 0;
+  font-size: 0.85rem;
+  color: #5b6078;
+  line-height: 1.35;
+}
+
+.ranking-desktop {
+  display: block;
+}
+
+.ranking-mobile {
+  display: none;
+}
+
+.ranking-collapsible {
+  margin-top: 0.45rem;
+}
+
+.ranking-collapsible .ranking-toggle {
+  display: none;
+}
+
+.ranking-content {
+  display: block;
+}
+
 @media (max-width: 880px) {
+  .matches-table {
+    table-layout: fixed;
+  }
+
   .matches-table th,
   .matches-table td,
   .standings-table th,
   .standings-table td {
     padding: 0.5rem 0.5rem;
     font-size: 0.85rem;
+    overflow: hidden;
   }
 
   .team-logo {
     width: 22px;
     height: 22px;
   }
+
+  .team-link {
+    max-width: 100%;
+  }
+
+  .team-name {
+    white-space: normal;
+    overflow-wrap: anywhere;
+    line-height: 1.2;
+  }
 }
 
-@media (max-width: 480px) {
+@media (max-width: 600px) {
+  .result-col {
+    width: 24%;
+  }
+
+  .vs-col {
+    width: 24%;
+    white-space: normal;
+  }
+
   .date-col {
+    display: none;
+  }
+
+  .vs-date {
+    font-size: 0.68rem;
+  }
+
+  .vs-time {
+    font-size: 0.68rem;
+  }
+}
+
+
+@media (max-width: 344px) {
+  .standings-table th,
+  .standings-table td,
+  .matches-table th,
+  .matches-table td {
+    padding: 0.35rem 0.25rem;
+  }
+
+  .team-logo {
+    width: 18px;
+    height: 18px;
+  }
+}
+
+@media (max-width: 768px) {
+  .ranking-desktop {
+    display: none;
+  }
+
+  .ranking-mobile {
+    display: block;
+  }
+
+  .ranking-collapsible {
+    border: 1px solid #d8deef;
+    border-radius: 8px;
+    background: #f7f9ff;
+    padding: 0.25rem 0.55rem;
+  }
+
+  .ranking-collapsible .ranking-toggle {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    list-style: none;
+    cursor: pointer;
+    font-weight: 700;
+    font-size: 0.9rem;
+    color: #1f2742;
+    padding: 0.2rem 0;
+  }
+
+  .ranking-collapsible .ranking-toggle::-webkit-details-marker {
+    display: none;
+  }
+
+  .ranking-collapsible .ranking-toggle::after {
+    content: '+';
+    font-size: 1rem;
+    color: #2f5fae;
+  }
+
+  .ranking-collapsible[open] .ranking-toggle::after {
+    content: '-';
+  }
+
+  .ranking-content {
+    display: none;
+    padding-top: 0.2rem;
+  }
+
+  .ranking-collapsible[open] .ranking-content {
+    display: block;
+  }
+
+  .ranking-legend-title {
     display: none;
   }
 }

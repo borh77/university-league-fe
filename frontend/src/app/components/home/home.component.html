@@ -75,16 +75,15 @@
           <th>L</th>
           <th>PTS</th>
           @if (!isVolleyball()) {
-          <th>GF</th>
-          <th>GC</th>
-          <th>GD</th>
+          <th>{{ isBasketball() ? 'FOR' : 'GF' }}</th>
+          <th>{{ isBasketball() ? 'AGT' : 'GC' }}</th>
           }
 
           @if (isVolleyball()) {
           <th>SW</th>
           <th>SL</th>
-          <th>SD</th>
           }
+          <th>+/-</th>
         </tr>
       </thead>
       <tbody>
@@ -122,6 +121,76 @@
       <span class="legend-marker" aria-hidden="true"></span>
       Playoff mesta
     </p>
+
+    <div class="ranking-desktop">
+      <p class="ranking-legend-title">Princip rangiranja:</p>
+      @if (isFootball()) {
+      <ol class="ranking-legend-list">
+        <li>Bodovi</li>
+        <li>Bodovi u međusobnim duelima</li>
+        <li>Gol-razlika u međusobnim duelima</li>
+        <li>Postignuti golovi u međusobnim duelima</li>
+        <li>Ukupna gol-razlika</li>
+        <li>Ukupan broj postignutih golova</li>
+      </ol>
+      } @else if (isBasketball()) {
+      <ol class="ranking-legend-list">
+        <li>Bodovi</li>
+        <li>Bodovi u međusobnim duelima</li>
+        <li>Razlika poena u međusobnim duelima</li>
+        <li>Ukupna razlika poena</li>
+        <li>Ukupan broj postignutih poena</li>
+      </ol>
+      } @else if (isVolleyball()) {
+      <ol class="ranking-legend-list">
+        <li>Bodovi</li>
+        <li>Bodovi u međusobnim duelima</li>
+        <li>Razlika setova u međusobnim duelima</li>
+        <li>Razlika poena u međusobnim duelima</li>
+        <li>Ukupna razlika setova</li>
+        <li>Ukupan broj osvojenih poena</li>
+      </ol>
+      }
+      <p class="ranking-legend-note">
+        Timovi sa istim brojem bodova rangiraju se prema međusobnim rezultatima (H2H).
+      </p>
+    </div>
+
+    <details class="ranking-collapsible ranking-mobile">
+      <summary class="ranking-toggle">Princip rangiranja</summary>
+      <div class="ranking-content">
+        @if (isFootball()) {
+        <ol class="ranking-legend-list">
+          <li>Bodovi</li>
+          <li>Bodovi u međusobnim duelima</li>
+          <li>Gol-razlika u međusobnim duelima</li>
+          <li>Postignuti golovi u međusobnim duelima</li>
+          <li>Ukupna gol-razlika</li>
+          <li>Ukupan broj postignutih golova</li>
+        </ol>
+        } @else if (isBasketball()) {
+        <ol class="ranking-legend-list">
+          <li>Bodovi</li>
+          <li>Bodovi u međusobnim duelima</li>
+          <li>Razlika poena u međusobnim duelima</li>
+          <li>Ukupna razlika poena</li>
+          <li>Ukupan broj postignutih poena</li>
+        </ol>
+        } @else if (isVolleyball()) {
+        <ol class="ranking-legend-list">
+          <li>Bodovi</li>
+          <li>Bodovi u međusobnim duelima</li>
+          <li>Razlika setova u međusobnim duelima</li>
+          <li>Razlika poena u međusobnim duelima</li>
+          <li>Ukupna razlika setova</li>
+          <li>Ukupan broj osvojenih poena</li>
+        </ol>
+        }
+        <p class="ranking-legend-note">
+          Timovi sa istim brojem bodova rangiraju se prema međusobnim rezultatima (H2H).
+        </p>
+      </div>
+    </details>
     }
   </section>
 
@@ -132,9 +201,8 @@
       <thead>
         <tr>
           <th class="team-col home-col">Domaćin</th>
-          <th class="result-col">Protiv</th>
+          <th class="result-col">VS</th>
           <th class="team-col away-col">Gost</th>
-          <th class="date-col">Datum i vreme</th>
         </tr>
       </thead>
       <tbody>
@@ -151,7 +219,10 @@
               <span class="team-name">{{ match.homeTeamName }}</span>
             </a>
           </td>
-          <td class="result-col">-</td>
+          <td class="result-col vs-col">
+            <span class="vs-date">{{ match.scheduledAt | date : 'dd.MM.yyyy.' }}</span>
+            <span class="vs-time">{{ match.scheduledAt | date : 'HH:mm' }}</span>
+          </td>
           <td class="team-col away-col">
             <a [routerLink]="['/teams', match.awayTeamId]" class="team-link">
               <img
@@ -163,7 +234,6 @@
               <span class="team-name">{{ match.awayTeamName }}</span>
             </a>
           </td>
-          <td class="date-col">{{ match.scheduledAt | date : 'dd.MM.yyyy. HH:mm' }}</td>
         </tr>
         }
       </tbody>

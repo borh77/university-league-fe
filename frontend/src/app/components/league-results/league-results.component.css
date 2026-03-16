@@ -89,7 +89,7 @@
 }
 
 .team-col {
-  width: 36%;
+  width: 33%;
 }
 
 .home-col {
@@ -101,7 +101,7 @@
 }
 
 .result-col {
-  width: 8%;
+  width: 14%;
   text-align: center;
 }
 
@@ -202,6 +202,7 @@ button.result-badge.open {
   padding: 0;
   background: #f7f9ff;
   border-bottom: 1px solid #ececec;
+  overflow: visible;
 }
 
 .detail-wrapper {
@@ -267,9 +268,15 @@ button.result-badge.open {
   width: min(860px, 100%);
   margin: 0 auto;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 120px minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
   gap: 1.25rem;
   align-items: start;
+}
+
+@media (min-width: 769px) {
+  .goals-layout {
+    transform: translateX(-90px);
+  }
 }
 
 .goals-side {
@@ -340,6 +347,7 @@ button.result-badge.open {
   justify-content: center;
   justify-self: center;
   align-self: center;
+  transform: translateY(-6px);
 }
 
 .goals-center-score {
@@ -356,35 +364,229 @@ button.result-badge.open {
 
 @media (max-width: 768px) {
   .goals-layout {
-    grid-template-columns: minmax(0, 1fr);
-    gap: 0.75rem;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-areas:
+      'score score'
+      'home away';
+    row-gap: 0.65rem;
+    column-gap: 0.5rem;
   }
 
   .goals-center {
-    order: -1;
+    grid-area: score;
+    justify-self: center;
+    align-self: center;
+    transform: none;
   }
 
-  .home-goals-side,
-  .away-goals-side {
+  .home-goals-side {
+    grid-area: home;
+    align-items: flex-start;
     text-align: left;
+  }
+
+  .away-goals-side {
+    grid-area: away;
+    align-items: flex-start;
+    text-align: left;
+  }
+
+  .home-goals-side .goals-events,
+  .away-goals-side .goals-events {
+    align-items: flex-start;
+  }
+}
+
+@media (max-width: 600px) {
+  .detail-wrapper {
+    padding: 0.35rem 0.35rem 0.45rem;
+  }
+
+  .detail-table {
+    width: 100%;
+    table-layout: fixed;
+    font-size: 0.74rem;
+  }
+
+  .detail-team-col {
+    width: 34%;
+  }
+
+  .detail-score-col {
+    width: 9%;
+    min-width: 0;
+  }
+
+  .detail-table thead th,
+  .detail-team-name,
+  .detail-score-cell {
+    padding: 0.2rem 0.18rem;
+  }
+
+  .detail-team-name {
+    white-space: normal;
+    overflow-wrap: anywhere;
+    line-height: 1.2;
+  }
+
+  .detail-total-col,
+  .detail-total-cell {
+    border-left-width: 1px;
+  }
+}
+
+@media (max-width: 420px) {
+  .detail-table {
+    font-size: 0.68rem;
+  }
+
+  .detail-team-col {
+    width: 32%;
+  }
+
+  .detail-score-col {
+    width: 9.5%;
+  }
+
+  .detail-table thead th,
+  .detail-team-name,
+  .detail-score-cell {
+    padding: 0.18rem 0.12rem;
+  }
+}
+
+@media (max-width: 344px) {
+  .detail-wrapper {
+    padding: 0.25rem 0.2rem 0.35rem;
+    overflow-x: auto;
+  }
+
+  .detail-table {
+    font-size: 0.6rem;
+  }
+
+  .detail-team-col {
+    width: 27%;
+  }
+
+  .detail-score-col {
+    width: 10.5%;
+  }
+
+  .detail-table thead th,
+  .detail-team-name,
+  .detail-score-cell {
+    padding: 0.14rem 0.08rem;
+  }
+
+  .detail-table thead th {
+    white-space: normal;
+    overflow: visible;
+    text-overflow: unset;
+    overflow-wrap: anywhere;
+    line-height: 1.05;
+  }
+
+  .detail-team-name {
+    font-size: 0.64rem;
+    line-height: 1.15;
   }
 }
 
 @media (max-width: 880px) {
+  .matches-table {
+    table-layout: fixed;
+  }
+
   .matches-table th,
   .matches-table td {
     padding: 0.5rem 0.5rem;
     font-size: 0.85rem;
+    overflow: hidden;
+  }
+
+  .result-col {
+    width: 16%;
   }
 
   .team-logo {
     width: 22px;
     height: 22px;
   }
+
+  .team-link {
+    max-width: 100%;
+  }
+
+  .team-name {
+    white-space: normal;
+    overflow-wrap: anywhere;
+    line-height: 1.2;
+  }
+}
+
+@media (max-width: 768px) {
+  .date-col {
+    display: none;
+    width: 0;
+    padding: 0;
+  }
+
+  .team-col {
+    width: 39%;
+  }
+
+  .result-col {
+    width: 22%;
+  }
 }
 
 @media (max-width: 480px) {
-  .date-col {
+  .matches-table .team-logo {
     display: none;
+  }
+
+  .team-col {
+    width: 38%;
+  }
+
+  .result-col {
+    width: 24%;
+  }
+
+  .matches-table th,
+  .matches-table td {
+    padding: 0.42rem 0.34rem;
+    font-size: 0.8rem;
+  }
+
+  .result-badge,
+  button.result-badge {
+    font-size: 0.82rem;
+    padding: 0.08rem 0.24rem;
+    letter-spacing: 0;
+    gap: 0.12rem;
+  }
+
+  .expand-icon {
+    font-size: 0.5rem;
+  }
+}
+
+@media (max-width: 344px) {
+  .team-col {
+    width: 38%;
+  }
+
+  .result-col {
+    width: 24%;
+  }
+
+  .result-badge,
+  button.result-badge {
+    font-size: 0.78rem;
+    padding: 0.08rem 0.2rem;
+    letter-spacing: 0;
+    gap: 0.1rem;
   }
 }

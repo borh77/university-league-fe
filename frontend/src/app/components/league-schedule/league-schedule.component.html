@@ -28,9 +28,8 @@
           <thead>
             <tr>
               <th class="team-col home-col">Domaćin</th>
-              <th class="vs-col">Protiv</th>
+              <th class="vs-col">VS</th>
               <th class="team-col away-col">Gost</th>
-              <th class="date-col">Datum i vreme</th>
             </tr>
           </thead>
           <tbody>
@@ -47,7 +46,10 @@
                     <span class="team-name">{{ match.homeTeamName }}</span>
                   </a>
                 </td>
-                <td class="vs-col">–</td>
+                <td class="vs-col">
+                  <span class="vs-date">{{ match.scheduledAt | date : 'dd.MM.yyyy.' }}</span>
+                  <span class="vs-time">{{ match.scheduledAt | date : 'HH:mm' }}</span>
+                </td>
                 <td class="team-col away-col">
                   <a [routerLink]="['/teams', match.awayTeamId]" class="team-link">
                     <img
@@ -58,9 +60,6 @@
                     />
                     <span class="team-name">{{ match.awayTeamName }}</span>
                   </a>
-                </td>
-                <td class="date-col">
-                  {{ match.scheduledAt | date : 'dd.MM.yyyy. HH:mm' }}
                 </td>
               </tr>
             }

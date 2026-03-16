@@ -34,6 +34,8 @@ export class HomeComponent implements OnInit {
   private readonly cdr = inject(ChangeDetectorRef);
 
   rows: StandingsRow[] = [];
+  resultsRounds: Round[] = [];
+  scheduleRounds: Round[] = [];
   currentRound: Round | null = null;
   nextRound: Round | null = null;
   loading = true;
@@ -47,6 +49,8 @@ export class HomeComponent implements OnInit {
           this.loading = true;
           this.error = null;
           this.rows = [];
+          this.resultsRounds = [];
+          this.scheduleRounds = [];
           this.currentRound = null;
           this.nextRound = null;
           this.cdr.detectChanges();
@@ -96,10 +100,10 @@ export class HomeComponent implements OnInit {
       .subscribe((payload) => {
         this.rows = payload.standings ?? [];
 
-        const resultsRounds = this.groupByRound(payload.results ?? []);
-        const scheduleRounds = this.groupByRound(payload.schedule ?? []);
-        this.currentRound = this.resolveCurrentRound(resultsRounds);
-        this.nextRound = this.resolveNextRound(scheduleRounds, this.currentRound?.roundNumber ?? null);
+        this.resultsRounds = this.groupByRound(payload.results ?? []);
+        this.scheduleRounds = this.groupByRound(payload.schedule ?? []);
+        this.currentRound = this.resolveSelectedRound(this.resultsRounds, 1);
+        this.nextRound = this.resolveSelectedRound(this.scheduleRounds, 2);
 
         this.cdr.detectChanges();
       });
@@ -111,6 +115,10 @@ export class HomeComponent implements OnInit {
 
   isFootball(): boolean {
     return this.sportSelection.snapshot.sport === 'football';
+  }
+
+  isBasketball(): boolean {
+    return this.sportSelection.snapshot.sport === 'basketball';
   }
 
   onLogoError(event: Event): void {
@@ -136,24 +144,8 @@ export class HomeComponent implements OnInit {
       .map(([roundNumber, roundMatches]) => ({ roundNumber, matches: roundMatches }));
   }
 
-  private resolveCurrentRound(resultsRounds: Round[]): Round | null {
-    if (resultsRounds.length === 0) {
-      return null;
-    }
-
-    return resultsRounds[resultsRounds.length - 1];
-  }
-
-  private resolveNextRound(scheduleRounds: Round[], currentRoundNumber: number | null): Round | null {
-    if (scheduleRounds.length === 0) {
-      return null;
-    }
-
-    if (currentRoundNumber === null) {
-      return scheduleRounds[0];
-    }
-
-    return scheduleRounds.find((round) => round.roundNumber > currentRoundNumber) ?? null;
+  private resolveSelectedRound(rounds: Round[], roundNumber: number): Round | null {
+    return rounds.find((round) => round.roundNumber === roundNumber) ?? null;
   }
 
   private resolveLeagueId(sport: SportKey, gender?: VolleyballGender): number | null {

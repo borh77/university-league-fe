@@ -101,17 +101,33 @@
 }
 
 .vs-col {
-  width: 4%;
+  width: 18%;
   text-align: center;
   color: #888;
   font-weight: 600;
 }
 
-.date-col {
-  width: 20%;
+td.vs-col {
   text-align: center;
-  color: #444;
-  white-space: nowrap;
+  padding-left: 0;
+}
+
+.vs-date {
+  display: block;
+  font-weight: 600;
+  font-size: 0.75rem;
+  color: #5c6280;
+  line-height: 1.2;
+  text-align: center;
+}
+
+.vs-time {
+  display: block;
+  margin-top: 0.06rem;
+  font-size: 0.75rem;
+  color: #5c6280;
+  line-height: 1.2;
+  text-align: center;
 }
 
 .team-link {
@@ -144,20 +160,44 @@
 }
 
 @media (max-width: 880px) {
+  .matches-table {
+    table-layout: fixed;
+  }
+
   .matches-table th,
   .matches-table td {
     padding: 0.5rem 0.5rem;
     font-size: 0.85rem;
+    overflow: hidden;
   }
 
   .team-logo {
     width: 22px;
     height: 22px;
   }
+
+  .team-link {
+    max-width: 100%;
+  }
+
+  .team-name {
+    white-space: normal;
+    overflow-wrap: anywhere;
+    line-height: 1.2;
+  }
 }
 
-@media (max-width: 480px) {
-  .date-col {
-    display: none;
+@media (max-width: 600px) {
+  .vs-col {
+    width: 24%;
+    white-space: normal;
+  }
+
+  .vs-date {
+    font-size: 0.68rem;
+  }
+
+  .vs-time {
+    font-size: 0.68rem;
   }
 }

@@ -15,6 +15,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-wrap: wrap;
   gap: 0.85rem;
   padding: 0.6rem 1.25rem;
   background: #fff;
@@ -34,6 +35,8 @@
   font-weight: 600;
   letter-spacing: 0.04em;
   text-transform: uppercase;
+  min-width: 0;
+  text-align: center;
 }
 
 /* ── Navbar 1 – sport selection ──────────────────────────── */
@@ -187,5 +190,16 @@
 
   .app-main {
     padding: 1rem 0.5rem;
+  }
+}
+
+@media (max-width: 900px) {
+  .nav-sports {
+    flex-wrap: wrap;
+  }
+
+  .nav-pages {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
   }
 }
