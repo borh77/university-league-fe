@@ -2,15 +2,12 @@ import { ChangeDetectorRef, Component, DestroyRef, OnInit, PLATFORM_ID, inject, 
 import { isPlatformBrowser, CommonModule } from '@angular/common';
 import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { catchError, of, skip } from 'rxjs';
-import { LeagueListItem } from './models/league.model';
-import { LeagueService } from './services/league.service';
+import { skip } from 'rxjs';
 import { SportKey, SportSelectionService, VolleyballGender } from './services/sport-selection.service';
 
 const FALLBACK_SPORT_LEAGUE_MAP: Record<string, number> = {
   football: -1,
   basketball: 2,
-  handball: 3,
   'volleyball-male': -2,
   'volleyball-female': -3,
 };
@@ -27,13 +24,11 @@ function getLeagueKey(sport: SportKey, gender?: VolleyballGender): string {
   styleUrl: './app.css',
 })
 export class App implements OnInit {
-  private readonly leagueService = inject(LeagueService);
   private readonly sportSelection = inject(SportSelectionService);
   private readonly destroyRef = inject(DestroyRef);
   private readonly cdr = inject(ChangeDetectorRef);
   private readonly platformId = inject(PLATFORM_ID);
   private readonly router = inject(Router);
-  private leagues: LeagueListItem[] = [];
 
   selection = this.sportSelection;
   currentLeagueId = signal<number | null>(null);
@@ -41,7 +36,6 @@ export class App implements OnInit {
   sports: { key: SportKey; label: string }[] = [
     { key: 'football', label: 'Fudbal' },
     { key: 'basketball', label: 'Košarka' },
-    { key: 'handball', label: 'Rukomet' },
     { key: 'volleyball', label: 'Odbojka' },
   ];
 
@@ -52,20 +46,8 @@ export class App implements OnInit {
   ngOnInit(): void {
     if (!isPlatformBrowser(this.platformId)) return;
 
-    // Keep nav links clickable even if league list endpoint is unavailable.
+    // Use fallback mapping so app does not depend on leagues endpoint.
     this.currentLeagueId.set(this.resolveLeagueId(this.sportSelection.snapshot.sport, this.sportSelection.snapshot.gender));
-
-    this.leagueService
-      .getLeagues()
-      .pipe(
-        catchError(() => of([] as LeagueListItem[])),
-        takeUntilDestroyed(this.destroyRef),
-      )
-      .subscribe((leagues) => {
-        this.leagues = leagues ?? [];
-        this.currentLeagueId.set(this.resolveLeagueId(this.sportSelection.snapshot.sport, this.sportSelection.snapshot.gender));
-        this.cdr.detectChanges();
-      });
 
     // Na svaku PROMENU sporta (skip(1) preskace inicijalni emit)
     this.sportSelection.selection$
@@ -109,17 +91,6 @@ export class App implements OnInit {
   }
 
   private resolveLeagueId(sport: SportKey, gender?: VolleyballGender): number | null {
-    const sportLeagues = this.leagues.filter((league) => league.sport === sport);
-    if (sportLeagues.length === 0) {
-      return FALLBACK_SPORT_LEAGUE_MAP[getLeagueKey(sport, gender)] ?? null;
-    }
-
-    if (sport !== 'volleyball') {
-      return sportLeagues[0].id;
-    }
-
-    const wantedGender = gender ?? 'male';
-    const genderMatch = sportLeagues.find((league) => league.gender === wantedGender);
-    return (genderMatch ?? sportLeagues[0]).id;
+    return FALLBACK_SPORT_LEAGUE_MAP[getLeagueKey(sport, gender)] ?? null;
   }
 }

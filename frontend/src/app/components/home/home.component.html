@@ -1,58 +1,176 @@
 <div class="home-container">
-  <h1 class="home-title">Tabela</h1>
+  <h1 class="home-title">Početna</h1>
 
   @if (loading) {
-  <p class="status-text">Učitavanje tabele...</p>
+  <p class="status-text">Učitavanje početne stranice...</p>
   } @else if (error) {
   <p class="status-text error">{{ error }}</p>
-  } @else if (rows.length === 0) {
-  <p class="status-text">Nema podataka za izabrani sport.</p>
   } @else {
-  <table class="standings-table">
-    <thead>
-      <tr>
-        <th>#</th>
-        <th>Tim</th>
-        <th>U</th>
-        <th>Pob</th>
-        <th>Ner</th>
-        <th>Por</th>
-        <th>DG</th>
-        <th>PG</th>
-        <th>RG</th>
-        <th>Bod</th>
-
-        @if (isVolleyball()) {
-        <th>DO</th>
-        <th>PO</th>
-        <th>RO</th>
+  <section class="home-section">
+    <h2 class="section-title">Rezultati trenutnog kola</h2>
+    @if (currentRound; as round) {
+    <table class="matches-table">
+      <thead>
+        <tr>
+          <th class="team-col home-col">Domaćin</th>
+          <th class="result-col">Rezultat</th>
+          <th class="team-col away-col">Gost</th>
+          <th class="date-col">Datum i vreme</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (match of round.matches; track match.id) {
+        <tr>
+          <td class="team-col home-col">
+            <a [routerLink]="['/teams', match.homeTeamId]" class="team-link">
+              <img
+                [src]="match.homeTeamLogoUrl"
+                [alt]="match.homeTeamName"
+                class="team-logo"
+                (error)="onLogoError($event)"
+              />
+              <span class="team-name">{{ match.homeTeamName }}</span>
+            </a>
+          </td>
+          <td class="result-col">
+            <span class="result-badge">{{ match.result ?? '-' }}</span>
+          </td>
+          <td class="team-col away-col">
+            <a [routerLink]="['/teams', match.awayTeamId]" class="team-link">
+              <img
+                [src]="match.awayTeamLogoUrl"
+                [alt]="match.awayTeamName"
+                class="team-logo"
+                (error)="onLogoError($event)"
+              />
+              <span class="team-name">{{ match.awayTeamName }}</span>
+            </a>
+          </td>
+          <td class="date-col">{{ match.scheduledAt | date : 'dd.MM.yyyy. HH:mm' }}</td>
+        </tr>
         }
-      </tr>
-    </thead>
-    <tbody>
-      @for (r of rows; track r.teamId) {
-      <tr>
-        <td>{{ r.position }}</td>
-        <td>
-          <a [routerLink]="['/teams', r.teamId]">{{ r.teamName }}</a>
-        </td>
-        <td>{{ r.played }}</td>
-        <td>{{ r.won }}</td>
-        <td>{{ r.drawn }}</td>
-        <td>{{ r.lost }}</td>
-        <td>{{ r.scored }}</td>
-        <td>{{ r.conceded }}</td>
-        <td>{{ r.difference }}</td>
-        <td><b>{{ r.points }}</b></td>
+      </tbody>
+    </table>
+    } @else {
+    <p class="status-text">Nema odigranih mečeva za trenutno kolo.</p>
+    }
+  </section>
 
-        @if (isVolleyball()) {
-        <td>{{ r.setWon ?? '-' }}</td>
-        <td>{{ r.setLost ?? '-' }}</td>
-        <td>{{ r.setDifference ?? '-' }}</td>
+  <section class="home-section">
+    <h2 class="section-title">Tabela</h2>
+    @if (rows.length === 0) {
+    <p class="status-text">Nema podataka za izabrani sport.</p>
+    } @else {
+    <div class="table-scroll">
+    <table class="standings-table">
+      <thead>
+        <tr>
+          <th>POS</th>
+          <th>Tim</th>
+          <th>MP</th>
+          <th>W</th>
+          @if (isFootball()) {
+          <th>D</th>
+          }
+          <th>L</th>
+          <th>PTS</th>
+          @if (!isVolleyball()) {
+          <th>GF</th>
+          <th>GC</th>
+          <th>GD</th>
+          }
+
+          @if (isVolleyball()) {
+          <th>SW</th>
+          <th>SL</th>
+          <th>SD</th>
+          }
+        </tr>
+      </thead>
+      <tbody>
+        @for (r of rows; track r.teamId) {
+        <tr [class.playoff-row]="r.position <= 4">
+          <td>{{ r.position }}</td>
+          <td>
+            <a [routerLink]="['/teams', r.teamId]">{{ r.teamName }}</a>
+          </td>
+          <td>{{ r.played }}</td>
+          <td>{{ r.won }}</td>
+          @if (isFootball()) {
+          <td>{{ r.drawn }}</td>
+          }
+          <td>{{ r.lost }}</td>
+          <td><b>{{ r.points }}</b></td>
+          @if (!isVolleyball()) {
+          <td>{{ r.scored }}</td>
+          <td>{{ r.conceded }}</td>
+          <td>{{ r.difference }}</td>
+          }
+
+          @if (isVolleyball()) {
+          <td>{{ r.setWon ?? '-' }}</td>
+          <td>{{ r.setLost ?? '-' }}</td>
+          <td>{{ r.setDifference ?? '-' }}</td>
+          }
+        </tr>
         }
-      </tr>
-      }
-    </tbody>
-  </table>
+      </tbody>
+    </table>
+    </div>
+
+    <p class="table-legend">
+      <span class="legend-marker" aria-hidden="true"></span>
+      Playoff mesta
+    </p>
+    }
+  </section>
+
+  <section class="home-section">
+    <h2 class="section-title">Raspored sledećeg kola</h2>
+    @if (nextRound; as round) {
+    <table class="matches-table">
+      <thead>
+        <tr>
+          <th class="team-col home-col">Domaćin</th>
+          <th class="result-col">Protiv</th>
+          <th class="team-col away-col">Gost</th>
+          <th class="date-col">Datum i vreme</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (match of round.matches; track match.id) {
+        <tr>
+          <td class="team-col home-col">
+            <a [routerLink]="['/teams', match.homeTeamId]" class="team-link">
+              <img
+                [src]="match.homeTeamLogoUrl"
+                [alt]="match.homeTeamName"
+                class="team-logo"
+                (error)="onLogoError($event)"
+              />
+              <span class="team-name">{{ match.homeTeamName }}</span>
+            </a>
+          </td>
+          <td class="result-col">-</td>
+          <td class="team-col away-col">
+            <a [routerLink]="['/teams', match.awayTeamId]" class="team-link">
+              <img
+                [src]="match.awayTeamLogoUrl"
+                [alt]="match.awayTeamName"
+                class="team-logo"
+                (error)="onLogoError($event)"
+              />
+              <span class="team-name">{{ match.awayTeamName }}</span>
+            </a>
+          </td>
+          <td class="date-col">{{ match.scheduledAt | date : 'dd.MM.yyyy. HH:mm' }}</td>
+        </tr>
+        }
+      </tbody>
+    </table>
+    } @else {
+    <p class="status-text">Nema zakazanih mečeva za sledeće kolo.</p>
+    }
+  </section>
   }
 </div>

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 
-export type SportKey = 'football' | 'basketball' | 'handball' | 'volleyball';
+export type SportKey = 'football' | 'basketball' | 'volleyball';
 export type VolleyballGender = 'male' | 'female';
 
 export interface SportSelection {

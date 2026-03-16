@@ -7,8 +7,20 @@
 
 .home-title {
   font-size: 1.75rem;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1.25rem;
   color: #1a1a2e;
+}
+
+.home-section {
+  margin-bottom: 1.5rem;
+}
+
+.section-title {
+  font-size: 1.2rem;
+  margin: 0 0 0.65rem;
+  color: #16213e;
+  padding-bottom: 0.25rem;
+  border-bottom: 2px solid #e0e0e0;
 }
 
 .status-text {
@@ -24,9 +36,99 @@
   width: 100%;
   border-collapse: collapse;
   background: #fff;
+  min-width: 460px;
+}
+
+.matches-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
   border-radius: 8px;
   overflow: hidden;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+}
+
+.matches-table thead tr {
+  background: #f4f4f8;
+}
+
+.matches-table th,
+.matches-table td {
+  padding: 0.65rem 0.85rem;
+  font-size: 0.92rem;
+}
+
+.matches-table tbody tr:not(:last-child) {
+  border-bottom: 1px solid #ececec;
+}
+
+.matches-table tbody tr:hover {
+  background: #f9f9fb;
+}
+
+.team-col {
+  width: 36%;
+}
+
+.home-col {
+  text-align: right;
+}
+
+.away-col {
+  text-align: left;
+}
+
+.result-col {
+  width: 8%;
+  text-align: center;
+}
+
+.date-col {
+  width: 20%;
+  text-align: center;
+  color: #444;
+  white-space: nowrap;
+}
+
+.team-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  text-decoration: none;
+  color: #1a1a2e;
+  font-weight: 500;
+  transition: color 0.15s;
+}
+
+.team-link:hover {
+  color: #3a86ff;
+}
+
+.home-col .team-link {
+  flex-direction: row-reverse;
+}
+
+.team-logo {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+  border-radius: 50%;
+}
+
+.team-name {
+  font-size: 0.92rem;
+}
+
+.result-badge {
+  display: inline-block;
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: #1a1a2e;
+  background: #f0f4ff;
+  border: 1px solid #d0d8f0;
+  border-radius: 4px;
+  padding: 0.15rem 0.5rem;
+  letter-spacing: 0.03em;
 }
 
   .standings-table thead tr {
@@ -54,6 +156,14 @@
     background: #f9f9fb;
   }
 
+  .standings-table tbody tr.playoff-row {
+    background: #e7f7e7;
+  }
+
+  .standings-table tbody tr.playoff-row:hover {
+    background: #d7f0d7;
+  }
+
   .standings-table td a {
     text-decoration: none;
     color: #1a1a2e;
@@ -63,3 +173,41 @@
     .standings-table td a:hover {
       color: #3a86ff;
     }
+
+.table-legend {
+  margin-top: 0.65rem;
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  color: #2d5f2d;
+  font-size: 0.92rem;
+}
+
+.legend-marker {
+  width: 0.95rem;
+  height: 0.95rem;
+  border-radius: 3px;
+  background: #e7f7e7;
+  border: 1px solid #9acc9a;
+}
+
+@media (max-width: 880px) {
+  .matches-table th,
+  .matches-table td,
+  .standings-table th,
+  .standings-table td {
+    padding: 0.5rem 0.5rem;
+    font-size: 0.85rem;
+  }
+
+  .team-logo {
+    width: 22px;
+    height: 22px;
+  }
+}
+
+@media (max-width: 480px) {
+  .date-col {
+    display: none;
+  }
+}
