@@ -1,8 +1,8 @@
 <div class="team-detail-container">
   @if (loading) {
-    <p class="status-text">Učitavanje tima...</p>
+    <p class="status-text">Учитавање тима...</p>
   } @else if (notFound) {
-    <p class="status-text">Nema podataka za izabrani tim.</p>
+    <p class="status-text">Нема података за изабрани тим.</p>
   } @else if (error) {
     <p class="status-text error">{{ error }}</p>
   } @else if (team) {
@@ -17,17 +17,17 @@
     </div>
 
     <section class="players-section">
-      <h3 class="section-title">Igrači</h3>
+      <h3 class="section-title">Играчи</h3>
 
       @if (team.players.length === 0) {
-        <p class="status-text">Ovaj tim trenutno nema prijavljenih igrača.</p>
+        <p class="status-text">Овај тим тренутно нема пријављених играча.</p>
       } @else {
         <table class="players-table">
           <thead>
             <tr>
               <th class="photo-col"></th>
               <th class="number-col">#</th>
-              <th class="name-col">Ime i prezime</th>
+              <th class="name-col">Име и презиме</th>
             </tr>
           </thead>
           <tbody>

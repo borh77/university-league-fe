@@ -1,21 +1,21 @@
 <div class="home-container">
-  <h1 class="home-title">Početna</h1>
+  <h1 class="home-title">Почетна</h1>
 
   @if (loading) {
-  <p class="status-text">Učitavanje početne stranice...</p>
+  <p class="status-text">Учитавање почетне странице...</p>
   } @else if (error) {
   <p class="status-text error">{{ error }}</p>
   } @else {
   <section class="home-section">
-    <h2 class="section-title">Rezultati trenutnog kola</h2>
+    <h2 class="section-title">Резултати тренутног кола</h2>
     @if (currentRound; as round) {
     <table class="matches-table">
       <thead>
         <tr>
-          <th class="team-col home-col">Domaćin</th>
-          <th class="result-col">Rezultat</th>
-          <th class="team-col away-col">Gost</th>
-          <th class="date-col">Datum i vreme</th>
+          <th class="team-col home-col">Домаћин</th>
+          <th class="result-col">Резултат</th>
+          <th class="team-col away-col">Гост</th>
+          <th class="date-col">Датум и време</th>
         </tr>
       </thead>
       <tbody>
@@ -52,22 +52,22 @@
       </tbody>
     </table>
     } @else {
-    <p class="status-text">Nema odigranih mečeva za trenutno kolo.</p>
+    <p class="status-text">Нема одиграних мечева за тренутно коло.</p>
     }
   </section>
 
   <section class="home-section">
-    <h2 class="section-title">Tabela</h2>
+    <h2 class="section-title">Табела</h2>
     @if (rows.length === 0) {
-    <p class="status-text">Nema podataka za izabrani sport.</p>
+    <p class="status-text">Нема података за изабрани спорт.</p>
     } @else {
     <div class="table-scroll">
     <table class="standings-table">
       <thead>
         <tr>
           <th>POS</th>
-          <th>Tim</th>
-          <th>MP</th>
+          <th>Тим</th>
+          <th>МP</th>
           <th>W</th>
           @if (isFootball()) {
           <th>D</th>
@@ -76,7 +76,7 @@
           <th>PTS</th>
           @if (!isVolleyball()) {
           <th>{{ isBasketball() ? 'FOR' : 'GF' }}</th>
-          <th>{{ isBasketball() ? 'AGT' : 'GC' }}</th>
+          <th>{{ isBasketball() ? 'AGT' : 'GA' }}</th>
           }
 
           @if (isVolleyball()) {
@@ -119,75 +119,75 @@
 
     <p class="table-legend">
       <span class="legend-marker" aria-hidden="true"></span>
-      Playoff mesta
+      Плеј-оф места
     </p>
 
     <div class="ranking-desktop">
-      <p class="ranking-legend-title">Princip rangiranja:</p>
+      <p class="ranking-legend-title">Принцип рангирања:</p>
       @if (isFootball()) {
       <ol class="ranking-legend-list">
-        <li>Bodovi</li>
-        <li>Bodovi u međusobnim duelima</li>
-        <li>Gol-razlika u međusobnim duelima</li>
-        <li>Postignuti golovi u međusobnim duelima</li>
-        <li>Ukupna gol-razlika</li>
-        <li>Ukupan broj postignutih golova</li>
+        <li>Бодови</li>
+        <li>Бодови у међусобним дуелима</li>
+        <li>Гол-разлика у међусобним дуелима</li>
+        <li>Постигнути голови у међусобним дуелима</li>
+        <li>Укупна гол-разлика</li>
+        <li>Укупан број постигнутих голова</li>
       </ol>
       } @else if (isBasketball()) {
       <ol class="ranking-legend-list">
-        <li>Bodovi</li>
-        <li>Bodovi u međusobnim duelima</li>
-        <li>Razlika poena u međusobnim duelima</li>
-        <li>Ukupna razlika poena</li>
-        <li>Ukupan broj postignutih poena</li>
+        <li>Бодови</li>
+        <li>Бодови у међусобним дуелима</li>
+        <li>Разлика поена у међусобним дуелима</li>
+        <li>Укупна разлика поена</li>
+        <li>Укупан број постигнутих поена</li>
       </ol>
       } @else if (isVolleyball()) {
       <ol class="ranking-legend-list">
-        <li>Bodovi</li>
-        <li>Bodovi u međusobnim duelima</li>
-        <li>Razlika setova u međusobnim duelima</li>
-        <li>Razlika poena u međusobnim duelima</li>
-        <li>Ukupna razlika setova</li>
-        <li>Ukupan broj osvojenih poena</li>
+        <li>Бодови</li>
+        <li>Бодови у међусобним дуелима</li>
+        <li>Разлика сетова у међусобним дуелима</li>
+        <li>Разлика поена у међусобним дуелима</li>
+        <li>Укупна разлика сетова</li>
+        <li>Укупан број освојених поена</li>
       </ol>
       }
       <p class="ranking-legend-note">
-        Timovi sa istim brojem bodova rangiraju se prema međusobnim rezultatima (H2H).
+        Тимови са истим бројем бодова рангирају се према међусобним резултатима.
       </p>
     </div>
 
     <details class="ranking-collapsible ranking-mobile">
-      <summary class="ranking-toggle">Princip rangiranja</summary>
+      <summary class="ranking-toggle">Принцип рангирања</summary>
       <div class="ranking-content">
         @if (isFootball()) {
         <ol class="ranking-legend-list">
-          <li>Bodovi</li>
-          <li>Bodovi u međusobnim duelima</li>
-          <li>Gol-razlika u međusobnim duelima</li>
-          <li>Postignuti golovi u međusobnim duelima</li>
-          <li>Ukupna gol-razlika</li>
-          <li>Ukupan broj postignutih golova</li>
+          <li>Бодови</li>
+          <li>Бодови у међусобним дуелима</li>
+          <li>Гол-разлика у међусобним дуелима</li>
+          <li>Постигнути голови у међусобним дуелима</li>
+          <li>Укупна гол-разлика</li>
+          <li>Укупан број постигнутих голова</li>
         </ol>
         } @else if (isBasketball()) {
         <ol class="ranking-legend-list">
-          <li>Bodovi</li>
-          <li>Bodovi u međusobnim duelima</li>
-          <li>Razlika poena u međusobnim duelima</li>
-          <li>Ukupna razlika poena</li>
-          <li>Ukupan broj postignutih poena</li>
+          <li>Бодови</li>
+          <li>Бодови у међусобним дуелима</li>
+          <li>Разлика поена у међусобним дуелима</li>
+          <li>Укупна разлика поена</li>
+          <li>Укупан број постигнутих поена</li>
         </ol>
         } @else if (isVolleyball()) {
         <ol class="ranking-legend-list">
-          <li>Bodovi</li>
-          <li>Bodovi u međusobnim duelima</li>
-          <li>Razlika setova u međusobnim duelima</li>
-          <li>Razlika poena u međusobnim duelima</li>
-          <li>Ukupna razlika setova</li>
-          <li>Ukupan broj osvojenih poena</li>
+          <li>Бодови</li>
+          <li>Бодови у међусобним дуелима</li>
+          <li>Разлика сетова у међусобним дуелима</li>
+          <li>Разлика поена у међусобним дуелима</li>
+          <li>Укупна разлика сетова</li>
+          <li>Укупан број освојених поена</li>
         </ol>
         }
         <p class="ranking-legend-note">
-          Timovi sa istim brojem bodova rangiraju se prema međusobnim rezultatima (H2H).
+          Тимови са истим бројем бодова рангирају се према међусобним резултатима.
         </p>
       </div>
     </details>
@@ -195,14 +195,14 @@
   </section>
 
   <section class="home-section">
-    <h2 class="section-title">Raspored sledećeg kola</h2>
+    <h2 class="section-title">Распоред следећег кола</h2>
     @if (nextRound; as round) {
     <table class="matches-table">
       <thead>
         <tr>
-          <th class="team-col home-col">Domaćin</th>
+          <th class="team-col home-col">Домаћин</th>
           <th class="result-col">VS</th>
-          <th class="team-col away-col">Gost</th>
+          <th class="team-col away-col">Гост</th>
         </tr>
       </thead>
       <tbody>
@@ -239,7 +239,7 @@
       </tbody>
     </table>
     } @else {
-    <p class="status-text">Nema zakazanih mečeva za sledeće kolo.</p>
+    <p class="status-text">Нема заказаних мечева за следеће коло.</p>
     }
   </section>
   }

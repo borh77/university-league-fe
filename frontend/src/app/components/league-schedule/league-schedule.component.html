@@ -1,14 +1,14 @@
 <div class="schedule-container">
-  <h2 class="schedule-title">Raspored mečeva</h2>
+  <h2 class="schedule-title">Распоред мечева</h2>
 
   @if (loading) {
-    <p class="status-text">Učitavanje rasporeda...</p>
+    <p class="status-text">Учитавање распореда...</p>
   } @else if (error) {
     <p class="status-text error">{{ error }}</p>
   } @else if (rounds.length === 0) {
-    <p class="status-text">Nema zakazanih mečeva za ovu ligu.</p>
+    <p class="status-text">Нема заказаних мечева за ову лигу.</p>
   } @else {
-    <div class="round-selector" aria-label="Izbor kola">
+    <div class="round-selector" aria-label="Избор кола">
       @for (round of rounds; track round.roundNumber) {
         <button
           type="button"
@@ -16,20 +16,20 @@
           [class.active]="round.roundNumber === selectedRoundNumber"
           (click)="selectRound(round.roundNumber)"
         >
-          Kolo {{ round.roundNumber }}
+          Коло {{ round.roundNumber }}
         </button>
       }
     </div>
 
     @if (selectedRound; as round) {
       <section class="round-section">
-        <h3 class="round-title">Kolo {{ round.roundNumber }}</h3>
+        <h3 class="round-title">Коло {{ round.roundNumber }}</h3>
         <table class="matches-table">
           <thead>
             <tr>
-              <th class="team-col home-col">Domaćin</th>
+              <th class="team-col home-col">Домаћин</th>
               <th class="vs-col">VS</th>
-              <th class="team-col away-col">Gost</th>
+              <th class="team-col away-col">Гост</th>
             </tr>
           </thead>
           <tbody>
@@ -67,7 +67,7 @@
         </table>
       </section>
     } @else {
-      <p class="status-text">Nema mečeva za izabrano kolo.</p>
+      <p class="status-text">Нема мечева за изабрано коло.</p>
     }
   }
 </div>

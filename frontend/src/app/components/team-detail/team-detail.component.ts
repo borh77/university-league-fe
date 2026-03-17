@@ -42,7 +42,7 @@ export class TeamDetailComponent implements OnInit {
 
     const teamId = Number(params.get('teamId'));
     if (!Number.isFinite(teamId)) {
-      this.error = 'Neispravan ID tima.';
+      this.error = 'Неисправан ID тима.';
       this.loading = false;
       this.cdr.detectChanges();
       return;
@@ -55,7 +55,7 @@ export class TeamDetailComponent implements OnInit {
           if (err.status === 404) {
             this.notFound = true;
           } else {
-            this.error = 'Greška pri učitavanju tima.';
+            this.error = 'Грешка при учитавању тима.';
           }
           return of(null);
         }),

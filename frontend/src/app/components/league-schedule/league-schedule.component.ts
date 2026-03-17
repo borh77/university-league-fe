@@ -50,7 +50,7 @@ export class LeagueScheduleComponent implements OnInit {
 
     const leagueId = Number(params.get('leagueId'));
     if (!Number.isFinite(leagueId)) {
-      this.error = 'Neispravan ID lige.';
+      this.error = 'Неисправан ID лиге.';
       this.loading = false;
       return;
     }
@@ -59,7 +59,7 @@ export class LeagueScheduleComponent implements OnInit {
       .getSchedule(leagueId)
       .pipe(
         catchError(() => {
-          this.error = 'Greška pri učitavanju rasporeda.';
+          this.error = 'Грешка при учитавању распореда.';
           return of([] as Match[]);
         }),
         finalize(() => {
@@ -74,7 +74,7 @@ export class LeagueScheduleComponent implements OnInit {
           this.initializeSelectedRound();
         } catch {
           this.rounds = [];
-          this.error = 'Greška pri obradi rasporeda.';
+          this.error = 'Грешка при обради распореда.';
         }
         this.cdr.detectChanges();
       });

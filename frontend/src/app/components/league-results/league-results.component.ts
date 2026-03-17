@@ -52,7 +52,7 @@ export class LeagueResultsComponent implements OnInit {
 
     const leagueId = Number(params.get('leagueId'));
     if (!Number.isFinite(leagueId)) {
-      this.error = 'Neispravan ID lige.';
+      this.error = 'Неисправан ID лиге.';
       this.loading = false;
       return;
     }
@@ -61,7 +61,7 @@ export class LeagueResultsComponent implements OnInit {
       .getResults(leagueId)
       .pipe(
         catchError(() => {
-          this.error = 'Greška pri učitavanju rezultata.';
+          this.error = 'Грешка при учитавању резултата.';
           return of([] as Match[]);
         }),
         finalize(() => {
@@ -76,7 +76,7 @@ export class LeagueResultsComponent implements OnInit {
           this.initializeSelectedRound();
         } catch {
           this.rounds = [];
-          this.error = 'Greška pri obradi rezultata.';
+          this.error = 'Грешка при обради резултата.';
         }
         this.cdr.detectChanges();
       });

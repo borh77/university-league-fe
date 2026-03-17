@@ -34,9 +34,9 @@ export class App implements OnInit {
   currentLeagueId = signal<number | null>(null);
 
   sports: { key: SportKey; label: string }[] = [
-    { key: 'football', label: 'Fudbal' },
-    { key: 'basketball', label: 'Košarka' },
-    { key: 'volleyball', label: 'Odbojka' },
+    { key: 'football', label: 'Фудбал' },
+    { key: 'basketball', label: 'Кошарка' },
+    { key: 'volleyball', label: 'Одбојка' },
   ];
 
   isFootballSelected(): boolean {

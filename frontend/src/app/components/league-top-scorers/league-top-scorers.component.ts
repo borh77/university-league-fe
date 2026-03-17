@@ -38,7 +38,7 @@ export class LeagueTopScorersComponent implements OnInit {
 
     const leagueId = Number(params.get('leagueId'));
     if (!Number.isFinite(leagueId)) {
-      this.error = 'Neispravan ID lige.';
+      this.error = 'Неисправан ID лиге.';
       this.loading = false;
       return;
     }
@@ -47,7 +47,7 @@ export class LeagueTopScorersComponent implements OnInit {
       .getTopScorers(leagueId)
       .pipe(
         catchError(() => {
-          this.error = 'Greška pri učitavanju liste strelaca.';
+          this.error = 'Грешка при учитавању листе стрелаца.';
           return of([] as TopScorer[]);
         }),
         finalize(() => {

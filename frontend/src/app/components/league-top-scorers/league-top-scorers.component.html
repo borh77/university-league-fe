@@ -1,20 +1,20 @@
 <div class="top-scorers-container">
-  <h2 class="top-scorers-title">Top strelci</h2>
+  <h2 class="top-scorers-title">Топ стрелци</h2>
 
   @if (loading) {
-    <p class="status-text">Učitavanje liste strelaca...</p>
+    <p class="status-text">Учитавање листе стрелаца...</p>
   } @else if (error) {
     <p class="status-text error">{{ error }}</p>
   } @else if (scorers.length === 0) {
-    <p class="status-text">Nema dostupnih podataka o strelcima</p>
+    <p class="status-text">Нема доступних података о стрелцима</p>
   } @else {
     <table class="scorers-table">
       <thead>
         <tr>
           <th class="position-col">#</th>
-          <th>Igrač</th>
-          <th>Tim</th>
-          <th class="number-col">Golovi</th>
+          <th>Играч</th>
+          <th>Тим</th>
+          <th class="number-col">Голови</th>
         </tr>
       </thead>
       <tbody>

@@ -1,14 +1,14 @@
 <div class="results-container">
-  <h2 class="results-title">Rezultati</h2>
+  <h2 class="results-title">Резултати</h2>
 
   @if (loading) {
-    <p class="status-text">Učitavanje rezultata...</p>
+    <p class="status-text">Учитавање резултата...</p>
   } @else if (error) {
     <p class="status-text error">{{ error }}</p>
   } @else if (rounds.length === 0) {
-    <p class="status-text">Nema odigranih mečeva za ovu ligu.</p>
+    <p class="status-text">Нема одиграних мечева за ову лигу.</p>
   } @else {
-    <div class="round-selector" aria-label="Izbor kola">
+    <div class="round-selector" aria-label="Избор кола">
       @for (round of rounds; track round.roundNumber) {
         <button
           type="button"
@@ -16,21 +16,21 @@
           [class.active]="round.roundNumber === selectedRoundNumber"
           (click)="selectRound(round.roundNumber)"
         >
-          Kolo {{ round.roundNumber }}
+          Коло {{ round.roundNumber }}
         </button>
       }
     </div>
 
     @if (selectedRound; as round) {
       <section class="round-section">
-        <h3 class="round-title">Kolo {{ round.roundNumber }}</h3>
+        <h3 class="round-title">Коло {{ round.roundNumber }}</h3>
         <table class="matches-table">
           <thead>
             <tr>
-              <th class="team-col home-col">Domaćin</th>
-              <th class="result-col">Rezultat</th>
-              <th class="team-col away-col">Gost</th>
-              <th class="date-col">Datum i vreme</th>
+              <th class="team-col home-col">Домаћин</th>
+              <th class="result-col">Резултат</th>
+              <th class="team-col away-col">Гост</th>
+              <th class="date-col">Датум и време</th>
             </tr>
           </thead>
           <tbody>
@@ -135,9 +135,9 @@
                             <tr>
                               <th class="detail-team-col"></th>
                               @for (q of match.quarters!; track q.quarterNumber) {
-                                <th class="detail-score-col">Q{{ q.quarterNumber }}</th>
+                                <th class="detail-score-col">Ч{{ q.quarterNumber }}</th>
                               }
-                              <th class="detail-score-col detail-total-col">Uk</th>
+                              <th class="detail-score-col detail-total-col">Ук</th>
                             </tr>
                           </thead>
                           <tbody>
@@ -175,9 +175,9 @@
                             <tr>
                               <th class="detail-team-col"></th>
                               @for (s of match.sets!; track s.setNumber) {
-                                <th class="detail-score-col">S{{ s.setNumber }}</th>
+                                <th class="detail-score-col">С{{ s.setNumber }}</th>
                               }
-                              <th class="detail-score-col detail-total-col">Set</th>
+                              <th class="detail-score-col detail-total-col">Сет</th>
                             </tr>
                           </thead>
                           <tbody>
@@ -217,7 +217,7 @@
         </table>
       </section>
     } @else {
-      <p class="status-text">Nema mečeva za izabrano kolo.</p>
+      <p class="status-text">Нема мечева за изабрано коло.</p>
     }
   }
 </div>

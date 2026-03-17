@@ -57,7 +57,7 @@ export class HomeComponent implements OnInit {
 
           const leagueId = this.resolveLeagueId(sel.sport, sel.gender);
           if (leagueId === null) {
-            this.error = 'Nije moguće odrediti ligu za izabrani sport.';
+            this.error = 'Није могуће одредити лигу за изабрани спорт.';
             return of({
               standings: [] as StandingsRow[],
               results: [] as Match[],
@@ -73,19 +73,19 @@ export class HomeComponent implements OnInit {
           return forkJoin({
             standings: this.leagueService.getStandings(sel.sport, sel.gender).pipe(
               catchError(() => {
-                this.error = 'Greška pri učitavanju podataka za početnu stranicu.';
+                this.error = 'Грешка при учитавању података за почетну страницу.';
                 return of([] as StandingsRow[]);
               }),
             ),
             results: this.leagueService.getResults(leagueId).pipe(
               catchError(() => {
-                this.error = 'Greška pri učitavanju podataka za početnu stranicu.';
+                this.error = 'Грешка при учитавању података за почетну страницу.';
                 return of([] as Match[]);
               }),
             ),
             schedule: this.leagueService.getSchedule(leagueId).pipe(
               catchError(() => {
-                this.error = 'Greška pri učitavanju podataka za početnu stranicu.';
+                this.error = 'Грешка при учитавању података за почетну страницу.';
                 return of([] as Match[]);
               }),
             ),
