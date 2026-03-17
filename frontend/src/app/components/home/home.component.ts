@@ -15,7 +15,7 @@ interface Round {
 
 const FALLBACK_SPORT_LEAGUE_MAP: Record<string, number> = {
   football: -1,
-  basketball: 2,
+  basketball: -2,
   'volleyball-male': -2,
   'volleyball-female': -3,
 };

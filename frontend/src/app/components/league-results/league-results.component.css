@@ -27,6 +27,45 @@
   margin-bottom: 1rem;
 }
 
+.round-selector-mobile {
+  display: none;
+  margin-bottom: 1rem;
+}
+
+.round-picker {
+  margin-top: 0.45rem;
+}
+
+.round-picker-toggle {
+  color: #1a1a2e;
+  font-size: 0.86rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.round-picker-grid {
+  margin-top: 0.45rem;
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 0.35rem;
+}
+
+.round-picker-btn {
+  border: 1px solid #d6d6de;
+  background: #fff;
+  color: #1a1a2e;
+  border-radius: 6px;
+  padding: 0.25rem 0;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.round-picker-btn.active {
+  background: #eef4ff;
+  border-color: #3a86ff;
+}
+
 .round-button {
   border: 1px solid #d6d6de;
   background: #fff;
@@ -520,7 +559,8 @@ button.result-badge.open {
 
   .team-name {
     white-space: normal;
-    overflow-wrap: anywhere;
+    overflow-wrap: break-word;
+    word-break: normal;
     line-height: 1.2;
   }
 }
@@ -541,9 +581,30 @@ button.result-badge.open {
   }
 }
 
-@media (max-width: 480px) {
-  .matches-table .team-logo {
+@media (max-width: 600px) {
+  .round-selector-desktop {
     display: none;
+  }
+
+  .round-selector-mobile {
+    display: block;
+  }
+
+  .round-picker-grid {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 480px) {
+
+  .matches-table .team-logo {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+  }
+
+  .team-link {
+    gap: 0.2rem;
   }
 
   .team-col {
@@ -558,6 +619,11 @@ button.result-badge.open {
   .matches-table td {
     padding: 0.42rem 0.34rem;
     font-size: 0.8rem;
+  }
+
+  .team-name {
+    font-size: 0.82rem;
+    line-height: 1.15;
   }
 
   .result-badge,
@@ -588,5 +654,9 @@ button.result-badge.open {
     padding: 0.08rem 0.2rem;
     letter-spacing: 0;
     gap: 0.1rem;
+  }
+
+  .team-name {
+    font-size: 0.78rem;
   }
 }

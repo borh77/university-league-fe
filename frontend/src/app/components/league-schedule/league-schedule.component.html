@@ -8,7 +8,7 @@
   } @else if (rounds.length === 0) {
     <p class="status-text">Нема заказаних мечева за ову лигу.</p>
   } @else {
-    <div class="round-selector" aria-label="Избор кола">
+    <div class="round-selector round-selector-desktop" aria-label="Избор кола">
       @for (round of rounds; track round.roundNumber) {
         <button
           type="button"
@@ -19,6 +19,24 @@
           Коло {{ round.roundNumber }}
         </button>
       }
+    </div>
+
+    <div class="round-selector-mobile" aria-label="Избор кола">
+      <details class="round-picker">
+        <summary class="round-picker-toggle">Изабери коло</summary>
+        <div class="round-picker-grid" role="group" aria-label="Брзи избор кола">
+          @for (round of rounds; track round.roundNumber) {
+            <button
+              type="button"
+              class="round-picker-btn"
+              [class.active]="round.roundNumber === selectedRoundNumber"
+              (click)="selectRound(round.roundNumber)"
+            >
+              {{ round.roundNumber }}
+            </button>
+          }
+        </div>
+      </details>
     </div>
 
     @if (selectedRound; as round) {
