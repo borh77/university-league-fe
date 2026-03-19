@@ -1,0 +1,246 @@
+<div class="home-container">
+  <h1 class="home-title">Почетна</h1>
+
+  @if (loading) {
+  <p class="status-text">Учитавање почетне странице...</p>
+  } @else if (error) {
+  <p class="status-text error">{{ error }}</p>
+  } @else {
+  <section class="home-section">
+    <h2 class="section-title">Резултати тренутног кола</h2>
+    @if (currentRound; as round) {
+    <table class="matches-table">
+      <thead>
+        <tr>
+          <th class="team-col home-col">Домаћин</th>
+          <th class="result-col">Резултат</th>
+          <th class="team-col away-col">Гост</th>
+          <th class="date-col">Датум и време</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (match of round.matches; track match.id) {
+        <tr>
+          <td class="team-col home-col">
+            <a [routerLink]="['/teams', match.homeTeamId]" class="team-link">
+              <img
+                [src]="match.homeTeamLogoUrl"
+                [alt]="match.homeTeamName"
+                class="team-logo"
+                (error)="onLogoError($event)"
+              />
+              <span class="team-name">{{ match.homeTeamName }}</span>
+            </a>
+          </td>
+          <td class="result-col">
+            <span class="result-badge">{{ match.result ?? '-' }}</span>
+          </td>
+          <td class="team-col away-col">
+            <a [routerLink]="['/teams', match.awayTeamId]" class="team-link">
+              <img
+                [src]="match.awayTeamLogoUrl"
+                [alt]="match.awayTeamName"
+                class="team-logo"
+                (error)="onLogoError($event)"
+              />
+              <span class="team-name">{{ match.awayTeamName }}</span>
+            </a>
+          </td>
+          <td class="date-col">{{ match.scheduledAt | date : 'dd.MM.yyyy. HH:mm' }}</td>
+        </tr>
+        }
+      </tbody>
+    </table>
+    } @else {
+    <p class="status-text">Нема одиграних мечева за тренутно коло.</p>
+    }
+  </section>
+
+  <section class="home-section">
+    <h2 class="section-title">Табела</h2>
+    @if (rows.length === 0) {
+    <p class="status-text">Нема података за изабрани спорт.</p>
+    } @else {
+    <div class="table-scroll">
+    <table class="standings-table">
+      <thead>
+        <tr>
+          <th>POS</th>
+          <th>Тим</th>
+          <th>МP</th>
+          <th>W</th>
+          @if (isFootball()) {
+          <th>D</th>
+          }
+          <th>L</th>
+          <th>PTS</th>
+          @if (!isVolleyball()) {
+          <th>{{ isBasketball() ? 'FOR' : 'GF' }}</th>
+          <th>{{ isBasketball() ? 'AGT' : 'GA' }}</th>
+          }
+
+          @if (isVolleyball()) {
+          <th>SW</th>
+          <th>SL</th>
+          }
+          <th>+/-</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (r of rows; track r.teamId) {
+        <tr [class.playoff-row]="r.position <= 4">
+          <td>{{ r.position }}</td>
+          <td>
+            <a [routerLink]="['/teams', r.teamId]">{{ r.teamName }}</a>
+          </td>
+          <td>{{ r.played }}</td>
+          <td>{{ r.won }}</td>
+          @if (isFootball()) {
+          <td>{{ r.drawn }}</td>
+          }
+          <td>{{ r.lost }}</td>
+          <td><b>{{ r.points }}</b></td>
+          @if (!isVolleyball()) {
+          <td>{{ r.scored }}</td>
+          <td>{{ r.conceded }}</td>
+          <td>{{ r.difference }}</td>
+          }
+
+          @if (isVolleyball()) {
+          <td>{{ r.setWon ?? '-' }}</td>
+          <td>{{ r.setLost ?? '-' }}</td>
+          <td>{{ r.setDifference ?? '-' }}</td>
+          }
+        </tr>
+        }
+      </tbody>
+    </table>
+    </div>
+
+    <p class="table-legend">
+      <span class="legend-marker" aria-hidden="true"></span>
+      Плеј-оф места
+    </p>
+
+    <div class="ranking-desktop">
+      <p class="ranking-legend-title">Принцип рангирања:</p>
+      @if (isFootball()) {
+      <ol class="ranking-legend-list">
+        <li>Бодови</li>
+        <li>Бодови у међусобним дуелима</li>
+        <li>Гол-разлика у међусобним дуелима</li>
+        <li>Постигнути голови у међусобним дуелима</li>
+        <li>Укупна гол-разлика</li>
+        <li>Укупан број постигнутих голова</li>
+      </ol>
+      } @else if (isBasketball()) {
+      <ol class="ranking-legend-list">
+        <li>Бодови</li>
+        <li>Бодови у међусобним дуелима</li>
+        <li>Разлика поена у међусобним дуелима</li>
+        <li>Укупна разлика поена</li>
+        <li>Укупан број постигнутих поена</li>
+      </ol>
+      } @else if (isVolleyball()) {
+      <ol class="ranking-legend-list">
+        <li>Бодови</li>
+        <li>Бодови у међусобним дуелима</li>
+        <li>Разлика сетова у међусобним дуелима</li>
+        <li>Разлика поена у међусобним дуелима</li>
+        <li>Укупна разлика сетова</li>
+        <li>Укупан број освојених поена</li>
+      </ol>
+      }
+      <p class="ranking-legend-note">
+        Тимови са истим бројем бодова рангирају се према међусобним резултатима.
+      </p>
+    </div>
+
+    <details class="ranking-collapsible ranking-mobile">
+      <summary class="ranking-toggle">Принцип рангирања</summary>
+      <div class="ranking-content">
+        @if (isFootball()) {
+        <ol class="ranking-legend-list">
+          <li>Бодови</li>
+          <li>Бодови у међусобним дуелима</li>
+          <li>Гол-разлика у међусобним дуелима</li>
+          <li>Постигнути голови у међусобним дуелима</li>
+          <li>Укупна гол-разлика</li>
+          <li>Укупан број постигнутих голова</li>
+        </ol>
+        } @else if (isBasketball()) {
+        <ol class="ranking-legend-list">
+          <li>Бодови</li>
+          <li>Бодови у међусобним дуелима</li>
+          <li>Разлика поена у међусобним дуелима</li>
+          <li>Укупна разлика поена</li>
+          <li>Укупан број постигнутих поена</li>
+        </ol>
+        } @else if (isVolleyball()) {
+        <ol class="ranking-legend-list">
+          <li>Бодови</li>
+          <li>Бодови у међусобним дуелима</li>
+          <li>Разлика сетова у међусобним дуелима</li>
+          <li>Разлика поена у међусобним дуелима</li>
+          <li>Укупна разлика сетова</li>
+          <li>Укупан број освојених поена</li>
+        </ol>
+        }
+        <p class="ranking-legend-note">
+          Тимови са истим бројем бодова рангирају се према међусобним резултатима.
+        </p>
+      </div>
+    </details>
+    }
+  </section>
+
+  <section class="home-section">
+    <h2 class="section-title">Распоред следећег кола</h2>
+    @if (nextRound; as round) {
+    <table class="matches-table">
+      <thead>
+        <tr>
+          <th class="team-col home-col">Домаћин</th>
+          <th class="result-col">VS</th>
+          <th class="team-col away-col">Гост</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (match of round.matches; track match.id) {
+        <tr>
+          <td class="team-col home-col">
+            <a [routerLink]="['/teams', match.homeTeamId]" class="team-link">
+              <img
+                [src]="match.homeTeamLogoUrl"
+                [alt]="match.homeTeamName"
+                class="team-logo"
+                (error)="onLogoError($event)"
+              />
+              <span class="team-name">{{ match.homeTeamName }}</span>
+            </a>
+          </td>
+          <td class="result-col vs-col">
+            <span class="vs-date">{{ match.scheduledAt | date : 'dd.MM.yyyy.' }}</span>
+            <span class="vs-time">{{ match.scheduledAt | date : 'HH:mm' }}</span>
+          </td>
+          <td class="team-col away-col">
+            <a [routerLink]="['/teams', match.awayTeamId]" class="team-link">
+              <img
+                [src]="match.awayTeamLogoUrl"
+                [alt]="match.awayTeamName"
+                class="team-logo"
+                (error)="onLogoError($event)"
+              />
+              <span class="team-name">{{ match.awayTeamName }}</span>
+            </a>
+          </td>
+        </tr>
+        }
+      </tbody>
+    </table>
+    } @else {
+    <p class="status-text">Нема заказаних мечева за следеће коло.</p>
+    }
+  </section>
+  }
+</div>

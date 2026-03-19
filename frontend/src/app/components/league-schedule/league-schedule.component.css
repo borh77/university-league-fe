@@ -1,0 +1,302 @@
+.schedule-container {
+  max-width: 900px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+  font-family: sans-serif;
+}
+
+.schedule-title {
+  font-size: 1.75rem;
+  margin-bottom: 1.5rem;
+  color: #1a1a2e;
+}
+
+.status-text {
+  color: #555;
+  font-size: 1rem;
+}
+
+.status-text.error {
+  color: #c0392b;
+}
+
+.round-selector {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.round-selector-mobile {
+  display: none;
+  margin-bottom: 1rem;
+}
+
+.round-picker {
+  margin-top: 0.45rem;
+}
+
+.round-picker-toggle {
+  color: #1a1a2e;
+  font-size: 0.86rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.round-picker-grid {
+  margin-top: 0.45rem;
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 0.35rem;
+}
+
+.round-picker-btn {
+  border: 1px solid #d6d6de;
+  background: #fff;
+  color: #1a1a2e;
+  border-radius: 6px;
+  padding: 0.25rem 0;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.round-picker-btn.active {
+  background: #eef4ff;
+  border-color: #3a86ff;
+}
+
+.round-button {
+  border: 1px solid #d6d6de;
+  background: #fff;
+  color: #1a1a2e;
+  border-radius: 6px;
+  padding: 0.4rem 0.75rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.round-button:hover {
+  border-color: #3a86ff;
+}
+
+.round-button.active {
+  background: #eef4ff;
+  border-color: #3a86ff;
+}
+
+.round-section {
+  margin-bottom: 2rem;
+}
+
+.round-title {
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: #16213e;
+  margin-bottom: 0.5rem;
+  padding-bottom: 0.25rem;
+  border-bottom: 2px solid #e0e0e0;
+}
+
+.matches-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+}
+
+.matches-table thead tr {
+  background: #f4f4f8;
+  text-align: left;
+}
+
+.matches-table th,
+.matches-table td {
+  padding: 0.65rem 0.85rem;
+  font-size: 0.92rem;
+}
+
+.matches-table tbody tr:not(:last-child) {
+  border-bottom: 1px solid #ececec;
+}
+
+.matches-table tbody tr:hover {
+  background: #f9f9fb;
+}
+
+.team-col {
+  width: 38%;
+}
+
+.home-col {
+  text-align: right;
+}
+
+.away-col {
+  text-align: left;
+}
+
+.vs-col {
+  width: 18%;
+  text-align: center;
+  color: #888;
+  font-weight: 600;
+}
+
+td.vs-col {
+  text-align: center;
+  padding-left: 0;
+}
+
+.vs-date {
+  display: block;
+  font-weight: 600;
+  font-size: 0.75rem;
+  color: #5c6280;
+  line-height: 1.2;
+  text-align: center;
+}
+
+.vs-time {
+  display: block;
+  margin-top: 0.06rem;
+  font-size: 0.75rem;
+  color: #5c6280;
+  line-height: 1.2;
+  text-align: center;
+}
+
+.team-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  text-decoration: none;
+  color: #1a1a2e;
+  font-weight: 500;
+  transition: color 0.15s;
+}
+
+.team-link:hover {
+  color: #3a86ff;
+}
+
+.home-col .team-link {
+  flex-direction: row-reverse;
+}
+
+.team-logo {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+  border-radius: 50%;
+}
+
+.team-name {
+  font-size: 0.92rem;
+}
+
+@media (max-width: 880px) {
+  .matches-table {
+    table-layout: fixed;
+  }
+
+  .matches-table th,
+  .matches-table td {
+    padding: 0.5rem 0.5rem;
+    font-size: 0.85rem;
+    overflow: hidden;
+  }
+
+  .team-logo {
+    width: 22px;
+    height: 22px;
+  }
+
+  .team-link {
+    max-width: 100%;
+  }
+
+  .team-name {
+    white-space: normal;
+    overflow-wrap: break-word;
+    word-break: normal;
+    line-height: 1.2;
+  }
+}
+
+@media (max-width: 600px) {
+  .round-selector-desktop {
+    display: none;
+  }
+
+  .round-selector-mobile {
+    display: block;
+  }
+
+  .round-picker-grid {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+
+  .vs-col {
+    width: 24%;
+    white-space: normal;
+  }
+
+  .vs-date {
+    font-size: 0.68rem;
+  }
+
+  .vs-time {
+    font-size: 0.68rem;
+  }
+}
+
+@media (max-width: 420px) {
+  .matches-table .team-logo {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+  }
+
+  .team-col {
+    width: 40%;
+  }
+
+  .vs-col {
+    width: 20%;
+  }
+
+  .team-link {
+    gap: 0.2rem;
+  }
+
+  .team-name {
+    font-size: 0.82rem;
+    line-height: 1.15;
+  }
+
+  .matches-table th,
+  .matches-table td {
+    padding: 0.4rem 0.28rem;
+    font-size: 0.8rem;
+  }
+
+  .vs-date,
+  .vs-time {
+    font-size: 0.64rem;
+  }
+}
+
+@media (max-width: 344px) {
+  .team-name {
+    font-size: 0.78rem;
+  }
+
+  .vs-date,
+  .vs-time {
+    font-size: 0.6rem;
+  }
+}

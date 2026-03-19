@@ -1,0 +1,241 @@
+<div class="results-container">
+  <h2 class="results-title">Резултати</h2>
+
+  @if (loading) {
+    <p class="status-text">Учитавање резултата...</p>
+  } @else if (error) {
+    <p class="status-text error">{{ error }}</p>
+  } @else if (rounds.length === 0) {
+    <p class="status-text">Нема одиграних мечева за ову лигу.</p>
+  } @else {
+    <div class="round-selector round-selector-desktop" aria-label="Избор кола">
+      @for (round of rounds; track round.roundNumber) {
+        <button
+          type="button"
+          class="round-button"
+          [class.active]="round.roundNumber === selectedRoundNumber"
+          (click)="selectRound(round.roundNumber)"
+        >
+          Коло {{ round.roundNumber }}
+        </button>
+      }
+    </div>
+
+    <div class="round-selector-mobile" aria-label="Избор кола">
+      <details class="round-picker">
+        <summary class="round-picker-toggle">Изабери коло</summary>
+        <div class="round-picker-grid" role="group" aria-label="Брзи избор кола">
+          @for (round of rounds; track round.roundNumber) {
+            <button
+              type="button"
+              class="round-picker-btn"
+              [class.active]="round.roundNumber === selectedRoundNumber"
+              (click)="selectRound(round.roundNumber)"
+            >
+              {{ round.roundNumber }}
+            </button>
+          }
+        </div>
+      </details>
+    </div>
+
+    @if (selectedRound; as round) {
+      <section class="round-section">
+        <h3 class="round-title">Коло {{ round.roundNumber }}</h3>
+        <table class="matches-table">
+          <thead>
+            <tr>
+              <th class="team-col home-col">Домаћин</th>
+              <th class="result-col">Резултат</th>
+              <th class="team-col away-col">Гост</th>
+              <th class="date-col">Датум и време</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (match of round.matches; track match.id) {
+              <tr class="match-row" [class.expanded-row]="expandedMatchId === match.id">
+                <td class="team-col home-col">
+                  <a [routerLink]="['/teams', match.homeTeamId]" class="team-link">
+                    <img
+                      [src]="match.homeTeamLogoUrl"
+                      [alt]="match.homeTeamName"
+                      class="team-logo"
+                      (error)="onLogoError($event)"
+                    />
+                    <span class="team-name">{{ match.homeTeamName }}</span>
+                  </a>
+                </td>
+                <td class="result-col">
+                  @if (match.result) {
+                    @if (hasDetail(match)) {
+                      <button
+                        type="button"
+                        class="result-badge expandable"
+                        [class.open]="expandedMatchId === match.id"
+                        (click)="toggleMatch(match.id)"
+                        [attr.aria-expanded]="expandedMatchId === match.id"
+                      >
+                        {{ match.result }}
+                        <span class="expand-icon">{{ expandedMatchId === match.id ? '▲' : '▼' }}</span>
+                      </button>
+                    } @else {
+                      <span class="result-badge">{{ match.result }}</span>
+                    }
+                  } @else {
+                    <span class="result-placeholder">-</span>
+                  }
+                </td>
+                <td class="team-col away-col">
+                  <a [routerLink]="['/teams', match.awayTeamId]" class="team-link">
+                    <img
+                      [src]="match.awayTeamLogoUrl"
+                      [alt]="match.awayTeamName"
+                      class="team-logo"
+                      (error)="onLogoError($event)"
+                    />
+                    <span class="team-name">{{ match.awayTeamName }}</span>
+                  </a>
+                </td>
+                <td class="date-col">
+                  {{ match.scheduledAt | date : 'dd.MM.yyyy. HH:mm' }}
+                </td>
+              </tr>
+
+              @if (expandedMatchId === match.id && hasDetail(match)) {
+                <tr class="detail-row">
+                  <td colspan="4">
+                    @if (match.goals?.length) {
+                      <div class="detail-wrapper">
+                        <div class="goals-layout">
+                          <div class="goals-side home-goals-side">
+                            <div class="goals-team-name">{{ match.homeTeamName }}</div>
+                            <div class="goals-events">
+                              @for (goal of match.goals!; track $index) {
+                                @if (goal.isHomeTeamGoal) {
+                                  <div class="goal-event-line">
+                                    <span class="goal-scorer">{{ goal.scorerName }}</span>
+                                    <span class="goal-minute">({{ goal.minute }}')</span>
+                                  </div>
+                                }
+                              }
+                              @if (!(parseTotalScore(match.result)[0] > 0)) {
+                                <div class="goals-empty">-</div>
+                              }
+                            </div>
+                          </div>
+
+                          <div class="goals-center">
+                            <div class="goals-center-score">{{ match.result }}</div>
+                          </div>
+
+                          <div class="goals-side away-goals-side">
+                            <div class="goals-team-name">{{ match.awayTeamName }}</div>
+                            <div class="goals-events">
+                              @for (goal of match.goals!; track $index) {
+                                @if (!goal.isHomeTeamGoal) {
+                                  <div class="goal-event-line">
+                                    <span class="goal-scorer">{{ goal.scorerName }}</span>
+                                    <span class="goal-minute">({{ goal.minute }}')</span>
+                                  </div>
+                                }
+                              }
+                              @if (!(parseTotalScore(match.result)[1] > 0)) {
+                                <div class="goals-empty">-</div>
+                              }
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    } @else if (match.quarters?.length) {
+                      <div class="detail-wrapper">
+                        <table class="detail-table">
+                          <thead>
+                            <tr>
+                              <th class="detail-team-col"></th>
+                              @for (q of match.quarters!; track q.quarterNumber) {
+                                <th class="detail-score-col">Ч{{ q.quarterNumber }}</th>
+                              }
+                              <th class="detail-score-col detail-total-col">Ук</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr>
+                              <td class="detail-team-name">{{ match.homeTeamName }}</td>
+                              @for (q of match.quarters!; track q.quarterNumber) {
+                                <td class="detail-score-cell" [class.cell-win]="q.homeScore > q.awayScore">
+                                  {{ q.homeScore }}
+                                </td>
+                              }
+                              <td class="detail-score-cell detail-total-cell"
+                                  [class.cell-win]="parseTotalScore(match.result)[0] > parseTotalScore(match.result)[1]">
+                                {{ parseTotalScore(match.result)[0] }}
+                              </td>
+                            </tr>
+                            <tr>
+                              <td class="detail-team-name">{{ match.awayTeamName }}</td>
+                              @for (q of match.quarters!; track q.quarterNumber) {
+                                <td class="detail-score-cell" [class.cell-win]="q.awayScore > q.homeScore">
+                                  {{ q.awayScore }}
+                                </td>
+                              }
+                              <td class="detail-score-cell detail-total-cell"
+                                  [class.cell-win]="parseTotalScore(match.result)[1] > parseTotalScore(match.result)[0]">
+                                {{ parseTotalScore(match.result)[1] }}
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    } @else if (match.sets?.length) {
+                      <div class="detail-wrapper">
+                        <table class="detail-table">
+                          <thead>
+                            <tr>
+                              <th class="detail-team-col"></th>
+                              @for (s of match.sets!; track s.setNumber) {
+                                <th class="detail-score-col">С{{ s.setNumber }}</th>
+                              }
+                              <th class="detail-score-col detail-total-col">Сет</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr>
+                              <td class="detail-team-name">{{ match.homeTeamName }}</td>
+                              @for (s of match.sets!; track s.setNumber) {
+                                <td class="detail-score-cell" [class.cell-win]="s.homeScore > s.awayScore">
+                                  {{ s.homeScore }}
+                                </td>
+                              }
+                              <td class="detail-score-cell detail-total-cell"
+                                  [class.cell-win]="parseTotalScore(match.result)[0] > parseTotalScore(match.result)[1]">
+                                {{ parseTotalScore(match.result)[0] }}
+                              </td>
+                            </tr>
+                            <tr>
+                              <td class="detail-team-name">{{ match.awayTeamName }}</td>
+                              @for (s of match.sets!; track s.setNumber) {
+                                <td class="detail-score-cell" [class.cell-win]="s.awayScore > s.homeScore">
+                                  {{ s.awayScore }}
+                                </td>
+                              }
+                              <td class="detail-score-cell detail-total-cell"
+                                  [class.cell-win]="parseTotalScore(match.result)[1] > parseTotalScore(match.result)[0]">
+                                {{ parseTotalScore(match.result)[1] }}
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    }
+                  </td>
+                </tr>
+              }
+            }
+          </tbody>
+        </table>
+      </section>
+    } @else {
+      <p class="status-text">Нема мечева за изабрано коло.</p>
+    }
+  }
+</div>

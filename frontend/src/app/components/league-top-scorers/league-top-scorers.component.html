@@ -1,0 +1,42 @@
+<div class="top-scorers-container">
+  <h2 class="top-scorers-title">Топ стрелци</h2>
+
+  @if (loading) {
+    <p class="status-text">Учитавање листе стрелаца...</p>
+  } @else if (error) {
+    <p class="status-text error">{{ error }}</p>
+  } @else if (scorers.length === 0) {
+    <p class="status-text">Нема доступних података о стрелцима</p>
+  } @else {
+    <table class="scorers-table">
+      <thead>
+        <tr>
+          <th class="position-col">#</th>
+          <th>Играч</th>
+          <th>Тим</th>
+          <th class="number-col">Голови</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (scorer of scorers; track scorer.scorerName + '-' + scorer.teamName + '-' + scorer.position) {
+          <tr>
+            <td class="position-col">{{ scorer.position }}</td>
+            <td>{{ scorer.scorerName }}</td>
+            <td>
+              <span class="team-cell">
+                <img
+                  [src]="scorer.teamLogoUrl"
+                  [alt]="scorer.teamName"
+                  class="team-logo"
+                  (error)="onLogoError($event)"
+                />
+                <span>{{ scorer.teamName }}</span>
+              </span>
+            </td>
+            <td class="number-col"><b>{{ scorer.goals }}</b></td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  }
+</div>
