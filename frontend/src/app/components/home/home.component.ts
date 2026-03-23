@@ -102,7 +102,11 @@ export class HomeComponent implements OnInit {
 
         this.resultsRounds = this.groupByRound(payload.results ?? []);
         this.scheduleRounds = this.groupByRound(payload.schedule ?? []);
-        this.currentRound = this.resolveSelectedRound(this.resultsRounds, 1);
+        
+        this.currentRound = this.mergeRounds(
+          this.resolveSelectedRound(this.resultsRounds, 1),
+          this.resolveSelectedRound(this.scheduleRounds, 1)
+        );
         this.nextRound = this.resolveSelectedRound(this.scheduleRounds, 2);
 
         this.cdr.detectChanges();
@@ -146,6 +150,28 @@ export class HomeComponent implements OnInit {
 
   private resolveSelectedRound(rounds: Round[], roundNumber: number): Round | null {
     return rounds.find((round) => round.roundNumber === roundNumber) ?? null;
+  }
+
+  private mergeRounds(resultsRound: Round | null, scheduleRound: Round | null): Round | null {
+    if (!resultsRound && !scheduleRound) {
+      return null;
+    }
+
+    const roundNumber = resultsRound?.roundNumber ?? scheduleRound!.roundNumber;
+    const matchMap = new Map<number, Match>();
+
+    scheduleRound?.matches.forEach((match) => {
+      matchMap.set(match.id, match);
+    });
+
+    resultsRound?.matches.forEach((match) => {
+      matchMap.set(match.id, match);
+    });
+
+    return {
+      roundNumber,
+      matches: Array.from(matchMap.values()),
+    };
   }
 
   private resolveLeagueId(sport: SportKey, gender?: VolleyballGender): number | null {
