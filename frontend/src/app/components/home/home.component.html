@@ -70,25 +70,23 @@
     <table class="standings-table">
       <thead>
         <tr>
-          <th>POS</th>
-          <th>Тим</th>
-          <th>МP</th>
-          <th>W</th>
+          <th></th>
+          <th>ИМЕ ЕКИПЕ</th>
+          <th>{{ isVolleyball() ? 'УО' : 'БУ' }}</th>
+          <th>ПОБ</th>
           @if (isFootball()) {
-          <th>D</th>
+          <th>НЕР</th>
           }
-          <th>L</th>
-          <th>PTS</th>
+          <th>ПОР</th>
           @if (!isVolleyball()) {
-          <th>{{ isBasketball() ? 'FOR' : 'GF' }}</th>
-          <th>{{ isBasketball() ? 'AGT' : 'GA' }}</th>
+          <th>{{ isBasketball() ? 'КОШ Р.' : 'ГОЛ Р.' }}</th>
+          <th>ПЛУС МИНУС</th>
           }
 
           @if (isVolleyball()) {
-          <th>SW</th>
-          <th>SL</th>
+          <th>СЕТ Р.</th>
           }
-          <th>+/-</th>
+          <th>БОДОВИ</th>
         </tr>
       </thead>
       <tbody>
@@ -104,18 +102,15 @@
           <td>{{ r.drawn }}</td>
           }
           <td>{{ r.lost }}</td>
-          <td><b>{{ r.points }}</b></td>
           @if (!isVolleyball()) {
-          <td>{{ r.scored }}</td>
-          <td>{{ r.conceded }}</td>
+          <td>{{ formatRatio(r.scored, r.conceded) }}</td>
           <td>{{ r.difference }}</td>
           }
 
           @if (isVolleyball()) {
-          <td>{{ r.setWon ?? '-' }}</td>
-          <td>{{ r.setLost ?? '-' }}</td>
-          <td>{{ r.setDifference ?? '-' }}</td>
+          <td>{{ formatRatio(r.setWon, r.setLost) }}</td>
           }
+          <td><b>{{ r.points }}</b></td>
         </tr>
         }
       </tbody>

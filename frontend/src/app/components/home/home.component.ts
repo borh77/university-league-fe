@@ -125,6 +125,13 @@ export class HomeComponent implements OnInit {
     return this.sportSelection.snapshot.sport === 'basketball';
   }
 
+  formatRatio(left: number | null | undefined, right: number | null | undefined): string {
+    if (left === null || left === undefined || right === null || right === undefined) {
+      return '-';
+    }
+    return `${left}:${right}`;
+  }
+
   onLogoError(event: Event): void {
     const img = event.target as HTMLImageElement;
     img.onerror = null;
