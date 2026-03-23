@@ -13,9 +13,8 @@
       <thead>
         <tr>
           <th class="team-col home-col">Домаћин</th>
-          <th class="result-col">Резултат</th>
+          <th class="result-col">VS</th>
           <th class="team-col away-col">Гост</th>
-          <th class="date-col">Датум и време</th>
         </tr>
       </thead>
       <tbody>
@@ -32,9 +31,16 @@
               <span class="team-name">{{ match.homeTeamName }}</span>
             </a>
           </td>
-          <td class="result-col">
-            <span class="result-badge">{{ match.result ?? '-' }}</span>
+
+          <td class="result-col vs-col">
+            @if (match.result) {
+              <span class="result-badge">{{ match.result }}</span>
+            } @else {
+              <span class="vs-date">{{ match.scheduledAt | date : 'dd.MM.yyyy.' }}</span>
+              <span class="vs-time">{{ match.scheduledAt | date : 'HH:mm' }}</span>
+            }
           </td>
+
           <td class="team-col away-col">
             <a [routerLink]="['/teams', match.awayTeamId]" class="team-link">
               <img
@@ -46,7 +52,6 @@
               <span class="team-name">{{ match.awayTeamName }}</span>
             </a>
           </td>
-          <td class="date-col">{{ match.scheduledAt | date : 'dd.MM.yyyy. HH:mm' }}</td>
         </tr>
         }
       </tbody>
