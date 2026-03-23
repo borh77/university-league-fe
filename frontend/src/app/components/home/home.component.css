@@ -414,3 +414,24 @@ td.vs-col {
     display: none;
   }
 }
+
+.team-link-standings {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  text-decoration: none;
+  color: #1a1a2e;
+  font-weight: 500;
+  transition: color 0.15s;
+}
+
+.team-link-standings:hover {
+  color: #3a86ff;
+}
+
+.team-logo-standings {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+  border-radius: 50%;
+}
