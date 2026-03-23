@@ -94,7 +94,15 @@
         <tr [class.playoff-row]="r.position <= 4">
           <td>{{ r.position }}</td>
           <td>
-            <a [routerLink]="['/teams', r.teamId]">{{ r.teamName }}</a>
+            <a [routerLink]="['/teams', r.teamId]" class="team-link-standings">
+              <img
+                [src]="r.logoUrl"
+                [alt]="r.teamName"
+                class="team-logo-standings"
+                (error)="onLogoError($event)"
+              />
+              <span>{{ r.teamName }}</span>
+            </a>
           </td>
           <td>{{ r.played }}</td>
           <td>{{ r.won }}</td>
