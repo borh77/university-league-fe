@@ -297,12 +297,15 @@ td.vs-col {
   }
 
   .matches-table th,
-  .matches-table td,
+  .matches-table td {
+    padding: 0.5rem 0.5rem;
+    font-size: 0.85rem;
+  }
+
   .standings-table th,
   .standings-table td {
     padding: 0.5rem 0.5rem;
     font-size: 0.85rem;
-    overflow: hidden;
   }
 
   .team-logo {
@@ -316,8 +319,14 @@ td.vs-col {
 
   .team-name {
     white-space: normal;
-    overflow-wrap: anywhere;
+    overflow-wrap: break-word;
+    word-break: normal;
     line-height: 1.2;
+  }
+
+  .standings-table td:nth-child(2) a {
+    overflow-wrap: break-word;
+    word-break: normal;
   }
 }
 
@@ -341,6 +350,34 @@ td.vs-col {
 
   .vs-time {
     font-size: 0.68rem;
+  }
+}
+
+@media (max-width: 430px) {
+  .matches-table th,
+  .matches-table td,
+  .standings-table th,
+  .standings-table td {
+    padding: 0.4rem 0.32rem;
+  }
+
+  .matches-table .team-logo {
+    width: 18px;
+    height: 18px;
+  }
+
+  .matches-table .team-link {
+    gap: 0.28rem;
+  }
+
+  .matches-table .team-name,
+  .standings-table td:nth-child(2) a {
+    font-size: 0.8rem;
+    line-height: 1.15;
+  }
+
+  .standings-table th {
+    white-space: nowrap;
   }
 }
 

@@ -78,6 +78,7 @@
           <th>НЕР</th>
           }
           <th>ПОР</th>
+          <th>БОДОВИ</th>
           @if (!isVolleyball()) {
           <th>{{ isBasketball() ? 'КОШ Р.' : 'ГОЛ Р.' }}</th>
           <th>ПЛУС МИНУС</th>
@@ -86,7 +87,6 @@
           @if (isVolleyball()) {
           <th>СЕТ Р.</th>
           }
-          <th>БОДОВИ</th>
         </tr>
       </thead>
       <tbody>
@@ -102,6 +102,7 @@
           <td>{{ r.drawn }}</td>
           }
           <td>{{ r.lost }}</td>
+          <td><b>{{ r.points }}</b></td>
           @if (!isVolleyball()) {
           <td>{{ formatRatio(r.scored, r.conceded) }}</td>
           <td>{{ r.difference }}</td>
@@ -110,7 +111,6 @@
           @if (isVolleyball()) {
           <td>{{ formatRatio(r.setWon, r.setLost) }}</td>
           }
-          <td><b>{{ r.points }}</b></td>
         </tr>
         }
       </tbody>
