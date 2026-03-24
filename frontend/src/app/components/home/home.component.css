@@ -145,13 +145,15 @@ td.vs-col {
 }
 
 .team-link {
-  display: inline-flex;
+  display: flex;
   align-items: center;
   gap: 0.5rem;
   text-decoration: none;
   color: #1a1a2e;
   font-weight: 500;
   transition: color 0.15s;
+  width: 100%;
+  min-width: 0;
 }
 
 .team-link:hover {
@@ -171,6 +173,9 @@ td.vs-col {
 
 .team-name {
   font-size: 0.92rem;
+  white-space: normal;
+  overflow-wrap: break-word;
+  word-break: normal;
 }
 
 .result-badge {
@@ -292,10 +297,6 @@ td.vs-col {
 }
 
 @media (max-width: 880px) {
-  .matches-table {
-    table-layout: fixed;
-  }
-
   .matches-table th,
   .matches-table td {
     padding: 0.5rem 0.5rem;
@@ -315,6 +316,8 @@ td.vs-col {
 
   .team-link {
     max-width: 100%;
+    flex: 1;
+    min-width: 0;
   }
 
   .team-name {

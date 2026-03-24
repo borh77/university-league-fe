@@ -67,33 +67,38 @@
     <p class="status-text">Нема података за изабрани спорт.</p>
     } @else {
     <div class="table-scroll">
-    <table class="standings-table">
+    <table
+      class="standings-table"
+      [class.football-table]="isFootball()"
+      [class.basketball-table]="isBasketball()"
+      [class.volleyball-table]="isVolleyball()"
+    >
       <thead>
         <tr>
-          <th></th>
-          <th>ИМЕ ЕКИПЕ</th>
-          <th>{{ isVolleyball() ? 'УО' : 'БУ' }}</th>
-          <th>ПОБ</th>
+          <th class="col-pos">#</th>
+          <th class="col-team">ТИМ</th>
+          <th class="col-stat col-played">{{ isVolleyball() ? 'УО' : 'БУ' }}</th>
+          <th class="col-stat col-won">ПОБ</th>
           @if (isFootball()) {
-          <th>НЕР</th>
+          <th class="col-stat col-draw">НЕР</th>
           }
-          <th>ПОР</th>
-          <th>БОДОВИ</th>
+          <th class="col-stat col-lost">ПОР</th>
+          <th class="col-points">БОД</th>
           @if (!isVolleyball()) {
-          <th>{{ isBasketball() ? 'КОШ Р.' : 'ГОЛ Р.' }}</th>
-          <th>ПЛУС МИНУС</th>
+          <th class="col-extra">{{ isBasketball() ? 'КОШ Р.' : 'ГОЛ Р.' }}</th>
+          <th class="col-extra">ПЛУС МИНУС</th>
           }
 
           @if (isVolleyball()) {
-          <th>СЕТ Р.</th>
+          <th class="col-extra">СЕТ Р.</th>
           }
         </tr>
       </thead>
       <tbody>
         @for (r of rows; track r.teamId) {
         <tr [class.playoff-row]="r.position <= 4">
-          <td>{{ r.position }}</td>
-          <td>
+          <td class="col-pos">{{ r.position }}</td>
+          <td class="col-team">
             <a [routerLink]="['/teams', r.teamId]" class="team-link-standings">
               <img
                 [src]="r.logoUrl"
@@ -104,20 +109,20 @@
               <span>{{ r.teamName }}</span>
             </a>
           </td>
-          <td>{{ r.played }}</td>
-          <td>{{ r.won }}</td>
+          <td class="col-stat col-played">{{ r.played }}</td>
+          <td class="col-stat col-won">{{ r.won }}</td>
           @if (isFootball()) {
-          <td>{{ r.drawn }}</td>
+          <td class="col-stat col-draw">{{ r.drawn }}</td>
           }
-          <td>{{ r.lost }}</td>
-          <td><b>{{ r.points }}</b></td>
+          <td class="col-stat col-lost">{{ r.lost }}</td>
+          <td class="col-points"><b>{{ r.points }}</b></td>
           @if (!isVolleyball()) {
-          <td>{{ formatRatio(r.scored, r.conceded) }}</td>
-          <td>{{ r.difference }}</td>
+          <td class="col-extra">{{ formatRatio(r.scored, r.conceded) }}</td>
+          <td class="col-extra">{{ r.difference }}</td>
           }
 
           @if (isVolleyball()) {
-          <td>{{ formatRatio(r.setWon, r.setLost) }}</td>
+          <td class="col-extra">{{ formatRatio(r.setWon, r.setLost) }}</td>
           }
         </tr>
         }
