@@ -55,15 +55,23 @@
   font-size: 1rem;
 }
 
-  .status-text.error {
-    color: #c0392b;
-  }
+.status-text.error {
+  color: #c0392b;
+}
+
+.table-container {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  margin-bottom: 1rem;
+  border-radius: 8px;
+}
 
 .standings-table {
   width: 100%;
   border-collapse: collapse;
   background: #fff;
-  min-width: 300px;
+  min-width: 100%;
 }
 
 .matches-table {
@@ -190,48 +198,53 @@ td.vs-col {
   letter-spacing: 0.03em;
 }
 
-  .standings-table thead tr {
-    background: #f4f4f8;
-    text-align: left;
-  }
+.standings-table thead tr {
+  background: #f4f4f8;
+  text-align: left;
+}
 
-  .standings-table th,
-  .standings-table td {
-    padding: 0.65rem 0.85rem;
-    font-size: 0.92rem;
-    text-align: center;
-  }
+.standings-table th,
+.standings-table td {
+  padding: 0.65rem 0.85rem;
+  font-size: 0.92rem;
+  text-align: center;
+}
 
-    .standings-table th:nth-child(2),
-    .standings-table td:nth-child(2) {
-      text-align: left;
-    }
+.standings-table th:nth-child(2),
+.standings-table td:nth-child(2) {
+  text-align: left;
+}
 
-  .standings-table tbody tr:not(:last-child) {
-    border-bottom: 1px solid #ececec;
-  }
+.standings-table .col-diff {
+  width: 1.9rem;
+  min-width: 1.9rem;
+}
 
-  .standings-table tbody tr:hover {
-    background: #f9f9fb;
-  }
+.standings-table tbody tr:not(:last-child) {
+  border-bottom: 1px solid #ececec;
+}
 
-  .standings-table tbody tr.playoff-row {
-    background: #e7f7e7;
-  }
+.standings-table tbody tr:hover {
+  background: #f9f9fb;
+}
 
-  .standings-table tbody tr.playoff-row:hover {
-    background: #d7f0d7;
-  }
+.standings-table tbody tr.playoff-row {
+  background: #e7f7e7;
+}
 
-  .standings-table td a {
-    text-decoration: none;
-    color: #1a1a2e;
-    font-weight: 500;
-  }
+.standings-table tbody tr.playoff-row:hover {
+  background: #d7f0d7;
+}
 
-    .standings-table td a:hover {
-      color: #3a86ff;
-    }
+.standings-table td a {
+  text-decoration: none;
+  color: #1a1a2e;
+  font-weight: 500;
+}
+
+.standings-table td a:hover {
+  color: #3a86ff;
+}
 
 .table-legend {
   margin-top: 0.65rem;
@@ -333,72 +346,6 @@ td.vs-col {
   }
 }
 
-@media (max-width: 600px) {
-  .result-col {
-    width: 24%;
-  }
-
-  .vs-col {
-    width: 24%;
-    white-space: normal;
-  }
-
-  .date-col {
-    display: none;
-  }
-
-  .vs-date {
-    font-size: 0.68rem;
-  }
-
-  .vs-time {
-    font-size: 0.68rem;
-  }
-}
-
-@media (max-width: 430px) {
-  .matches-table th,
-  .matches-table td,
-  .standings-table th,
-  .standings-table td {
-    padding: 0.4rem 0.32rem;
-  }
-
-  .matches-table .team-logo {
-    width: 18px;
-    height: 18px;
-  }
-
-  .matches-table .team-link {
-    gap: 0.28rem;
-  }
-
-  .matches-table .team-name,
-  .standings-table td:nth-child(2) a {
-    font-size: 0.8rem;
-    line-height: 1.15;
-  }
-
-  .standings-table th {
-    white-space: nowrap;
-  }
-}
-
-
-@media (max-width: 344px) {
-  .standings-table th,
-  .standings-table td,
-  .matches-table th,
-  .matches-table td {
-    padding: 0.35rem 0.25rem;
-  }
-
-  .team-logo {
-    width: 18px;
-    height: 18px;
-  }
-}
-
 @media (max-width: 768px) {
   .ranking-desktop {
     display: none;
@@ -453,16 +400,168 @@ td.vs-col {
   .ranking-legend-title {
     display: none;
   }
+
+  .standings-table th,
+  .standings-table td {
+    box-sizing: border-box;
+  }
+}
+
+@media (max-width: 600px) {
+  .result-col {
+    width: 24%;
+  }
+
+  .vs-col {
+    width: 24%;
+    white-space: normal;
+  }
+
+  .date-col {
+    display: none;
+  }
+
+  .vs-date {
+    font-size: 0.68rem;
+  }
+
+  .vs-time {
+    font-size: 0.68rem;
+  }
+}
+
+@media (max-width: 430px) {
+  .matches-table th,
+  .matches-table td,
+  .standings-table th,
+  .standings-table td {
+    padding: 0.35rem 0.14rem;
+  }
+
+  .standings-table th,
+  .standings-table td {
+    font-size: 0.82rem;
+  }
+
+  .matches-table .team-logo {
+    width: 18px;
+    height: 18px;
+  }
+
+  .matches-table .team-link {
+    gap: 0.28rem;
+  }
+
+  .matches-table .team-name,
+  .standings-table td:nth-child(2) a {
+    font-size: 0.8rem;
+    line-height: 1.15;
+  }
+
+  .standings-table th {
+    white-space: nowrap;
+  }
+
+  .standings-table .col-pos {
+    width: 1.4rem;
+    min-width: 1.4rem;
+  }
+
+  .standings-table .col-team {
+    width: 7.8rem;
+    min-width: 7.8rem;
+  }
+
+  .standings-table .col-stat,
+  .standings-table .col-points {
+    width: 1.9rem;
+    min-width: 1.9rem;
+  }
+
+  .standings-table .col-diff {
+    width: 1.9rem;
+    min-width: 1.9rem;
+  }
+
+  .standings-table.football-table .col-team {
+    width: 7rem;
+    min-width: 7rem;
+  }
+
+  .standings-table.football-table .col-stat {
+    width: 1.75rem;
+    min-width: 1.75rem;
+  }
+
+  .standings-table.football-table .col-points {
+    width: 2.35rem;
+    min-width: 2.35rem;
+  }
+
+  .standings-table .col-extra {
+    min-width: 4rem;
+  }
+
+  .team-name {
+    font-size: 0.85rem;
+    line-height: 1.1;
+  }
+  
+  .team-logo-standings {
+    width: 20px;
+    height: 20px;
+  }
+}
+
+@media (max-width: 344px) {
+  .standings-table th,
+  .standings-table td,
+  .matches-table th,
+  .matches-table td {
+    padding: 0.32rem 0.1rem;
+  }
+
+  .standings-table th,
+  .standings-table td {
+    font-size: 0.78rem;
+  }
+
+  .standings-table.football-table .col-team {
+    width: 6.6rem;
+    min-width: 6.6rem;
+  }
+
+  .standings-table.football-table .col-stat {
+    width: 1.6rem;
+    min-width: 1.6rem;
+  }
+
+  .standings-table.football-table .col-points {
+    width: 2.1rem;
+    min-width: 2.1rem;
+  }
+
+  .standings-table .col-diff {
+    width: 1.6rem;
+    min-width: 1.6rem;
+  }
+
+  .team-logo {
+    width: 18px;
+    height: 18px;
+  }
 }
 
 .team-link-standings {
-  display: inline-flex;
+  display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.35rem;
   text-decoration: none;
   color: #1a1a2e;
   font-weight: 500;
   transition: color 0.15s;
+  width: 100%;
+  min-width: 0;
 }
 
 .team-link-standings:hover {
@@ -474,4 +573,12 @@ td.vs-col {
   height: 24px;
   object-fit: contain;
   border-radius: 50%;
+}
+
+.team-link-standings span {
+  display: block;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  line-height: 1.15;
 }

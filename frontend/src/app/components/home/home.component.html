@@ -66,7 +66,7 @@
     @if (rows.length === 0) {
     <p class="status-text">Нема података за изабрани спорт.</p>
     } @else {
-    <div class="table-scroll">
+    <div class="table-container">
     <table
       class="standings-table"
       [class.football-table]="isFootball()"
@@ -86,7 +86,7 @@
           <th class="col-points">БОД</th>
           @if (!isVolleyball()) {
           <th class="col-extra">{{ isBasketball() ? 'КОШ Р.' : 'ГОЛ Р.' }}</th>
-          <th class="col-extra">ПЛУС МИНУС</th>
+          <th class="col-extra col-diff">+/-</th>
           }
 
           @if (isVolleyball()) {
@@ -118,7 +118,7 @@
           <td class="col-points"><b>{{ r.points }}</b></td>
           @if (!isVolleyball()) {
           <td class="col-extra">{{ formatRatio(r.scored, r.conceded) }}</td>
-          <td class="col-extra">{{ r.difference }}</td>
+          <td class="col-extra col-diff">{{ r.difference }}</td>
           }
 
           @if (isVolleyball()) {
