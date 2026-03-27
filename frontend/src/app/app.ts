@@ -32,6 +32,7 @@ export class App implements OnInit {
 
   selection = this.sportSelection;
   currentLeagueId = signal<number | null>(null);
+  private shouldNavigateHomeOnNextSelectionChange = false;
 
   sports: { key: SportKey; label: string }[] = [
     { key: 'football', label: 'Фудбал' },
@@ -59,6 +60,12 @@ export class App implements OnInit {
 
         if (newLeagueId === null) return;
 
+        if (this.shouldNavigateHomeOnNextSelectionChange) {
+          this.shouldNavigateHomeOnNextSelectionChange = false;
+          this.router.navigate(['/']);
+          return;
+        }
+
         const url = this.router.url;
         if (url.includes('/results')) {
           this.router.navigate(['/leagues', newLeagueId, 'results']);
@@ -76,7 +83,15 @@ export class App implements OnInit {
   }
 
   setSport(sport: SportKey): void {
+    const previousSport = this.sportSelection.snapshot.sport;
+    this.shouldNavigateHomeOnNextSelectionChange = true;
     this.sportSelection.setSport(sport);
+
+    // Clicking an already selected sport may not emit a selection change.
+    if (this.sportSelection.snapshot.sport === previousSport) {
+      this.shouldNavigateHomeOnNextSelectionChange = false;
+      this.router.navigate(['/']);
+    }
   }
 
   setVolleyballGender(gender: VolleyballGender): void {
