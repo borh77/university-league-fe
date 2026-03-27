@@ -274,6 +274,10 @@ button.result-badge.open {
   text-align: center;
 }
 
+.label-mobile {
+  display: none;
+}
+
 .detail-total-col {
   border-left: 2px solid var(--color-border);
   font-weight: 700;
@@ -437,6 +441,14 @@ button.result-badge.open {
 }
 
 @media (max-width: 600px) {
+  .label-desktop {
+    display: none;
+  }
+
+  .label-mobile {
+    display: inline;
+  }
+
   .detail-wrapper {
     padding: 0.35rem 0.35rem 0.45rem;
   }

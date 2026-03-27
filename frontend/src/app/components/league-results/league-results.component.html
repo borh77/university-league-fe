@@ -152,20 +152,28 @@
                           <thead>
                             <tr>
                               <th class="detail-team-col"></th>
-                              @for (q of match.quarters!; track q.quarterNumber) {
-                                <th class="detail-score-col">Ч{{ q.quarterNumber }}</th>
-                              }
-                              <th class="detail-score-col detail-total-col">Ук</th>
+                              <th class="detail-score-col">
+                                <span class="label-desktop">1. Полувреме</span>
+                                <span class="label-mobile">П1</span>
+                              </th>
+                              <th class="detail-score-col">
+                                <span class="label-desktop">2. Полувреме</span>
+                                <span class="label-mobile">П2</span>
+                              </th>
+                              <th class="detail-score-col detail-total-col">Крај</th>
                             </tr>
                           </thead>
                           <tbody>
                             <tr>
                               <td class="detail-team-name">{{ match.homeTeamName }}</td>
-                              @for (q of match.quarters!; track q.quarterNumber) {
-                                <td class="detail-score-cell" [class.cell-win]="q.homeScore > q.awayScore">
-                                  {{ q.homeScore }}
-                                </td>
-                              }
+                              <td class="detail-score-cell"
+                                  [class.cell-win]="getFirstHalfScore(match)[0] > getFirstHalfScore(match)[1]">
+                                {{ getFirstHalfScore(match)[0] }}
+                              </td>
+                              <td class="detail-score-cell"
+                                  [class.cell-win]="getSecondHalfScore(match)[0] > getSecondHalfScore(match)[1]">
+                                {{ getSecondHalfScore(match)[0] }}
+                              </td>
                               <td class="detail-score-cell detail-total-cell"
                                   [class.cell-win]="parseTotalScore(match.result)[0] > parseTotalScore(match.result)[1]">
                                 {{ parseTotalScore(match.result)[0] }}
@@ -173,11 +181,14 @@
                             </tr>
                             <tr>
                               <td class="detail-team-name">{{ match.awayTeamName }}</td>
-                              @for (q of match.quarters!; track q.quarterNumber) {
-                                <td class="detail-score-cell" [class.cell-win]="q.awayScore > q.homeScore">
-                                  {{ q.awayScore }}
-                                </td>
-                              }
+                              <td class="detail-score-cell"
+                                  [class.cell-win]="getFirstHalfScore(match)[1] > getFirstHalfScore(match)[0]">
+                                {{ getFirstHalfScore(match)[1] }}
+                              </td>
+                              <td class="detail-score-cell"
+                                  [class.cell-win]="getSecondHalfScore(match)[1] > getSecondHalfScore(match)[0]">
+                                {{ getSecondHalfScore(match)[1] }}
+                              </td>
                               <td class="detail-score-cell detail-total-cell"
                                   [class.cell-win]="parseTotalScore(match.result)[1] > parseTotalScore(match.result)[0]">
                                 {{ parseTotalScore(match.result)[1] }}
