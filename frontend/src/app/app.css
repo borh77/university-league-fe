@@ -3,12 +3,13 @@
   position: sticky;
   top: 0;
   z-index: 100;
-  background: #fff;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+  background: linear-gradient(180deg, #4f84af, var(--color-brand-strong));
+  box-shadow: 0 4px 10px rgba(22, 57, 89, 0.14);
 }
 
 .app-main {
   padding: 2rem 1rem;
+  background: var(--color-bg);
 }
 
 .top-brand-panel {
@@ -18,8 +19,8 @@
   flex-wrap: wrap;
   gap: 0.85rem;
   padding: 0.6rem 1.25rem;
-  background: #fff;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  background: transparent;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.14);
 }
 
 .brand-logo {
@@ -30,7 +31,7 @@
 }
 
 .brand-title {
-  color: #16213e;
+  color: #ffffff;
   font-size: 0.88rem;
   font-weight: 600;
   letter-spacing: 0.04em;
@@ -45,31 +46,33 @@
   align-items: center;
   gap: 0.25rem;
   padding: 0.5rem 1.25rem;
-  background: #fff;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  background: transparent;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.14);
 }
 
 .sport-btn {
-  background: transparent;
-  border: none;
-  color: rgba(0, 0, 0, 0.55);
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  color: rgba(255, 255, 255, 0.88);
   font-size: 0.9rem;
   font-weight: 500;
   padding: 0.45rem 1rem;
   border-radius: 6px;
   cursor: pointer;
-  transition: background 0.15s, color 0.15s;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
   letter-spacing: 0.02em;
 }
 
   .sport-btn:hover {
-    background: rgba(0, 0, 0, 0.06);
-    color: #16213e;
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.26);
+    color: #ffffff;
   }
 
   .sport-btn.active {
-    background: #3a86ff;
-    color: #fff;
+    background: rgba(255, 255, 255, 0.14);
+    border-color: rgba(255, 255, 255, 0.34);
+    color: #ffffff;
   }
 
 /* volleyball gender toggle */
@@ -78,13 +81,13 @@
   gap: 0.25rem;
   margin-left: 0.75rem;
   padding-left: 0.75rem;
-  border-left: 1px solid rgba(0, 0, 0, 0.12);
+  border-left: 1px solid rgba(255, 255, 255, 0.15);
 }
 
 .gender-btn {
-  background: transparent;
-  border: 1px solid rgba(0, 0, 0, 0.2);
-  color: rgba(0, 0, 0, 0.55);
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: rgba(255, 255, 255, 0.88);
   font-size: 0.82rem;
   font-weight: 500;
   padding: 0.35rem 0.8rem;
@@ -94,14 +97,15 @@
 }
 
   .gender-btn:hover {
-    border-color: rgba(0, 0, 0, 0.4);
-    color: #16213e;
+    border-color: rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.08);
+    color: #ffffff;
   }
 
   .gender-btn.active {
-    background: #3a86ff;
-    border-color: #3a86ff;
-    color: #fff;
+    background: rgba(255, 255, 255, 0.14);
+    border-color: rgba(255, 255, 255, 0.34);
+    color: #ffffff;
   }
 
 /* ── Navbar 2 – page selection ───────────────────────────── */
@@ -110,14 +114,14 @@
   align-items: center;
   gap: 0;
   padding: 0 1rem;
-  background: #fff;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  background: rgba(255, 255, 255, 0.07);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.16);
 }
 
 .page-link {
   display: inline-block;
   padding: 0.7rem 1.4rem;
-  color: rgba(0, 0, 0, 0.55);
+  color: rgba(255, 255, 255, 0.9);
   font-size: 0.88rem;
   font-weight: 600;
   text-decoration: none;
@@ -128,17 +132,17 @@
 }
 
   .page-link:hover:not(.disabled) {
-    color: #16213e;
-    border-bottom-color: rgba(0, 0, 0, 0.2);
+    color: #ffffff;
+    border-bottom-color: rgba(255, 255, 255, 0.42);
   }
 
   .page-link.active {
-    color: #3a86ff;
-    border-bottom-color: #3a86ff;
+    color: #ffffff;
+    border-bottom-color: rgba(255, 255, 255, 0.72);
   }
 
   .page-link.disabled {
-    color: rgba(0, 0, 0, 0.25);
+    color: rgba(255, 255, 255, 0.45);
     cursor: not-allowed;
     pointer-events: none;
   }

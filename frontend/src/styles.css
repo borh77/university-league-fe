@@ -1,5 +1,20 @@
 /* You can add global styles to this file, and also import other style files */
 
+:root {
+  --color-brand-strong: #3a6f98;
+  --color-brand: #467ca8;
+  --color-brand-soft: #5f93bc;
+  --color-brand-tint: #edf4fb;
+  --color-bg: #ffffff;
+  --color-surface: #ffffff;
+  --color-surface-soft: #f3f7fc;
+  --color-text: #0f2742;
+  --color-text-muted: #51627a;
+  --color-border: #d8e2ef;
+  --color-danger: #c0392b;
+  --shadow-soft: 0 6px 14px rgba(28, 63, 97, 0.08);
+}
+
 * {
   box-sizing: border-box;
 }
@@ -8,6 +23,10 @@ html,
 body {
   max-width: 100%;
   overflow-x: hidden;
+  margin: 0;
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: 'Manrope', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 @media (max-width: 344px) {
@@ -20,7 +39,7 @@ body {
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
   border-radius: 8px;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--shadow-soft);
 }
 
 .visually-hidden {

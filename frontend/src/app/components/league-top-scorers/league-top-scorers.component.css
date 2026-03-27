@@ -8,29 +8,29 @@
 .top-scorers-title {
   font-size: 1.75rem;
   margin-bottom: 1.5rem;
-  color: #1a1a2e;
+  color: var(--color-text);
 }
 
 .status-text {
-  color: #555;
+  color: var(--color-text-muted);
   font-size: 1rem;
 }
 
 .status-text.error {
-  color: #c0392b;
+  color: var(--color-danger);
 }
 
 .scorers-table {
   width: 100%;
   border-collapse: collapse;
-  background: #fff;
+  background: var(--color-surface);
   border-radius: 8px;
   overflow: hidden;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--shadow-soft);
 }
 
 .scorers-table thead tr {
-  background: #f4f4f8;
+  background: var(--color-surface-soft);
   text-align: left;
 }
 
@@ -41,11 +41,11 @@
 }
 
 .scorers-table tbody tr:not(:last-child) {
-  border-bottom: 1px solid #ececec;
+  border-bottom: 1px solid var(--color-border);
 }
 
 .scorers-table tbody tr:hover {
-  background: #f9f9fb;
+  background: var(--color-brand-tint);
 }
 
 .position-col {

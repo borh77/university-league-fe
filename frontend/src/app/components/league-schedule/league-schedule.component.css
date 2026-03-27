@@ -8,16 +8,16 @@
 .schedule-title {
   font-size: 1.75rem;
   margin-bottom: 1.5rem;
-  color: #1a1a2e;
+  color: var(--color-text);
 }
 
 .status-text {
-  color: #555;
+  color: var(--color-text-muted);
   font-size: 1rem;
 }
 
 .status-text.error {
-  color: #c0392b;
+  color: var(--color-danger);
 }
 
 .round-selector {
@@ -37,7 +37,7 @@
 }
 
 .round-picker-toggle {
-  color: #1a1a2e;
+  color: var(--color-text);
   font-size: 0.86rem;
   font-weight: 600;
   cursor: pointer;
@@ -51,9 +51,9 @@
 }
 
 .round-picker-btn {
-  border: 1px solid #d6d6de;
-  background: #fff;
-  color: #1a1a2e;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  color: var(--color-text);
   border-radius: 6px;
   padding: 0.25rem 0;
   font-size: 0.82rem;
@@ -62,14 +62,14 @@
 }
 
 .round-picker-btn.active {
-  background: #eef4ff;
-  border-color: #3a86ff;
+  background: var(--color-brand-tint);
+  border-color: var(--color-brand-soft);
 }
 
 .round-button {
-  border: 1px solid #d6d6de;
-  background: #fff;
-  color: #1a1a2e;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  color: var(--color-text);
   border-radius: 6px;
   padding: 0.4rem 0.75rem;
   font-size: 0.9rem;
@@ -78,12 +78,12 @@
 }
 
 .round-button:hover {
-  border-color: #3a86ff;
+  border-color: var(--color-brand-soft);
 }
 
 .round-button.active {
-  background: #eef4ff;
-  border-color: #3a86ff;
+  background: var(--color-brand-tint);
+  border-color: var(--color-brand-soft);
 }
 
 .round-section {
@@ -93,23 +93,23 @@
 .round-title {
   font-size: 1.15rem;
   font-weight: 600;
-  color: #16213e;
+  color: var(--color-text);
   margin-bottom: 0.5rem;
   padding-bottom: 0.25rem;
-  border-bottom: 2px solid #e0e0e0;
+  border-bottom: 2px solid var(--color-border);
 }
 
 .matches-table {
   width: 100%;
   border-collapse: collapse;
-  background: #fff;
+  background: var(--color-surface);
   border-radius: 8px;
   overflow: hidden;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--shadow-soft);
 }
 
 .matches-table thead tr {
-  background: #f4f4f8;
+  background: var(--color-surface-soft);
   text-align: left;
 }
 
@@ -120,11 +120,11 @@
 }
 
 .matches-table tbody tr:not(:last-child) {
-  border-bottom: 1px solid #ececec;
+  border-bottom: 1px solid var(--color-border);
 }
 
 .matches-table tbody tr:hover {
-  background: #f9f9fb;
+  background: var(--color-brand-tint);
 }
 
 .team-col {
@@ -142,7 +142,7 @@
 .vs-col {
   width: 18%;
   text-align: center;
-  color: #888;
+  color: var(--color-text-muted);
   font-weight: 600;
 }
 
@@ -155,7 +155,7 @@ td.vs-col {
   display: block;
   font-weight: 600;
   font-size: 0.75rem;
-  color: #5c6280;
+  color: var(--color-text-muted);
   line-height: 1.2;
   text-align: center;
 }
@@ -164,7 +164,7 @@ td.vs-col {
   display: block;
   margin-top: 0.06rem;
   font-size: 0.75rem;
-  color: #5c6280;
+  color: var(--color-text-muted);
   line-height: 1.2;
   text-align: center;
 }
@@ -174,13 +174,13 @@ td.vs-col {
   align-items: center;
   gap: 0.5rem;
   text-decoration: none;
-  color: #1a1a2e;
+  color: var(--color-text);
   font-weight: 500;
   transition: color 0.15s;
 }
 
 .team-link:hover {
-  color: #3a86ff;
+  color: var(--color-brand);
 }
 
 .home-col .team-link {
