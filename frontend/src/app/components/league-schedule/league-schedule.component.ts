@@ -97,6 +97,9 @@ export class LeagueScheduleComponent implements OnInit {
       if (!match || typeof match.roundNumber !== 'number') {
         continue;
       }
+      if (this.hasResult(match)) {
+        continue;
+      }
       const existing = map.get(match.roundNumber) ?? [];
       existing.push(match);
       map.set(match.roundNumber, existing);
@@ -104,6 +107,10 @@ export class LeagueScheduleComponent implements OnInit {
     return Array.from(map.entries())
       .sort(([a], [b]) => a - b)
       .map(([roundNumber, matches]) => ({ roundNumber, matches }));
+  }
+
+  private hasResult(match: Match): boolean {
+    return typeof match.result === 'string' && match.result.trim().length > 0;
   }
 
   private initializeSelectedRound(): void {
