@@ -25,7 +25,7 @@ export class LeagueResultsComponent implements OnInit {
   private readonly cdr = inject(ChangeDetectorRef);
 
   rounds: Round[] = [];
-  selectedRoundNumber = 2;
+  selectedRoundNumber = 3;
   loading = true;
   error: string | null = null;
   expandedMatchId: number | null = null;
@@ -135,11 +135,11 @@ export class LeagueResultsComponent implements OnInit {
 
   private initializeSelectedRound(): void {
     if (this.rounds.length === 0) {
-      this.selectedRoundNumber = 2;
+      this.selectedRoundNumber = 3;
       return;
     }
 
-    const hasRoundTwo = this.rounds.some((round) => round.roundNumber === 2);
-    this.selectedRoundNumber = hasRoundTwo ? 2 : this.rounds[0].roundNumber;
+    const hasRoundThree = this.rounds.some((round) => round.roundNumber === 3);
+    this.selectedRoundNumber = hasRoundThree ? 3 : this.rounds[0].roundNumber;
   }
 }
