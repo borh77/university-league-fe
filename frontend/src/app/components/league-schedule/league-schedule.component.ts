@@ -25,7 +25,7 @@ export class LeagueScheduleComponent implements OnInit {
   private readonly cdr = inject(ChangeDetectorRef);
 
   rounds: Round[] = [];
-  selectedRoundNumber = 3;
+  selectedRoundNumber = 4;
   loading = true;
   error: string | null = null;
 
@@ -115,11 +115,11 @@ export class LeagueScheduleComponent implements OnInit {
 
   private initializeSelectedRound(): void {
     if (this.rounds.length === 0) {
-      this.selectedRoundNumber = 3;
+      this.selectedRoundNumber = 4;
       return;
     }
 
     const hasRoundThree = this.rounds.some((round) => round.roundNumber === 3);
-    this.selectedRoundNumber = hasRoundThree ? 3 : this.rounds[0].roundNumber;
+    this.selectedRoundNumber = hasRoundThree ? 4 : this.rounds[0].roundNumber;
   }
 }

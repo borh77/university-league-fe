@@ -104,10 +104,10 @@ export class HomeComponent implements OnInit {
         this.scheduleRounds = this.groupByRound(payload.schedule ?? []);
         
         this.currentRound = this.mergeRounds(
-          this.resolveSelectedRound(this.resultsRounds, 3),
-          this.resolveSelectedRound(this.scheduleRounds, 3)
+          this.resolveSelectedRound(this.resultsRounds, 4),
+          this.resolveSelectedRound(this.scheduleRounds, 4)
         );
-        this.nextRound = this.resolveSelectedRound(this.scheduleRounds, 4);
+        this.nextRound = this.resolveSelectedRound(this.scheduleRounds, 5);
 
         this.cdr.detectChanges();
       });
