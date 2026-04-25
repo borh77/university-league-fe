@@ -35,9 +35,9 @@ export class App implements OnInit {
   private shouldNavigateHomeOnNextSelectionChange = false;
 
   sports: { key: SportKey; label: string }[] = [
-    { key: 'football', label: 'Фудбал' },
-    { key: 'basketball', label: 'Кошарка' },
-    { key: 'volleyball', label: 'Одбојка' },
+    { key: 'football', label: 'ФУДБАЛ' },
+    { key: 'basketball', label: 'КОШАРКА' },
+    { key: 'volleyball', label: 'ОДБОЈКА' },
   ];
 
   isFootballSelected(): boolean {
