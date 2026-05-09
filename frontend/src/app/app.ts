@@ -47,6 +47,33 @@ export class App implements OnInit {
   ngOnInit(): void {
     if (!isPlatformBrowser(this.platformId)) return;
 
+    // If the URL already contains a league id (e.g. on refresh), derive the sport
+    // from the known fallback ids so the app doesn't reset to the default sport.
+    // This keeps the user on the same page after a refresh.
+    const url = this.router.url;
+    const leagueMatch = url.match(/\/leagues\/([^\/]+)/);
+    if (leagueMatch) {
+      const parsed = Number(leagueMatch[1]);
+      // If URL contains a league id, preserve it so the app stays on that page
+      // after a refresh even if the id is not one of the fallbacks.
+      this.currentLeagueId.set(parsed);
+      const reverseMap: Record<number, { sport: SportKey; gender?: VolleyballGender }> = {
+        [-1]: { sport: 'football' },
+        [-4]: { sport: 'basketball' },
+        [-2]: { sport: 'volleyball', gender: 'male' },
+        [-3]: { sport: 'volleyball', gender: 'female' },
+      };
+
+      const mapped = reverseMap[parsed];
+      if (mapped) {
+        this.sportSelection.setSport(mapped.sport);
+        if (mapped.sport === 'volleyball' && mapped.gender) {
+          this.sportSelection.setVolleyballGender(mapped.gender);
+        }
+      }
+      // Do not return here; currentLeagueId is set to the parsed id above.
+    }
+
     // Use fallback mapping so app does not depend on leagues endpoint.
     this.currentLeagueId.set(this.resolveLeagueId(this.sportSelection.snapshot.sport, this.sportSelection.snapshot.gender));
 
