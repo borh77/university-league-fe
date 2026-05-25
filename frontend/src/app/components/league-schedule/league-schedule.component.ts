@@ -1,7 +1,7 @@
 import { ChangeDetectorRef, Component, OnInit, inject, DestroyRef } from '@angular/core';
 import { ActivatedRoute, ParamMap, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { catchError, of, finalize } from 'rxjs';
+import { catchError, of, finalize, forkJoin } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { LeagueService } from '../../services/league.service';
 import { Match } from '../../models/match.model';
@@ -25,9 +25,15 @@ export class LeagueScheduleComponent implements OnInit {
   private readonly cdr = inject(ChangeDetectorRef);
 
   rounds: Round[] = [];
-  selectedRoundNumber = 5;
+  selectedRoundNumber = 0;
   loading = true;
   error: string | null = null;
+
+  // New: current and next round views
+  resultsRounds: Round[] = [];
+  scheduleRounds: Round[] = [];
+  currentRound: Round | null = null;
+  nextRound: Round | null = null;
 
   get selectedRound(): Round | null {
     return this.rounds.find((round) => round.roundNumber === this.selectedRoundNumber) ?? null;
@@ -55,23 +61,66 @@ export class LeagueScheduleComponent implements OnInit {
       return;
     }
 
-    this.leagueService
-      .getSchedule(leagueId)
-      .pipe(
+    // Fetch both results and schedule so we can determine current and next rounds
+    forkJoin({
+      results: this.leagueService.getResults(leagueId).pipe(
         catchError(() => {
           this.error = 'Грешка при учитавању распореда.';
           return of([] as Match[]);
         }),
+      ),
+      schedule: this.leagueService.getSchedule(leagueId).pipe(
+        catchError(() => {
+          this.error = 'Грешка при учитавању распореда.';
+          return of([] as Match[]);
+        }),
+      ),
+    })
+      .pipe(
         finalize(() => {
           this.loading = false;
           this.cdr.detectChanges();
         }),
         takeUntilDestroyed(this.destroyRef),
       )
-      .subscribe((matches) => {
+      .subscribe(({ results, schedule }) => {
         try {
-          this.rounds = this.groupByRound(matches);
-          this.initializeSelectedRound();
+          this.resultsRounds = this.groupByRoundNoFilter(results);
+          this.scheduleRounds = this.groupByRoundNoFilter(schedule);
+
+          // determine current round = last played round merged with schedule if present
+          const lastPlayed = this.resultsRounds.length > 0 ? Math.max(...this.resultsRounds.map(r => r.roundNumber)) : null;
+          const candidateCurrent = lastPlayed ?? (this.scheduleRounds.length > 0 ? this.scheduleRounds[0].roundNumber : null);
+
+          if (candidateCurrent !== null) {
+            const resultsRound = this.resultsRounds.find(r => r.roundNumber === candidateCurrent) ?? null;
+            const scheduleRound = this.scheduleRounds.find(r => r.roundNumber === candidateCurrent) ?? null;
+            this.currentRound = this.mergeRounds(resultsRound, scheduleRound);
+          } else {
+            this.currentRound = null;
+          }
+
+          // next round: schedule round with roundNumber = current + 1
+          if (this.currentRound) {
+            this.nextRound = this.scheduleRounds.find(r => r.roundNumber === this.currentRound!.roundNumber + 1) ?? null;
+          } else {
+            this.nextRound = this.scheduleRounds.length > 0 ? this.scheduleRounds[0] : null;
+          }
+
+          // keep the old rounds list for manual selection (only upcoming without results)
+          this.rounds = this.groupByRound(schedule);
+
+          // if we detected a currentRound, move it to the front of the selector list
+          if (this.currentRound) {
+            const idx = this.rounds.findIndex(r => r.roundNumber === this.currentRound!.roundNumber);
+            if (idx > 0) {
+              const [r] = this.rounds.splice(idx, 1);
+              this.rounds.unshift(r);
+            }
+            this.selectedRoundNumber = this.currentRound!.roundNumber;
+          } else {
+            this.initializeSelectedRound();
+          }
         } catch {
           this.rounds = [];
           this.error = 'Грешка при обради распореда.';
@@ -97,7 +146,24 @@ export class LeagueScheduleComponent implements OnInit {
       if (!match || typeof match.roundNumber !== 'number') {
         continue;
       }
+      // for the schedule-specific grouping we skip matches that already have results
       if (this.hasResult(match)) {
+        continue;
+      }
+      const existing = map.get(match.roundNumber) ?? [];
+      existing.push(match);
+      map.set(match.roundNumber, existing);
+    }
+    return Array.from(map.entries())
+      .sort(([a], [b]) => a - b)
+      .map(([roundNumber, matches]) => ({ roundNumber, matches }));
+  }
+
+  // Group rounds without filtering out played matches (used for computing current round)
+  private groupByRoundNoFilter(matches: Match[]): Round[] {
+    const map = new Map<number, Match[]>();
+    for (const match of matches ?? []) {
+      if (!match || typeof match.roundNumber !== 'number') {
         continue;
       }
       const existing = map.get(match.roundNumber) ?? [];
@@ -115,11 +181,11 @@ export class LeagueScheduleComponent implements OnInit {
 
   private initializeSelectedRound(): void {
     if (this.rounds.length === 0) {
-      this.selectedRoundNumber = 5;
+      this.selectedRoundNumber = 0;
       return;
     }
 
-    const hasRoundThree = this.rounds.some((round) => round.roundNumber === 3);
-    this.selectedRoundNumber = hasRoundThree ? 5 : this.rounds[0].roundNumber;
+    // Default to the first available round if none selected earlier
+    this.selectedRoundNumber = this.rounds[0].roundNumber;
   }
 }

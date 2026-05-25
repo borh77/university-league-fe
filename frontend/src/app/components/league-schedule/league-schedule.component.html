@@ -39,6 +39,104 @@
       </details>
     </div>
 
+    <!-- Current and next round quick view -->
+    @if (currentRound) {
+      <section class="round-section">
+        <h3 class="round-title">Тренутно коло — {{ currentRound.roundNumber }}</h3>
+        <table class="matches-table">
+          <thead>
+            <tr>
+              <th class="team-col home-col">Домаћин</th>
+              <th class="vs-col">VS</th>
+              <th class="team-col away-col">Гост</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (match of currentRound.matches; track match.id) {
+              <tr class="match-row">
+                <td class="team-col home-col">
+                  <a [routerLink]="['/teams', match.homeTeamId]" class="team-link">
+                    <img
+                      [src]="match.homeTeamLogoUrl"
+                      [alt]="match.homeTeamName"
+                      class="team-logo"
+                      (error)="onLogoError($event)"
+                    />
+                    <span class="team-name">{{ match.homeTeamName }}</span>
+                  </a>
+                </td>
+                <td class="vs-col">
+                  <span class="vs-date">{{ match.scheduledAt | date : 'dd.MM.yyyy.' }}</span>
+                  <span class="vs-time">{{ match.scheduledAt | date : 'HH:mm' }}</span>
+                </td>
+                <td class="team-col away-col">
+                  <a [routerLink]="['/teams', match.awayTeamId]" class="team-link">
+                    <img
+                      [src]="match.awayTeamLogoUrl"
+                      [alt]="match.awayTeamName"
+                      class="team-logo"
+                      (error)="onLogoError($event)"
+                    />
+                    <span class="team-name">{{ match.awayTeamName }}</span>
+                  </a>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </section>
+    }
+
+    @if (nextRound) {
+      <section class="round-section">
+        <h3 class="round-title">Следеће коло — {{ nextRound.roundNumber }}</h3>
+        <table class="matches-table">
+          <thead>
+            <tr>
+              <th class="team-col home-col">Домаћин</th>
+              <th class="vs-col">VS</th>
+              <th class="team-col away-col">Гост</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (match of nextRound.matches; track match.id) {
+              <tr class="match-row">
+                <td class="team-col home-col">
+                  <a [routerLink]="['/teams', match.homeTeamId]" class="team-link">
+                    <img
+                      [src]="match.homeTeamLogoUrl"
+                      [alt]="match.homeTeamName"
+                      class="team-logo"
+                      (error)="onLogoError($event)"
+                    />
+                    <span class="team-name">{{ match.homeTeamName }}</span>
+                  </a>
+                </td>
+                <td class="vs-col">
+                  <span class="vs-date">{{ match.scheduledAt | date : 'dd.MM.yyyy.' }}</span>
+                  <span class="vs-time">{{ match.scheduledAt | date : 'HH:mm' }}</span>
+                </td>
+                <td class="team-col away-col">
+                  <a [routerLink]="['/teams', match.awayTeamId]" class="team-link">
+                    <img
+                      [src]="match.awayTeamLogoUrl"
+                      [alt]="match.awayTeamName"
+                      class="team-logo"
+                      (error)="onLogoError($event)"
+                    />
+                    <span class="team-name">{{ match.awayTeamName }}</span>
+                  </a>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </section>
+    }
+
+    <hr />
+
+    <!-- existing selected round view -->
     @if (selectedRound; as round) {
       <section class="round-section">
         <h3 class="round-title">Коло {{ round.roundNumber }}</h3>

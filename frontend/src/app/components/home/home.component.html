@@ -1,6 +1,44 @@
 <div class="home-container">
   <h1 class="home-title">Почетна</h1>
 
+  <section class="home-section">
+    <h2 class="section-title">Преглед спортова</h2>
+    <div class="sports-overview-grid">
+      @for (ov of sportOverviews; track ov.key) {
+      <div class="sport-card">
+        <h3 class="sport-card-title">{{ ov.sport }}{{ ov.gender ? ' ' + ov.gender : '' }}</h3>
+        @if (ov.loading) {
+        <p class="status-text">Учитавање...</p>
+        } else {
+        @if (ov.currentRound) {
+        <div class="mini-round">
+          <strong>Тренутно: {{ ov.currentRound.roundNumber }}</strong>
+          <div class="mini-matches">
+            @for (m of ov.currentRound.matches; track m.id) {
+            <div class="mini-match">{{ m.homeTeamName }} - {{ m.awayTeamName }}</div>
+            }
+          </div>
+        </div>
+        } @else {
+        <p class="status-text">Нема тренутног кола.</p>
+        }
+
+        @if (ov.nextRound) {
+        <div class="mini-round">
+          <strong>Следеће: {{ ov.nextRound.roundNumber }}</strong>
+          <div class="mini-matches">
+            @for (m of ov.nextRound.matches; track m.id) {
+            <div class="mini-match">{{ m.homeTeamName }} - {{ m.awayTeamName }}</div>
+            }
+          </div>
+        </div>
+        }
+        }
+      </div>
+      }
+    </div>
+  </section>
+
   @if (loading) {
   <p class="status-text">Учитавање почетне странице...</p>
   } @else if (error) {

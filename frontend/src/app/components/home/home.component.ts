@@ -38,6 +38,15 @@ export class HomeComponent implements OnInit {
   scheduleRounds: Round[] = [];
   currentRound: Round | null = null;
   nextRound: Round | null = null;
+  // Overviews for all sports shown on homepage
+  sportOverviews: Array<{
+    key: string;
+    sport: SportKey;
+    gender?: VolleyballGender;
+    currentRound: Round | null;
+    nextRound: Round | null;
+    loading: boolean;
+  }> = [];
   loading = true;
   error: string | null = null;
 
@@ -111,6 +120,83 @@ export class HomeComponent implements OnInit {
 
         this.cdr.detectChanges();
       });
+
+    // load small overviews for all sports once
+    this.loadSportOverviews();
+  }
+
+  private loadSportOverviews(): void {
+    const overviewKeys = [
+      { sport: 'football' as SportKey },
+      { sport: 'basketball' as SportKey },
+      { sport: 'volleyball' as SportKey, gender: 'male' as VolleyballGender },
+      { sport: 'volleyball' as SportKey, gender: 'female' as VolleyballGender },
+    ];
+
+    this.sportOverviews = overviewKeys.map((k) => ({
+      key: `${k.sport}${k.gender ? '-' + k.gender : ''}`,
+      sport: k.sport,
+      gender: k.gender,
+      currentRound: null,
+      nextRound: null,
+      loading: true,
+    }));
+
+    for (const overview of this.sportOverviews) {
+      const leagueId = this.resolveLeagueId(overview.sport, overview.gender);
+      if (leagueId === null) {
+        overview.loading = false;
+        continue;
+      }
+
+      forkJoin({
+        results: this.leagueService.getResults(leagueId).pipe(catchError(() => of([] as Match[]))),
+        schedule: this.leagueService.getSchedule(leagueId).pipe(catchError(() => of([] as Match[]))),
+      })
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe(({ results, schedule }) => {
+          try {
+            const resultsRounds = this.groupByRoundNoFilter(results);
+            const scheduleRounds = this.groupByRoundNoFilter(schedule);
+
+            const lastPlayed = resultsRounds.length > 0 ? Math.max(...resultsRounds.map((r) => r.roundNumber)) : null;
+            const candidateCurrent = lastPlayed ?? (scheduleRounds.length > 0 ? scheduleRounds[0].roundNumber : null);
+
+            if (candidateCurrent !== null) {
+              const rRound = resultsRounds.find((r) => r.roundNumber === candidateCurrent) ?? null;
+              const sRound = scheduleRounds.find((r) => r.roundNumber === candidateCurrent) ?? null;
+              overview.currentRound = this.mergeRounds(rRound, sRound);
+            }
+
+            if (overview.currentRound) {
+              overview.nextRound = scheduleRounds.find((r) => r.roundNumber === overview.currentRound!.roundNumber + 1) ?? null;
+            } else {
+              overview.nextRound = scheduleRounds.length > 0 ? scheduleRounds[0] : null;
+            }
+          } catch {
+            overview.currentRound = null;
+            overview.nextRound = null;
+          }
+          overview.loading = false;
+          this.cdr.detectChanges();
+        });
+    }
+  }
+
+  // reuse helper: group without filtering
+  private groupByRoundNoFilter(matches: Match[]): Round[] {
+    const map = new Map<number, Match[]>();
+    for (const match of matches ?? []) {
+      if (!match || typeof match.roundNumber !== 'number') {
+        continue;
+      }
+      const existing = map.get(match.roundNumber) ?? [];
+      existing.push(match);
+      map.set(match.roundNumber, existing);
+    }
+    return Array.from(map.entries())
+      .sort(([a], [b]) => a - b)
+      .map(([roundNumber, matches]) => ({ roundNumber, matches }));
   }
 
   isVolleyball(): boolean {

@@ -25,7 +25,7 @@ export class LeagueResultsComponent implements OnInit {
   private readonly cdr = inject(ChangeDetectorRef);
 
   rounds: Round[] = [];
-  selectedRoundNumber = 4;
+  selectedRoundNumber = 0;
   loading = true;
   error: string | null = null;
   expandedMatchId: number | null = null;
@@ -73,7 +73,19 @@ export class LeagueResultsComponent implements OnInit {
       .subscribe((matches) => {
         try {
           this.rounds = this.groupByRound(matches);
-          this.initializeSelectedRound();
+
+          // place the most recent played round first
+          if (this.rounds.length > 0) {
+            const maxRound = Math.max(...this.rounds.map(r => r.roundNumber));
+            const idx = this.rounds.findIndex(r => r.roundNumber === maxRound);
+            if (idx > 0) {
+              const [r] = this.rounds.splice(idx, 1);
+              this.rounds.unshift(r);
+            }
+            this.selectedRoundNumber = maxRound;
+          } else {
+            this.initializeSelectedRound();
+          }
         } catch {
           this.rounds = [];
           this.error = 'Грешка при обради резултата.';
@@ -135,11 +147,11 @@ export class LeagueResultsComponent implements OnInit {
 
   private initializeSelectedRound(): void {
     if (this.rounds.length === 0) {
-      this.selectedRoundNumber = 4;
+      this.selectedRoundNumber = 0;
       return;
     }
 
-    const hasRoundThree = this.rounds.some((round) => round.roundNumber === 3);
-    this.selectedRoundNumber = hasRoundThree ? 4 : this.rounds[0].roundNumber;
+    // Default to the first available round if none selected earlier
+    this.selectedRoundNumber = this.rounds[0].roundNumber;
   }
 }
