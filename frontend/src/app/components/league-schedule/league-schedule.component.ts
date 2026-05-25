@@ -29,12 +29,6 @@ export class LeagueScheduleComponent implements OnInit {
   loading = true;
   error: string | null = null;
 
-  // New: current and next round views
-  resultsRounds: Round[] = [];
-  scheduleRounds: Round[] = [];
-  currentRound: Round | null = null;
-  nextRound: Round | null = null;
-
   get selectedRound(): Round | null {
     return this.rounds.find((round) => round.roundNumber === this.selectedRoundNumber) ?? null;
   }
@@ -85,30 +79,8 @@ export class LeagueScheduleComponent implements OnInit {
       )
       .subscribe(({ results, schedule }) => {
         try {
-          this.resultsRounds = this.groupByRoundNoFilter(results);
-          this.scheduleRounds = this.groupByRoundNoFilter(schedule);
-
-          const selectedRounds = this.resolveCurrentAndNextRounds(this.scheduleRounds);
-          this.currentRound = selectedRounds.currentRound
-            ? this.mergeRounds(
-                this.resultsRounds.find((round) => round.roundNumber === selectedRounds.currentRound!.roundNumber) ?? null,
-                selectedRounds.currentRound,
-              )
-            : null;
-          this.nextRound = selectedRounds.nextRound;
-
-          this.rounds = this.groupByRoundNoFilter(schedule);
-
-          if (this.currentRound) {
-            const idx = this.rounds.findIndex((round) => round.roundNumber === this.currentRound!.roundNumber);
-            if (idx > 0) {
-              const [round] = this.rounds.splice(idx, 1);
-              this.rounds.unshift(round);
-            }
-            this.selectedRoundNumber = this.currentRound!.roundNumber;
-          } else {
-            this.initializeSelectedRound();
-          }
+          this.rounds = this.groupByRound(schedule);
+          this.selectedRoundNumber = this.resolveCurrentRound(this.rounds)?.roundNumber ?? this.rounds[0]?.roundNumber ?? 0;
         } catch {
           this.rounds = [];
           this.error = 'Грешка при обради распореда.';
@@ -134,10 +106,6 @@ export class LeagueScheduleComponent implements OnInit {
       if (!match || typeof match.roundNumber !== 'number') {
         continue;
       }
-      // for the schedule-specific grouping we skip matches that already have results
-      if (this.hasResult(match)) {
-        continue;
-      }
       const existing = map.get(match.roundNumber) ?? [];
       existing.push(match);
       map.set(match.roundNumber, existing);
@@ -147,47 +115,24 @@ export class LeagueScheduleComponent implements OnInit {
       .map(([roundNumber, matches]) => ({ roundNumber, matches }));
   }
 
-  private groupByRoundNoFilter(matches: Match[]): Round[] {
-    const map = new Map<number, Match[]>();
-    for (const match of matches ?? []) {
-      if (!match || typeof match.roundNumber !== 'number') {
-        continue;
-      }
-      const existing = map.get(match.roundNumber) ?? [];
-      existing.push(match);
-      map.set(match.roundNumber, existing);
-    }
-    return Array.from(map.entries())
-      .sort(([a], [b]) => a - b)
-      .map(([roundNumber, matches]) => ({ roundNumber, matches }));
+  private initializeSelectedRound(): void {
+    this.selectedRoundNumber = this.rounds[0]?.roundNumber ?? 0;
   }
 
-  private resolveCurrentAndNextRounds(rounds: Round[], referenceDate = new Date()): {
-    currentRound: Round | null;
-    nextRound: Round | null;
-  } {
+  private resolveCurrentRound(rounds: Round[], referenceDate = new Date()): Round | null {
     const sortedRounds = [...rounds].sort((a, b) => a.roundNumber - b.roundNumber);
     const weekBounds = this.getWeekBounds(referenceDate);
 
-    const currentWeekRound = sortedRounds.find((round) => this.roundIntersectsRange(round, weekBounds.start, weekBounds.end));
-    const currentRound =
-      currentWeekRound ??
+    return (
+      sortedRounds.find((round) => this.roundIntersectsRange(round, weekBounds.start, weekBounds.end)) ??
       [...sortedRounds]
         .reverse()
         .find((round) => {
           const roundStart = this.getRoundStart(round);
           return roundStart !== null && roundStart <= referenceDate;
         }) ??
-      null;
-
-    const currentEnd = currentRound ? this.getRoundEnd(currentRound) ?? weekBounds.end : weekBounds.end;
-    const nextRound =
-      sortedRounds.find((round) => {
-        const roundStart = this.getRoundStart(round);
-        return roundStart !== null && roundStart > currentEnd;
-      }) ?? null;
-
-    return { currentRound, nextRound };
+      null
+    );
   }
 
   private getWeekBounds(referenceDate: Date): { start: Date; end: Date } {
@@ -220,53 +165,5 @@ export class LeagueScheduleComponent implements OnInit {
     }
 
     return dates.reduce((earliest, current) => (current < earliest ? current : earliest));
-  }
-
-  private getRoundEnd(round: Round): Date | null {
-    const dates = round.matches
-      .map((match) => new Date(match.scheduledAt))
-      .filter((date) => !Number.isNaN(date.getTime()));
-
-    if (dates.length === 0) {
-      return null;
-    }
-
-    return dates.reduce((latest, current) => (current > latest ? current : latest));
-  }
-
-  private mergeRounds(resultsRound: Round | null, scheduleRound: Round | null): Round | null {
-    if (!resultsRound && !scheduleRound) {
-      return null;
-    }
-
-    const roundNumber = resultsRound?.roundNumber ?? scheduleRound!.roundNumber;
-    const matchMap = new Map<number, Match>();
-
-    scheduleRound?.matches.forEach((match) => {
-      matchMap.set(match.id, match);
-    });
-
-    resultsRound?.matches.forEach((match) => {
-      matchMap.set(match.id, match);
-    });
-
-    return {
-      roundNumber,
-      matches: Array.from(matchMap.values()),
-    };
-  }
-
-  private hasResult(match: Match): boolean {
-    return typeof match.result === 'string' && match.result.trim().length > 0;
-  }
-
-  private initializeSelectedRound(): void {
-    if (this.rounds.length === 0) {
-      this.selectedRoundNumber = 0;
-      return;
-    }
-
-    // Default to the first available round if none selected earlier
-    this.selectedRoundNumber = this.rounds[0].roundNumber;
   }
 }

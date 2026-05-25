@@ -74,18 +74,7 @@ export class LeagueResultsComponent implements OnInit {
         try {
           this.rounds = this.groupByRound(matches);
 
-          // place the most recent played round first
-          if (this.rounds.length > 0) {
-            const maxRound = Math.max(...this.rounds.map(r => r.roundNumber));
-            const idx = this.rounds.findIndex(r => r.roundNumber === maxRound);
-            if (idx > 0) {
-              const [r] = this.rounds.splice(idx, 1);
-              this.rounds.unshift(r);
-            }
-            this.selectedRoundNumber = maxRound;
-          } else {
-            this.initializeSelectedRound();
-          }
+          this.selectedRoundNumber = this.resolveCurrentRound(this.rounds)?.roundNumber ?? this.rounds[0]?.roundNumber ?? 0;
         } catch {
           this.rounds = [];
           this.error = 'Грешка при обради резултата.';
@@ -143,6 +132,54 @@ export class LeagueResultsComponent implements OnInit {
     return Array.from(map.entries())
       .sort(([a], [b]) => a - b)
       .map(([roundNumber, matches]) => ({ roundNumber, matches }));
+  }
+
+  private resolveCurrentRound(rounds: Round[], referenceDate = new Date()): Round | null {
+    const sortedRounds = [...rounds].sort((a, b) => a.roundNumber - b.roundNumber);
+    const weekBounds = this.getWeekBounds(referenceDate);
+
+    return (
+      sortedRounds.find((round) => this.roundIntersectsRange(round, weekBounds.start, weekBounds.end)) ??
+      [...sortedRounds]
+        .reverse()
+        .find((round) => {
+          const roundStart = this.getRoundStart(round);
+          return roundStart !== null && roundStart <= referenceDate;
+        }) ??
+      null
+    );
+  }
+
+  private getWeekBounds(referenceDate: Date): { start: Date; end: Date } {
+    const start = new Date(referenceDate);
+    start.setHours(0, 0, 0, 0);
+    const mondayOffset = (start.getDay() + 6) % 7;
+    start.setDate(start.getDate() - mondayOffset);
+
+    const end = new Date(start);
+    end.setDate(start.getDate() + 6);
+    end.setHours(23, 59, 59, 999);
+
+    return { start, end };
+  }
+
+  private roundIntersectsRange(round: Round, start: Date, end: Date): boolean {
+    return round.matches.some((match) => {
+      const date = new Date(match.scheduledAt);
+      return !Number.isNaN(date.getTime()) && date >= start && date <= end;
+    });
+  }
+
+  private getRoundStart(round: Round): Date | null {
+    const dates = round.matches
+      .map((match) => new Date(match.scheduledAt))
+      .filter((date) => !Number.isNaN(date.getTime()));
+
+    if (dates.length === 0) {
+      return null;
+    }
+
+    return dates.reduce((earliest, current) => (current < earliest ? current : earliest));
   }
 
   private initializeSelectedRound(): void {
