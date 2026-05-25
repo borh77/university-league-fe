@@ -19,8 +19,6 @@
   font-size: 1.2rem;
   margin: 0 0 0.65rem;
   color: var(--color-text);
-  padding-bottom: 0.25rem;
-  border-bottom: 2px solid var(--color-border);
 }
 
 .round-selector {
