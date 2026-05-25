@@ -88,34 +88,22 @@ export class LeagueScheduleComponent implements OnInit {
           this.resultsRounds = this.groupByRoundNoFilter(results);
           this.scheduleRounds = this.groupByRoundNoFilter(schedule);
 
-          // determine current round = last played round merged with schedule if present
-          const lastPlayed = this.resultsRounds.length > 0 ? Math.max(...this.resultsRounds.map(r => r.roundNumber)) : null;
-          const candidateCurrent = lastPlayed ?? (this.scheduleRounds.length > 0 ? this.scheduleRounds[0].roundNumber : null);
+          const selectedRounds = this.resolveCurrentAndNextRounds(this.scheduleRounds);
+          this.currentRound = selectedRounds.currentRound
+            ? this.mergeRounds(
+                this.resultsRounds.find((round) => round.roundNumber === selectedRounds.currentRound!.roundNumber) ?? null,
+                selectedRounds.currentRound,
+              )
+            : null;
+          this.nextRound = selectedRounds.nextRound;
 
-          if (candidateCurrent !== null) {
-            const resultsRound = this.resultsRounds.find(r => r.roundNumber === candidateCurrent) ?? null;
-            const scheduleRound = this.scheduleRounds.find(r => r.roundNumber === candidateCurrent) ?? null;
-            this.currentRound = this.mergeRounds(resultsRound, scheduleRound);
-          } else {
-            this.currentRound = null;
-          }
+          this.rounds = this.groupByRoundNoFilter(schedule);
 
-          // next round: schedule round with roundNumber = current + 1
           if (this.currentRound) {
-            this.nextRound = this.scheduleRounds.find(r => r.roundNumber === this.currentRound!.roundNumber + 1) ?? null;
-          } else {
-            this.nextRound = this.scheduleRounds.length > 0 ? this.scheduleRounds[0] : null;
-          }
-
-          // keep the old rounds list for manual selection (only upcoming without results)
-          this.rounds = this.groupByRound(schedule);
-
-          // if we detected a currentRound, move it to the front of the selector list
-          if (this.currentRound) {
-            const idx = this.rounds.findIndex(r => r.roundNumber === this.currentRound!.roundNumber);
+            const idx = this.rounds.findIndex((round) => round.roundNumber === this.currentRound!.roundNumber);
             if (idx > 0) {
-              const [r] = this.rounds.splice(idx, 1);
-              this.rounds.unshift(r);
+              const [round] = this.rounds.splice(idx, 1);
+              this.rounds.unshift(round);
             }
             this.selectedRoundNumber = this.currentRound!.roundNumber;
           } else {
@@ -159,7 +147,6 @@ export class LeagueScheduleComponent implements OnInit {
       .map(([roundNumber, matches]) => ({ roundNumber, matches }));
   }
 
-  // Group rounds without filtering out played matches (used for computing current round)
   private groupByRoundNoFilter(matches: Match[]): Round[] {
     const map = new Map<number, Match[]>();
     for (const match of matches ?? []) {
@@ -173,6 +160,100 @@ export class LeagueScheduleComponent implements OnInit {
     return Array.from(map.entries())
       .sort(([a], [b]) => a - b)
       .map(([roundNumber, matches]) => ({ roundNumber, matches }));
+  }
+
+  private resolveCurrentAndNextRounds(rounds: Round[], referenceDate = new Date()): {
+    currentRound: Round | null;
+    nextRound: Round | null;
+  } {
+    const sortedRounds = [...rounds].sort((a, b) => a.roundNumber - b.roundNumber);
+    const weekBounds = this.getWeekBounds(referenceDate);
+
+    const currentWeekRound = sortedRounds.find((round) => this.roundIntersectsRange(round, weekBounds.start, weekBounds.end));
+    const currentRound =
+      currentWeekRound ??
+      [...sortedRounds]
+        .reverse()
+        .find((round) => {
+          const roundStart = this.getRoundStart(round);
+          return roundStart !== null && roundStart <= referenceDate;
+        }) ??
+      null;
+
+    const currentEnd = currentRound ? this.getRoundEnd(currentRound) ?? weekBounds.end : weekBounds.end;
+    const nextRound =
+      sortedRounds.find((round) => {
+        const roundStart = this.getRoundStart(round);
+        return roundStart !== null && roundStart > currentEnd;
+      }) ?? null;
+
+    return { currentRound, nextRound };
+  }
+
+  private getWeekBounds(referenceDate: Date): { start: Date; end: Date } {
+    const start = new Date(referenceDate);
+    start.setHours(0, 0, 0, 0);
+    const mondayOffset = (start.getDay() + 6) % 7;
+    start.setDate(start.getDate() - mondayOffset);
+
+    const end = new Date(start);
+    end.setDate(start.getDate() + 6);
+    end.setHours(23, 59, 59, 999);
+
+    return { start, end };
+  }
+
+  private roundIntersectsRange(round: Round, start: Date, end: Date): boolean {
+    return round.matches.some((match) => {
+      const date = new Date(match.scheduledAt);
+      return !Number.isNaN(date.getTime()) && date >= start && date <= end;
+    });
+  }
+
+  private getRoundStart(round: Round): Date | null {
+    const dates = round.matches
+      .map((match) => new Date(match.scheduledAt))
+      .filter((date) => !Number.isNaN(date.getTime()));
+
+    if (dates.length === 0) {
+      return null;
+    }
+
+    return dates.reduce((earliest, current) => (current < earliest ? current : earliest));
+  }
+
+  private getRoundEnd(round: Round): Date | null {
+    const dates = round.matches
+      .map((match) => new Date(match.scheduledAt))
+      .filter((date) => !Number.isNaN(date.getTime()));
+
+    if (dates.length === 0) {
+      return null;
+    }
+
+    return dates.reduce((latest, current) => (current > latest ? current : latest));
+  }
+
+  private mergeRounds(resultsRound: Round | null, scheduleRound: Round | null): Round | null {
+    if (!resultsRound && !scheduleRound) {
+      return null;
+    }
+
+    const roundNumber = resultsRound?.roundNumber ?? scheduleRound!.roundNumber;
+    const matchMap = new Map<number, Match>();
+
+    scheduleRound?.matches.forEach((match) => {
+      matchMap.set(match.id, match);
+    });
+
+    resultsRound?.matches.forEach((match) => {
+      matchMap.set(match.id, match);
+    });
+
+    return {
+      roundNumber,
+      matches: Array.from(matchMap.values()),
+    };
   }
 
   private hasResult(match: Match): boolean {
