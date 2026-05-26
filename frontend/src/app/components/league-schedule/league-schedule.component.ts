@@ -79,7 +79,9 @@ export class LeagueScheduleComponent implements OnInit {
       )
       .subscribe(({ results, schedule }) => {
         try {
-          this.rounds = this.groupByRound(schedule);
+          // Show only matches without a recorded result (upcoming/not played yet)
+          const upcomingMatches = (schedule ?? []).filter((m) => !m?.result);
+          this.rounds = this.groupByRound(upcomingMatches);
           this.selectedRoundNumber = this.resolveCurrentRound(this.rounds)?.roundNumber ?? this.rounds[0]?.roundNumber ?? 0;
         } catch {
           this.rounds = [];
