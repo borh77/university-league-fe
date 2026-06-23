@@ -97,50 +97,6 @@
   margin-bottom: 0.5rem;
 }
 
-.playoff-section {
-  margin-top: 2.25rem;
-  padding-top: 1.25rem;
-  border-top: 1px solid var(--color-border);
-}
-
-.playoff-heading {
-  display: flex;
-  align-items: baseline;
-  gap: 0.65rem;
-  margin-bottom: 0.5rem;
-}
-
-.playoff-heading .round-title {
-  margin-bottom: 0;
-}
-
-.playoff-subtitle {
-  color: var(--color-text-muted);
-  font-size: 0.9rem;
-  font-weight: 600;
-  margin: 0 0 0.45rem;
-}
-
-.playoff-round + .playoff-round {
-  margin-top: 1rem;
-}
-
-.playoff-empty {
-  margin: 0.35rem 0 0;
-}
-
-.seed-badge {
-  flex: 0 0 auto;
-  border: 1px solid var(--color-border);
-  background: var(--color-surface-soft);
-  color: var(--color-text-muted);
-  border-radius: 4px;
-  padding: 0.12rem 0.35rem;
-  font-size: 0.72rem;
-  font-weight: 700;
-  line-height: 1;
-}
-
 .matches-table {
   width: 100%;
   border-collapse: collapse;
@@ -618,10 +574,6 @@ button.result-badge.open {
     line-height: 1.2;
   }
 
-  .seed-badge {
-    font-size: 0.66rem;
-    padding: 0.1rem 0.25rem;
-  }
 }
 
 @media (max-width: 768px) {
@@ -664,12 +616,6 @@ button.result-badge.open {
 
   .team-link {
     gap: 0.2rem;
-  }
-
-  .playoff-heading {
-    flex-direction: column;
-    gap: 0.15rem;
-    align-items: flex-start;
   }
 
   .team-col {

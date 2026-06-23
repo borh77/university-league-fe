@@ -66,12 +66,18 @@
       Стрелци
     </a>
     }
+    <a [routerLink]="['/leagues', currentLeagueId(), 'playoff']"
+       routerLinkActive="active"
+       class="page-link">
+      ПЛЕЈ-ОФ
+    </a>
     } @else {
     <span class="page-link disabled">Резултати</span>
     <span class="page-link disabled">Распоред</span>
     @if (isFootballSelected()) {
     <span class="page-link disabled">Стрелци</span>
     }
+    <span class="page-link disabled">ПЛЕЈ-ОФ</span>
     }
   </nav>
   <h1 class="visually-hidden">Univerzitetska liga 2026 Novi Sad - studentski sportovi</h1>

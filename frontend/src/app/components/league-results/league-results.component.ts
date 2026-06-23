@@ -4,7 +4,7 @@ import { CommonModule } from '@angular/common';
 import { catchError, of, finalize } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { LeagueService } from '../../services/league.service';
-import { Match, PlayoffGroup, groupPlayoffMatches, splitRegularAndPlayoff } from '../../models/match.model';
+import { Match, splitRegularAndPlayoff } from '../../models/match.model';
 
 interface Round {
   roundNumber: number;
@@ -25,7 +25,6 @@ export class LeagueResultsComponent implements OnInit {
   private readonly cdr = inject(ChangeDetectorRef);
 
   rounds: Round[] = [];
-  playoffGroups: PlayoffGroup[] = [];
   selectedRoundNumber = 0;
   loading = true;
   error: string | null = null;
@@ -49,7 +48,6 @@ export class LeagueResultsComponent implements OnInit {
     this.loading = true;
     this.error = null;
     this.rounds = [];
-    this.playoffGroups = [];
     this.expandedMatchId = null;
 
     const leagueId = Number(params.get('leagueId'));
@@ -76,12 +74,10 @@ export class LeagueResultsComponent implements OnInit {
         try {
           const split = splitRegularAndPlayoff(matches ?? []);
           this.rounds = this.groupByRound(split.regularSeasonMatches);
-          this.playoffGroups = groupPlayoffMatches(split.playoffMatches);
 
           this.selectedRoundNumber = this.resolveCurrentRound(this.rounds)?.roundNumber ?? this.rounds[0]?.roundNumber ?? 0;
         } catch {
           this.rounds = [];
-          this.playoffGroups = [];
           this.error = 'Грешка при обради резултата.';
         }
         this.cdr.detectChanges();

@@ -1,0 +1,72 @@
+<div class="playoff-container">
+  <h2 class="playoff-title">Плеј-оф</h2>
+
+  @if (loading) {
+    <p class="status-text">Учитавање плеј-офа...</p>
+  } @else if (error) {
+    <p class="status-text error">{{ error }}</p>
+  } @else if (playoffGroups.length === 0) {
+    <p class="status-text playoff-empty">
+      Плеј-оф ће бити генерисан након што се одиграју све утакмице регуларног дела.
+    </p>
+  } @else {
+    @for (group of playoffGroups; track group.stage) {
+      <section class="playoff-round">
+        <h3 class="round-title">{{ group.label }}</h3>
+        <table class="matches-table">
+          <thead>
+            <tr>
+              <th class="team-col home-col">Домаћин</th>
+              <th class="middle-col">Резултат / Термин</th>
+              <th class="team-col away-col">Гост</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (match of group.matches; track match.id) {
+              <tr class="match-row">
+                <td class="team-col home-col">
+                  <a [routerLink]="['/teams', match.homeTeamId]" class="team-link">
+                    @if (match.homeSeed !== null && match.homeSeed !== undefined) {
+                      <span class="seed-badge">{{ match.homeSeed }}. носилац</span>
+                    }
+                    <img
+                      [src]="match.homeTeamLogoUrl"
+                      [alt]="match.homeTeamName"
+                      class="team-logo"
+                      (error)="onLogoError($event)"
+                    />
+                    <span class="team-name">{{ match.homeTeamName }}</span>
+                  </a>
+                </td>
+
+                <td class="middle-col">
+                  @if (match.result) {
+                    <span class="result-badge">{{ match.result }}</span>
+                  } @else {
+                    <span class="vs-date">{{ match.scheduledAt | date : 'dd.MM.yyyy.' }}</span>
+                    <span class="vs-time">{{ match.scheduledAt | date : 'HH:mm' }}</span>
+                  }
+                </td>
+
+                <td class="team-col away-col">
+                  <a [routerLink]="['/teams', match.awayTeamId]" class="team-link">
+                    @if (match.awaySeed !== null && match.awaySeed !== undefined) {
+                      <span class="seed-badge">{{ match.awaySeed }}. носилац</span>
+                    }
+                    <img
+                      [src]="match.awayTeamLogoUrl"
+                      [alt]="match.awayTeamName"
+                      class="team-logo"
+                      (error)="onLogoError($event)"
+                    />
+                    <span class="team-name">{{ match.awayTeamName }}</span>
+                  </a>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </section>
+    }
+  }
+</div>

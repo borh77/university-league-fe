@@ -5,16 +5,8 @@
     <p class="status-text">Учитавање резултата...</p>
   } @else if (error) {
     <p class="status-text error">{{ error }}</p>
-  } @else if (rounds.length === 0 && playoffGroups.length === 0) {
+  } @else if (rounds.length === 0) {
     <p class="status-text">Нема одиграних мечева за ову лигу.</p>
-    <section class="round-section playoff-section">
-      <div class="playoff-heading">
-        <h3 class="round-title">Плеј-оф</h3>
-      </div>
-      <p class="status-text playoff-empty">
-        Плеј-оф ће бити генерисан након што се одиграју све утакмице регуларног дела.
-      </p>
-    </section>
   } @else {
     <div class="round-selector round-selector-desktop" aria-label="Избор кола">
       @for (round of rounds; track round.roundNumber) {
@@ -256,77 +248,5 @@
     } @else {
       <p class="status-text">Нема мечева за изабрано коло.</p>
     }
-
-    <section class="round-section playoff-section">
-      <div class="playoff-heading">
-        <h3 class="round-title">Плеј-оф</h3>
-      </div>
-
-      @if (playoffGroups.length > 0) {
-        @for (group of playoffGroups; track group.stage) {
-          <section class="playoff-round">
-            <h4 class="playoff-subtitle">{{ group.label }}</h4>
-            <table class="matches-table playoff-table">
-              <thead>
-                <tr>
-                  <th class="team-col home-col">Домаћин</th>
-                  <th class="result-col">Резултат</th>
-                  <th class="team-col away-col">Гост</th>
-                  <th class="date-col">Датум и време</th>
-                </tr>
-              </thead>
-              <tbody>
-                @for (match of group.matches; track match.id) {
-                  <tr class="match-row">
-                    <td class="team-col home-col">
-                      <a [routerLink]="['/teams', match.homeTeamId]" class="team-link">
-                        @if (match.homeSeed !== null && match.homeSeed !== undefined) {
-                        <span class="seed-badge">{{ match.homeSeed }}. носилац</span>
-                        }
-                        <img
-                          [src]="match.homeTeamLogoUrl"
-                          [alt]="match.homeTeamName"
-                          class="team-logo"
-                          (error)="onLogoError($event)"
-                        />
-                        <span class="team-name">{{ match.homeTeamName }}</span>
-                      </a>
-                    </td>
-                    <td class="result-col">
-                      @if (match.result) {
-                        <span class="result-badge">{{ match.result }}</span>
-                      } @else {
-                        <span class="result-placeholder">-</span>
-                      }
-                    </td>
-                    <td class="team-col away-col">
-                      <a [routerLink]="['/teams', match.awayTeamId]" class="team-link">
-                        @if (match.awaySeed !== null && match.awaySeed !== undefined) {
-                        <span class="seed-badge">{{ match.awaySeed }}. носилац</span>
-                        }
-                        <img
-                          [src]="match.awayTeamLogoUrl"
-                          [alt]="match.awayTeamName"
-                          class="team-logo"
-                          (error)="onLogoError($event)"
-                        />
-                        <span class="team-name">{{ match.awayTeamName }}</span>
-                      </a>
-                    </td>
-                    <td class="date-col">
-                      {{ match.scheduledAt | date : 'dd.MM.yyyy. HH:mm' }}
-                    </td>
-                  </tr>
-                }
-              </tbody>
-            </table>
-          </section>
-        }
-      } @else {
-        <p class="status-text playoff-empty">
-          Плеј-оф ће бити генерисан након што се одиграју све утакмице регуларног дела.
-        </p>
-      }
-    </section>
   }
 </div>

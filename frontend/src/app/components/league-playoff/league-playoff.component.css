@@ -1,11 +1,11 @@
-.schedule-container {
+.playoff-container {
   max-width: 900px;
   margin: 2rem auto;
   padding: 0 1rem;
   font-family: sans-serif;
 }
 
-.schedule-title {
+.playoff-title {
   font-size: 1.75rem;
   margin-bottom: 1.5rem;
   color: var(--color-text);
@@ -20,73 +20,11 @@
   color: var(--color-danger);
 }
 
-.round-selector {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  margin-bottom: 1rem;
+.playoff-empty {
+  margin-top: 0.35rem;
 }
 
-.round-selector-mobile {
-  display: none;
-  margin-bottom: 1rem;
-}
-
-.round-picker {
-  margin-top: 0.45rem;
-}
-
-.round-picker-toggle {
-  color: var(--color-text);
-  font-size: 0.86rem;
-  font-weight: 600;
-  cursor: pointer;
-}
-
-.round-picker-grid {
-  margin-top: 0.45rem;
-  display: grid;
-  grid-template-columns: repeat(6, minmax(0, 1fr));
-  gap: 0.35rem;
-}
-
-.round-picker-btn {
-  border: 1px solid var(--color-border);
-  background: var(--color-surface);
-  color: var(--color-text);
-  border-radius: 6px;
-  padding: 0.25rem 0;
-  font-size: 0.82rem;
-  font-weight: 600;
-  cursor: pointer;
-}
-
-.round-picker-btn.active {
-  background: var(--color-brand-tint);
-  border-color: var(--color-brand-soft);
-}
-
-.round-button {
-  border: 1px solid var(--color-border);
-  background: var(--color-surface);
-  color: var(--color-text);
-  border-radius: 6px;
-  padding: 0.4rem 0.75rem;
-  font-size: 0.9rem;
-  font-weight: 500;
-  cursor: pointer;
-}
-
-.round-button:hover {
-  border-color: var(--color-brand-soft);
-}
-
-.round-button.active {
-  background: var(--color-brand-tint);
-  border-color: var(--color-brand-soft);
-}
-
-.round-section {
+.playoff-round {
   margin-bottom: 2rem;
 }
 
@@ -137,34 +75,15 @@
   text-align: left;
 }
 
-.vs-col {
+.middle-col {
   width: 18%;
   text-align: center;
   color: var(--color-text-muted);
   font-weight: 600;
 }
 
-td.vs-col {
-  text-align: center;
+td.middle-col {
   padding-left: 0;
-}
-
-.vs-date {
-  display: block;
-  font-weight: 600;
-  font-size: 0.75rem;
-  color: var(--color-text-muted);
-  line-height: 1.2;
-  text-align: center;
-}
-
-.vs-time {
-  display: block;
-  margin-top: 0.06rem;
-  font-size: 0.75rem;
-  color: var(--color-text-muted);
-  line-height: 1.2;
-  text-align: center;
 }
 
 .team-link {
@@ -196,6 +115,44 @@ td.vs-col {
   font-size: 0.92rem;
 }
 
+.seed-badge {
+  flex: 0 0 auto;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface-soft);
+  color: var(--color-text-muted);
+  border-radius: 4px;
+  padding: 0.12rem 0.35rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.result-badge {
+  display: inline-block;
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--color-text);
+  background: var(--color-brand-tint);
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  padding: 0.15rem 0.5rem;
+  letter-spacing: 0.03em;
+}
+
+.vs-date,
+.vs-time {
+  display: block;
+  font-weight: 600;
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+  line-height: 1.2;
+  text-align: center;
+}
+
+.vs-time {
+  margin-top: 0.06rem;
+}
+
 @media (max-width: 880px) {
   .matches-table {
     table-layout: fixed;
@@ -224,30 +181,18 @@ td.vs-col {
     line-height: 1.2;
   }
 
+  .seed-badge {
+    font-size: 0.66rem;
+    padding: 0.1rem 0.25rem;
+  }
 }
 
 @media (max-width: 600px) {
-  .round-selector-desktop {
-    display: none;
-  }
-
-  .round-selector-mobile {
-    display: block;
-  }
-
-  .round-picker-grid {
-    grid-template-columns: repeat(5, minmax(0, 1fr));
-  }
-
-  .vs-col {
+  .middle-col {
     width: 24%;
-    white-space: normal;
   }
 
-  .vs-date {
-    font-size: 0.68rem;
-  }
-
+  .vs-date,
   .vs-time {
     font-size: 0.68rem;
   }
@@ -255,7 +200,6 @@ td.vs-col {
 
 @media (max-width: 420px) {
   .matches-table .team-logo {
-    display: inline-block;
     width: 16px;
     height: 16px;
   }
@@ -264,7 +208,7 @@ td.vs-col {
     width: 40%;
   }
 
-  .vs-col {
+  .middle-col {
     width: 20%;
   }
 
@@ -286,16 +230,5 @@ td.vs-col {
   .vs-date,
   .vs-time {
     font-size: 0.64rem;
-  }
-}
-
-@media (max-width: 344px) {
-  .team-name {
-    font-size: 0.78rem;
-  }
-
-  .vs-date,
-  .vs-time {
-    font-size: 0.6rem;
   }
 }

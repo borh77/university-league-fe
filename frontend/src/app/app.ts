@@ -104,6 +104,8 @@ export class App implements OnInit {
           } else {
             this.router.navigate(['/leagues', newLeagueId, 'results']);
           }
+        } else if (url.includes('/playoff')) {
+          this.router.navigate(['/leagues', newLeagueId, 'playoff']);
         }
         // na standings (/) ne treba navigacija - HomeComponent vec slusa selection$
       });
