@@ -64,63 +64,67 @@
   <section class="home-section playoff-section">
     <div class="playoff-heading">
       <h2 class="section-title">Плеј-оф</h2>
-      <span class="playoff-subtitle">Полуфинале</span>
     </div>
 
-    @if (playoffMatches.length > 0) {
-    <table class="matches-table playoff-table">
-      <thead>
-        <tr>
-          <th class="team-col home-col">Домаћин</th>
-          <th class="result-col">Резултат</th>
-          <th class="team-col away-col">Гост</th>
-        </tr>
-      </thead>
-      <tbody>
-        @for (match of playoffMatches; track match.id) {
-        <tr>
-          <td class="team-col home-col">
-            <a [routerLink]="['/teams', match.homeTeamId]" class="team-link">
-              @if (match.homeSeed) {
-              <span class="seed-badge">{{ match.homeSeed }}. носилац</span>
-              }
-              <img
-                [src]="match.homeTeamLogoUrl"
-                [alt]="match.homeTeamName"
-                class="team-logo"
-                (error)="onLogoError($event)"
-              />
-              <span class="team-name">{{ match.homeTeamName }}</span>
-            </a>
-          </td>
+    @if (playoffGroups.length > 0) {
+      @for (group of playoffGroups; track group.stage) {
+      <section class="playoff-round">
+        <h3 class="playoff-subtitle">{{ group.label }}</h3>
+        <table class="matches-table playoff-table">
+          <thead>
+            <tr>
+              <th class="team-col home-col">Домаћин</th>
+              <th class="result-col">Резултат</th>
+              <th class="team-col away-col">Гост</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (match of group.matches; track match.id) {
+            <tr>
+              <td class="team-col home-col">
+                <a [routerLink]="['/teams', match.homeTeamId]" class="team-link">
+                  @if (match.homeSeed !== null && match.homeSeed !== undefined) {
+                  <span class="seed-badge">{{ match.homeSeed }}. носилац</span>
+                  }
+                  <img
+                    [src]="match.homeTeamLogoUrl"
+                    [alt]="match.homeTeamName"
+                    class="team-logo"
+                    (error)="onLogoError($event)"
+                  />
+                  <span class="team-name">{{ match.homeTeamName }}</span>
+                </a>
+              </td>
 
-          <td class="result-col vs-col">
-            @if (match.result) {
-              <span class="result-badge">{{ match.result }}</span>
-            } @else {
-              <span class="vs-date">{{ match.scheduledAt | date : 'dd.MM.yyyy.' }}</span>
-              <span class="vs-time">{{ match.scheduledAt | date : 'HH:mm' }}</span>
+              <td class="result-col vs-col">
+                @if (match.result) {
+                  <span class="result-badge">{{ match.result }}</span>
+                } @else {
+                  <span class="vs-date">{{ match.scheduledAt | date : 'dd.MM.yyyy.' }}</span>
+                  <span class="vs-time">{{ match.scheduledAt | date : 'HH:mm' }}</span>
+                }
+              </td>
+
+              <td class="team-col away-col">
+                <a [routerLink]="['/teams', match.awayTeamId]" class="team-link">
+                  @if (match.awaySeed !== null && match.awaySeed !== undefined) {
+                  <span class="seed-badge">{{ match.awaySeed }}. носилац</span>
+                  }
+                  <img
+                    [src]="match.awayTeamLogoUrl"
+                    [alt]="match.awayTeamName"
+                    class="team-logo"
+                    (error)="onLogoError($event)"
+                  />
+                  <span class="team-name">{{ match.awayTeamName }}</span>
+                </a>
+              </td>
+            </tr>
             }
-          </td>
-
-          <td class="team-col away-col">
-            <a [routerLink]="['/teams', match.awayTeamId]" class="team-link">
-              @if (match.awaySeed) {
-              <span class="seed-badge">{{ match.awaySeed }}. носилац</span>
-              }
-              <img
-                [src]="match.awayTeamLogoUrl"
-                [alt]="match.awayTeamName"
-                class="team-logo"
-                (error)="onLogoError($event)"
-              />
-              <span class="team-name">{{ match.awayTeamName }}</span>
-            </a>
-          </td>
-        </tr>
-        }
-      </tbody>
-    </table>
+          </tbody>
+        </table>
+      </section>
+      }
     } @else {
     <p class="status-text playoff-empty">
       Плеј-оф ће бити генерисан након што се одиграју све утакмице регуларног дела.

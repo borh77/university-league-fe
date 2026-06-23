@@ -118,6 +118,11 @@
   color: var(--color-text-muted);
   font-size: 0.9rem;
   font-weight: 600;
+  margin: 0 0 0.45rem;
+}
+
+.playoff-round + .playoff-round {
+  margin-top: 1rem;
 }
 
 .playoff-empty {

@@ -4,7 +4,7 @@ import { CommonModule } from '@angular/common';
 import { catchError, of, finalize, forkJoin } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { LeagueService } from '../../services/league.service';
-import { Match, splitRegularAndPlayoff } from '../../models/match.model';
+import { Match, PlayoffGroup, groupPlayoffMatches, splitRegularAndPlayoff } from '../../models/match.model';
 
 interface Round {
   roundNumber: number;
@@ -25,7 +25,7 @@ export class LeagueScheduleComponent implements OnInit {
   private readonly cdr = inject(ChangeDetectorRef);
 
   rounds: Round[] = [];
-  playoffMatches: Match[] = [];
+  playoffGroups: PlayoffGroup[] = [];
   selectedRoundNumber = 0;
   loading = true;
   error: string | null = null;
@@ -48,7 +48,7 @@ export class LeagueScheduleComponent implements OnInit {
     this.loading = true;
     this.error = null;
     this.rounds = [];
-    this.playoffMatches = [];
+    this.playoffGroups = [];
 
     const leagueId = Number(params.get('leagueId'));
     if (!Number.isFinite(leagueId)) {
@@ -85,11 +85,11 @@ export class LeagueScheduleComponent implements OnInit {
           const upcomingMatches = (schedule ?? []).filter((m) => !m?.result);
           const split = splitRegularAndPlayoff(upcomingMatches);
           this.rounds = this.groupByRound(split.regularSeasonMatches);
-          this.playoffMatches = this.sortMatches(split.playoffMatches);
+          this.playoffGroups = groupPlayoffMatches(split.playoffMatches);
           this.selectedRoundNumber = this.resolveCurrentRound(this.rounds)?.roundNumber ?? this.rounds[0]?.roundNumber ?? 0;
         } catch {
           this.rounds = [];
-          this.playoffMatches = [];
+          this.playoffGroups = [];
           this.error = 'Грешка при обради распореда.';
         }
         this.cdr.detectChanges();
@@ -120,17 +120,6 @@ export class LeagueScheduleComponent implements OnInit {
     return Array.from(map.entries())
       .sort(([a], [b]) => a - b)
       .map(([roundNumber, matches]) => ({ roundNumber, matches }));
-  }
-
-  private sortMatches(matches: Match[]): Match[] {
-    return [...(matches ?? [])].sort((a, b) => {
-      const seedDiff = (a.homeSeed ?? 0) - (b.homeSeed ?? 0);
-      if (seedDiff !== 0) {
-        return seedDiff;
-      }
-
-      return new Date(a.scheduledAt).getTime() - new Date(b.scheduledAt).getTime();
-    });
   }
 
   private initializeSelectedRound(): void {

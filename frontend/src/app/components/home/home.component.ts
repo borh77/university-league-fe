@@ -6,7 +6,7 @@ import { LeagueService } from '../../services/league.service';
 import { SportKey, SportSelectionService, VolleyballGender } from '../../services/sport-selection.service';
 import { StandingsRow } from '../../models/standings-row.model';
 import { RouterLink } from '@angular/router';
-import { Match, splitRegularAndPlayoff } from '../../models/match.model';
+import { Match, PlayoffGroup, groupPlayoffMatches, splitRegularAndPlayoff } from '../../models/match.model';
 
 interface Round {
   roundNumber: number;
@@ -36,7 +36,7 @@ export class HomeComponent implements OnInit {
   rows: StandingsRow[] = [];
   resultsRounds: Round[] = [];
   scheduleRounds: Round[] = [];
-  playoffMatches: Match[] = [];
+  playoffGroups: PlayoffGroup[] = [];
   currentRound: Round | null = null;
   nextRound: Round | null = null;
   loading = true;
@@ -52,7 +52,7 @@ export class HomeComponent implements OnInit {
           this.rows = [];
           this.resultsRounds = [];
           this.scheduleRounds = [];
-          this.playoffMatches = [];
+          this.playoffGroups = [];
           this.currentRound = null;
           this.nextRound = null;
           this.cdr.detectChanges();
@@ -107,10 +107,10 @@ export class HomeComponent implements OnInit {
 
         this.resultsRounds = this.groupByRound(resultSplit.regularSeasonMatches);
         this.scheduleRounds = this.groupByRound(scheduleSplit.regularSeasonMatches);
-        this.playoffMatches = this.mergeMatches(
+        this.playoffGroups = groupPlayoffMatches(this.mergeMatches(
           scheduleSplit.playoffMatches,
           resultSplit.playoffMatches,
-        );
+        ));
 
         const selectedRounds = this.resolveCurrentAndNextRounds(this.scheduleRounds);
         this.currentRound = selectedRounds.currentRound
