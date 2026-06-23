@@ -21,6 +21,32 @@
   color: var(--color-text);
 }
 
+.playoff-section {
+  padding-top: 1rem;
+  border-top: 1px solid var(--color-border);
+}
+
+.playoff-heading {
+  display: flex;
+  align-items: baseline;
+  gap: 0.65rem;
+  margin-bottom: 0.65rem;
+}
+
+.playoff-heading .section-title {
+  margin-bottom: 0;
+}
+
+.playoff-subtitle {
+  color: var(--color-text-muted);
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.playoff-empty {
+  margin: 0.35rem 0 0;
+}
+
 .round-selector {
   display: flex;
   flex-wrap: wrap;
@@ -196,6 +222,18 @@ td.vs-col {
   letter-spacing: 0.03em;
 }
 
+.seed-badge {
+  flex: 0 0 auto;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface-soft);
+  color: var(--color-text-muted);
+  border-radius: 4px;
+  padding: 0.12rem 0.35rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
 .standings-table thead tr {
   background: var(--color-surface-soft);
   text-align: left;
@@ -338,6 +376,11 @@ td.vs-col {
     line-height: 1.2;
   }
 
+  .seed-badge {
+    font-size: 0.66rem;
+    padding: 0.1rem 0.25rem;
+  }
+
   .standings-table td:nth-child(2) a {
     overflow-wrap: break-word;
     word-break: normal;
@@ -448,6 +491,12 @@ td.vs-col {
 
   .matches-table .team-link {
     gap: 0.28rem;
+  }
+
+  .playoff-heading {
+    flex-direction: column;
+    gap: 0.15rem;
+    align-items: flex-start;
   }
 
   .matches-table .team-name,

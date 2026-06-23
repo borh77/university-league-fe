@@ -6,7 +6,7 @@ import { LeagueService } from '../../services/league.service';
 import { SportKey, SportSelectionService, VolleyballGender } from '../../services/sport-selection.service';
 import { StandingsRow } from '../../models/standings-row.model';
 import { RouterLink } from '@angular/router';
-import { Match } from '../../models/match.model';
+import { Match, splitRegularAndPlayoff } from '../../models/match.model';
 
 interface Round {
   roundNumber: number;
@@ -36,6 +36,7 @@ export class HomeComponent implements OnInit {
   rows: StandingsRow[] = [];
   resultsRounds: Round[] = [];
   scheduleRounds: Round[] = [];
+  playoffMatches: Match[] = [];
   currentRound: Round | null = null;
   nextRound: Round | null = null;
   loading = true;
@@ -51,6 +52,7 @@ export class HomeComponent implements OnInit {
           this.rows = [];
           this.resultsRounds = [];
           this.scheduleRounds = [];
+          this.playoffMatches = [];
           this.currentRound = null;
           this.nextRound = null;
           this.cdr.detectChanges();
@@ -100,8 +102,15 @@ export class HomeComponent implements OnInit {
       .subscribe((payload) => {
         this.rows = payload.standings ?? [];
 
-        this.resultsRounds = this.groupByRound(payload.results ?? []);
-        this.scheduleRounds = this.groupByRound(payload.schedule ?? []);
+        const resultSplit = splitRegularAndPlayoff(payload.results ?? []);
+        const scheduleSplit = splitRegularAndPlayoff(payload.schedule ?? []);
+
+        this.resultsRounds = this.groupByRound(resultSplit.regularSeasonMatches);
+        this.scheduleRounds = this.groupByRound(scheduleSplit.regularSeasonMatches);
+        this.playoffMatches = this.mergeMatches(
+          scheduleSplit.playoffMatches,
+          resultSplit.playoffMatches,
+        );
 
         const selectedRounds = this.resolveCurrentAndNextRounds(this.scheduleRounds);
         this.currentRound = selectedRounds.currentRound
@@ -255,6 +264,27 @@ export class HomeComponent implements OnInit {
       roundNumber,
       matches: Array.from(matchMap.values()),
     };
+  }
+
+  private mergeMatches(scheduleMatches: Match[], resultMatches: Match[]): Match[] {
+    const matchMap = new Map<number, Match>();
+
+    scheduleMatches.forEach((match) => {
+      matchMap.set(match.id, match);
+    });
+
+    resultMatches.forEach((match) => {
+      matchMap.set(match.id, match);
+    });
+
+    return Array.from(matchMap.values()).sort((a, b) => {
+      const seedDiff = (a.homeSeed ?? 0) - (b.homeSeed ?? 0);
+      if (seedDiff !== 0) {
+        return seedDiff;
+      }
+
+      return new Date(a.scheduledAt).getTime() - new Date(b.scheduledAt).getTime();
+    });
   }
 
   private resolveLeagueId(sport: SportKey, gender?: VolleyballGender): number | null {

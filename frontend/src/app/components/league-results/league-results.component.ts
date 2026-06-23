@@ -4,7 +4,7 @@ import { CommonModule } from '@angular/common';
 import { catchError, of, finalize } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { LeagueService } from '../../services/league.service';
-import { Match } from '../../models/match.model';
+import { Match, splitRegularAndPlayoff } from '../../models/match.model';
 
 interface Round {
   roundNumber: number;
@@ -25,6 +25,7 @@ export class LeagueResultsComponent implements OnInit {
   private readonly cdr = inject(ChangeDetectorRef);
 
   rounds: Round[] = [];
+  playoffMatches: Match[] = [];
   selectedRoundNumber = 0;
   loading = true;
   error: string | null = null;
@@ -48,6 +49,7 @@ export class LeagueResultsComponent implements OnInit {
     this.loading = true;
     this.error = null;
     this.rounds = [];
+    this.playoffMatches = [];
     this.expandedMatchId = null;
 
     const leagueId = Number(params.get('leagueId'));
@@ -72,11 +74,14 @@ export class LeagueResultsComponent implements OnInit {
       )
       .subscribe((matches) => {
         try {
-          this.rounds = this.groupByRound(matches);
+          const split = splitRegularAndPlayoff(matches ?? []);
+          this.rounds = this.groupByRound(split.regularSeasonMatches);
+          this.playoffMatches = this.sortMatches(split.playoffMatches);
 
           this.selectedRoundNumber = this.resolveCurrentRound(this.rounds)?.roundNumber ?? this.rounds[0]?.roundNumber ?? 0;
         } catch {
           this.rounds = [];
+          this.playoffMatches = [];
           this.error = 'Грешка при обради резултата.';
         }
         this.cdr.detectChanges();
@@ -132,6 +137,17 @@ export class LeagueResultsComponent implements OnInit {
     return Array.from(map.entries())
       .sort(([a], [b]) => a - b)
       .map(([roundNumber, matches]) => ({ roundNumber, matches }));
+  }
+
+  private sortMatches(matches: Match[]): Match[] {
+    return [...(matches ?? [])].sort((a, b) => {
+      const seedDiff = (a.homeSeed ?? 0) - (b.homeSeed ?? 0);
+      if (seedDiff !== 0) {
+        return seedDiff;
+      }
+
+      return new Date(a.scheduledAt).getTime() - new Date(b.scheduledAt).getTime();
+    });
   }
 
   private resolveCurrentRound(rounds: Round[], referenceDate = new Date()): Round | null {
