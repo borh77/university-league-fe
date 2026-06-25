@@ -5,6 +5,7 @@ import { catchError, of, finalize } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { LeagueService } from '../../services/league.service';
 import { Match, splitRegularAndPlayoff } from '../../models/match.model';
+import { MatchResultDetailComponent } from '../shared/match-result-detail/match-result-detail.component';
 
 interface Round {
   roundNumber: number;
@@ -14,7 +15,7 @@ interface Round {
 @Component({
   selector: 'app-league-results',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, MatchResultDetailComponent],
   templateUrl: './league-results.component.html',
   styleUrl: './league-results.component.css',
 })
@@ -95,22 +96,6 @@ export class LeagueResultsComponent implements OnInit {
 
   hasDetail(match: Match): boolean {
     return !!(match.goals?.length || match.quarters?.length || match.sets?.length);
-  }
-
-  parseTotalScore(result: string | null | undefined): [number, number] {
-    const parts = result?.split(':') ?? [];
-    return [parseInt(parts[0] ?? '0', 10), parseInt(parts[1] ?? '0', 10)];
-  }
-
-  getFirstHalfScore(match: Match): [number, number] {
-    const firstHalf = (match.quarters ?? []).find((q) => q.quarterNumber === 1) ?? match.quarters?.[0] ?? null;
-    return [firstHalf?.homeScore ?? 0, firstHalf?.awayScore ?? 0];
-  }
-
-  getSecondHalfScore(match: Match): [number, number] {
-    const [totalHome, totalAway] = this.parseTotalScore(match.result);
-    const [firstHalfHome, firstHalfAway] = this.getFirstHalfScore(match);
-    return [totalHome - firstHalfHome, totalAway - firstHalfAway];
   }
 
   onLogoError(event: Event): void {

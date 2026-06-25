@@ -139,6 +139,48 @@ td.middle-col {
   letter-spacing: 0.03em;
 }
 
+button.result-badge {
+  border: 1px solid var(--color-border);
+  background: var(--color-brand-tint);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--color-text);
+  border-radius: 4px;
+  padding: 0.15rem 0.5rem;
+  letter-spacing: 0.03em;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+button.result-badge:hover {
+  background: #dbeafe;
+  border-color: var(--color-brand-soft);
+}
+
+button.result-badge.open {
+  background: #d6e9ff;
+  border-color: var(--color-brand-soft);
+}
+
+.expand-icon {
+  font-size: 0.6rem;
+  opacity: 0.6;
+}
+
+.match-row.expanded-row {
+  border-bottom: none !important;
+}
+
+.detail-row td {
+  padding: 0;
+  background: #f6f9ff;
+  border-bottom: 1px solid var(--color-border);
+  overflow: visible;
+}
+
 .vs-date,
 .vs-time {
   display: block;
@@ -230,5 +272,17 @@ td.middle-col {
   .vs-date,
   .vs-time {
     font-size: 0.64rem;
+  }
+
+  .result-badge,
+  button.result-badge {
+    font-size: 0.78rem;
+    padding: 0.08rem 0.2rem;
+    letter-spacing: 0;
+    gap: 0.1rem;
+  }
+
+  .expand-icon {
+    font-size: 0.5rem;
   }
 }

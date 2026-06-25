@@ -23,7 +23,7 @@
           </thead>
           <tbody>
             @for (match of group.matches; track match.id) {
-              <tr class="match-row">
+              <tr class="match-row" [class.expanded-row]="expandedMatchId === match.id">
                 <td class="team-col home-col">
                   <a [routerLink]="['/teams', match.homeTeamId]" class="team-link">
                     @if (match.homeSeed !== null && match.homeSeed !== undefined) {
@@ -41,7 +41,20 @@
 
                 <td class="middle-col">
                   @if (match.result) {
-                    <span class="result-badge">{{ match.result }}</span>
+                    @if (hasDetail(match)) {
+                      <button
+                        type="button"
+                        class="result-badge expandable"
+                        [class.open]="expandedMatchId === match.id"
+                        (click)="toggleMatch(match.id)"
+                        [attr.aria-expanded]="expandedMatchId === match.id"
+                      >
+                        {{ match.result }}
+                        <span class="expand-icon">{{ expandedMatchId === match.id ? '▲' : '▼' }}</span>
+                      </button>
+                    } @else {
+                      <span class="result-badge">{{ match.result }}</span>
+                    }
                   } @else {
                     <span class="vs-date">{{ match.scheduledAt | date : 'dd.MM.yyyy.' }}</span>
                     <span class="vs-time">{{ match.scheduledAt | date : 'HH:mm' }}</span>
@@ -63,6 +76,14 @@
                   </a>
                 </td>
               </tr>
+
+              @if (expandedMatchId === match.id && hasDetail(match)) {
+                <tr class="detail-row">
+                  <td colspan="3">
+                    <app-match-result-detail [match]="match"></app-match-result-detail>
+                  </td>
+                </tr>
+              }
             }
           </tbody>
         </table>
