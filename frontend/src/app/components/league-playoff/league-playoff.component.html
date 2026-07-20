@@ -48,6 +48,7 @@
                         [class.open]="expandedMatchId === match.id"
                         (click)="toggleMatch(match.id)"
                         [attr.aria-expanded]="expandedMatchId === match.id"
+                        [attr.aria-label]="getDetailsLabel(match)"
                       >
                         {{ match.result }}
                         <span class="expand-icon">{{ expandedMatchId === match.id ? '▲' : '▼' }}</span>
@@ -87,6 +88,78 @@
             }
           </tbody>
         </table>
+
+        <div class="playoff-card-list">
+          @for (match of group.matches; track match.id) {
+            <article class="match-card" [class.expanded-card]="expandedMatchId === match.id">
+              <div class="match-card-main">
+                <a [routerLink]="['/teams', match.homeTeamId]" class="card-team card-home">
+                  @if (match.homeSeed !== null && match.homeSeed !== undefined) {
+                    <span class="seed-badge">{{ match.homeSeed }}. носилац</span>
+                  }
+                  <span class="team-identity">
+                    <img
+                      [src]="match.homeTeamLogoUrl"
+                      [alt]="match.homeTeamName"
+                      class="team-logo"
+                      (error)="onLogoError($event)"
+                    />
+                    <span class="team-name">{{ match.homeTeamName }}</span>
+                  </span>
+                </a>
+
+                <div class="card-score">
+                  @if (match.result) {
+                    @if (hasDetail(match)) {
+                      <button
+                        type="button"
+                        class="card-result-button"
+                        [class.open]="expandedMatchId === match.id"
+                        (click)="toggleMatch(match.id)"
+                        [attr.aria-expanded]="expandedMatchId === match.id"
+                        [attr.aria-label]="getDetailsLabel(match)"
+                      >
+                        <span class="card-result">{{ match.result }}</span>
+                        <span class="card-detail-hint">
+                          {{ expandedMatchId === match.id ? 'Сакриј' : 'Детаљи' }}
+                          <span class="expand-icon">{{ expandedMatchId === match.id ? '▲' : '▼' }}</span>
+                        </span>
+                      </button>
+                    } @else {
+                      <span class="card-result">{{ match.result }}</span>
+                    }
+                  } @else {
+                    <span class="card-scheduled">
+                      <span>{{ match.scheduledAt | date : 'dd.MM.yyyy.' }}</span>
+                      <span>{{ match.scheduledAt | date : 'HH:mm' }}</span>
+                    </span>
+                  }
+                </div>
+
+                <a [routerLink]="['/teams', match.awayTeamId]" class="card-team card-away">
+                  @if (match.awaySeed !== null && match.awaySeed !== undefined) {
+                    <span class="seed-badge">{{ match.awaySeed }}. носилац</span>
+                  }
+                  <span class="team-identity">
+                    <img
+                      [src]="match.awayTeamLogoUrl"
+                      [alt]="match.awayTeamName"
+                      class="team-logo"
+                      (error)="onLogoError($event)"
+                    />
+                    <span class="team-name">{{ match.awayTeamName }}</span>
+                  </span>
+                </a>
+              </div>
+
+              @if (expandedMatchId === match.id && hasDetail(match)) {
+                <div class="card-detail">
+                  <app-match-result-detail [match]="match"></app-match-result-detail>
+                </div>
+              }
+            </article>
+          }
+        </div>
       </section>
     }
   }
