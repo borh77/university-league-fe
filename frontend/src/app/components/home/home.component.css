@@ -511,6 +511,19 @@ td.vs-col {
   }
 }
 
+@media (max-width: 412px) {
+  .standings-table .col-team,
+  .standings-table.football-table .col-team {
+    width: 9rem;
+    min-width: 9rem;
+  }
+
+  .standings-table .team-link-standings span {
+    overflow-wrap: normal;
+    word-break: normal;
+  }
+}
+
 @media (max-width: 344px) {
   .standings-table th,
   .standings-table td,
@@ -525,8 +538,8 @@ td.vs-col {
   }
 
   .standings-table.football-table .col-team {
-    width: 6.6rem;
-    min-width: 6.6rem;
+    width: 8.75rem;
+    min-width: 8.75rem;
   }
 
   .standings-table.football-table .col-stat {
@@ -576,7 +589,7 @@ td.vs-col {
 .team-link-standings span {
   display: block;
   white-space: normal;
-  overflow-wrap: anywhere;
-  word-break: break-word;
+  overflow-wrap: break-word;
+  word-break: normal;
   line-height: 1.15;
 }

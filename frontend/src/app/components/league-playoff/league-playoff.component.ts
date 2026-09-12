@@ -48,6 +48,11 @@ export class LeaguePlayoffComponent implements OnInit {
     return !!(match.goals?.length || match.quarters?.length || match.sets?.length);
   }
 
+  getDetailsLabel(match: Match): string {
+    const action = this.expandedMatchId === match.id ? 'Sakrij' : 'Prikaži';
+    return `${action} detalje meča ${match.homeTeamName} - ${match.awayTeamName}`;
+  }
+
   private loadPlayoff(params: ParamMap): void {
     this.loading = true;
     this.error = null;
