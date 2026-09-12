@@ -129,15 +129,23 @@
 }
 
 .quarter-row {
-  display: grid;
-  grid-template-columns: 1fr auto auto auto;
+  display: flex;
   align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
   gap: 0.5rem;
 }
 
 .quarter-label {
   font-size: 0.88rem;
   color: var(--color-text);
+}
+
+.quarter-steppers {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-shrink: 0;
 }
 
 .quarter-sep {
@@ -285,13 +293,22 @@
     padding: 0 0.6rem 1.5rem;
   }
 
-  .quarter-row {
-    grid-template-columns: 1fr auto auto auto;
-    gap: 0.35rem;
-  }
-
   .score-section,
   .players-section {
     padding: 0.75rem;
+  }
+}
+
+/* Ispod ~400px naziv i steperi ne staju u isti red (dva stepera ~118px + dvotačka) */
+@media (max-width: 400px) {
+  .quarter-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.35rem;
+  }
+
+  .quarter-steppers {
+    width: 100%;
+    justify-content: center;
   }
 }

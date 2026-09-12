@@ -56,15 +56,17 @@
           @for (q of quarters; track q.quarterNumber) {
             <div class="quarter-row">
               <span class="quarter-label">Четвртина {{ q.quarterNumber }}</span>
-              <app-number-stepper
-                [value]="q.homeScore"
-                (valueChange)="setQuarterHome($index, $event)"
-              ></app-number-stepper>
-              <span class="quarter-sep">:</span>
-              <app-number-stepper
-                [value]="q.awayScore"
-                (valueChange)="setQuarterAway($index, $event)"
-              ></app-number-stepper>
+              <div class="quarter-steppers">
+                <app-number-stepper
+                  [value]="q.homeScore"
+                  (valueChange)="setQuarterHome($index, $event)"
+                ></app-number-stepper>
+                <span class="quarter-sep">:</span>
+                <app-number-stepper
+                  [value]="q.awayScore"
+                  (valueChange)="setQuarterAway($index, $event)"
+                ></app-number-stepper>
+              </div>
             </div>
           }
         </div>
@@ -129,15 +131,17 @@
           @for (s of sets; track s.setNumber) {
             <div class="quarter-row">
               <span class="quarter-label">Сет {{ s.setNumber }}</span>
-              <app-number-stepper
-                [value]="s.homeScore"
-                (valueChange)="setSetHome($index, $event)"
-              ></app-number-stepper>
-              <span class="quarter-sep">:</span>
-              <app-number-stepper
-                [value]="s.awayScore"
-                (valueChange)="setSetAway($index, $event)"
-              ></app-number-stepper>
+              <div class="quarter-steppers">
+                <app-number-stepper
+                  [value]="s.homeScore"
+                  (valueChange)="setSetHome($index, $event)"
+                ></app-number-stepper>
+                <span class="quarter-sep">:</span>
+                <app-number-stepper
+                  [value]="s.awayScore"
+                  (valueChange)="setSetAway($index, $event)"
+                ></app-number-stepper>
+              </div>
             </div>
           }
         </div>
