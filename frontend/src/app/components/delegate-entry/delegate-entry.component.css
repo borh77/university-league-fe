@@ -1,0 +1,261 @@
+.delegate-container {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 0 1rem 2rem;
+}
+
+.delegate-title {
+  font-size: 1.5rem;
+  color: var(--color-text);
+  margin-bottom: 0.75rem;
+}
+
+.status-text {
+  color: var(--color-text-muted);
+  font-size: 1rem;
+}
+
+.status-text.error {
+  color: var(--color-danger);
+}
+
+.status-text.success {
+  color: var(--color-brand-strong);
+  font-weight: 600;
+}
+
+.match-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.match-card {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding: 0.9rem 1rem;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  box-shadow: var(--shadow-soft);
+  text-align: left;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.match-card:active {
+  background: var(--color-brand-tint);
+}
+
+.match-round {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+}
+
+.match-teams {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 600;
+  color: var(--color-text);
+  flex-wrap: wrap;
+}
+
+.match-vs {
+  color: var(--color-text-muted);
+}
+
+.match-date {
+  font-size: 0.82rem;
+  color: var(--color-text-muted);
+}
+
+.back-button {
+  border: none;
+  background: none;
+  color: var(--color-brand);
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0.4rem 0;
+}
+
+.form-header {
+  margin-bottom: 1rem;
+}
+
+.match-subtitle {
+  color: var(--color-text-muted);
+  font-size: 0.88rem;
+  margin: 0.2rem 0 0;
+}
+
+.score-section,
+.players-section {
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  box-shadow: var(--shadow-soft);
+}
+
+.section-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--color-text);
+  margin: 0 0 0.6rem;
+}
+
+.score-live {
+  font-size: 2rem;
+  font-weight: 800;
+  text-align: center;
+  color: var(--color-brand-strong);
+  margin-bottom: 0.75rem;
+}
+
+.quarters-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+}
+
+.quarter-row {
+  display: grid;
+  grid-template-columns: 1fr auto auto auto;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.quarter-label {
+  font-size: 0.88rem;
+  color: var(--color-text);
+}
+
+.quarter-sep {
+  color: var(--color-text-muted);
+  font-weight: 700;
+}
+
+.link-button {
+  border: 1px dashed var(--color-brand-soft);
+  background: none;
+  color: var(--color-brand);
+  font-size: 0.88rem;
+  font-weight: 600;
+  padding: 0.5rem 0.9rem;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-top: 0.7rem;
+}
+
+.link-button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.set-controls {
+  display: flex;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+
+.points-sum {
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+  margin: 0 0 0.6rem;
+}
+
+.points-sum.mismatch {
+  color: var(--color-danger);
+  font-weight: 700;
+}
+
+.players-section app-number-stepper {
+  display: block;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.players-section app-number-stepper:last-of-type {
+  border-bottom: none;
+}
+
+.goals-team-title {
+  font-size: 0.9rem;
+  color: var(--color-text);
+  margin: 0.9rem 0 0.4rem;
+}
+
+.goal-row {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 0.5rem;
+}
+
+.goal-select {
+  flex: 1;
+  min-width: 0;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  padding: 0.5rem;
+  font-size: 0.92rem;
+  color: var(--color-text);
+  background: var(--color-surface);
+}
+
+.remove-goal-btn {
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  color: var(--color-danger);
+  border-radius: 50%;
+  width: 2.2rem;
+  height: 2.2rem;
+  font-size: 1rem;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.submit-button {
+  width: 100%;
+  border: 1px solid var(--color-brand-soft);
+  background: var(--color-brand-strong);
+  color: #ffffff;
+  border-radius: 8px;
+  padding: 0.9rem 1rem;
+  font-size: 1.05rem;
+  font-weight: 700;
+  cursor: pointer;
+  position: sticky;
+  bottom: 0.75rem;
+}
+
+.submit-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+@media (max-width: 480px) {
+  .delegate-container {
+    padding: 0 0.6rem 1.5rem;
+  }
+
+  .quarter-row {
+    grid-template-columns: 1fr auto auto auto;
+    gap: 0.35rem;
+  }
+
+  .score-section,
+  .players-section {
+    padding: 0.75rem;
+  }
+}

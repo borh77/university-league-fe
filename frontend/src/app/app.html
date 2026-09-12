@@ -82,6 +82,13 @@
        class="page-link">
       ПЛЕЈ-ОФ
     </a>
+    @if (auth.isDelegate() || auth.isAdmin()) {
+    <a [routerLink]="['/leagues', currentLeagueId(), 'delegate']"
+       routerLinkActive="active"
+       class="page-link">
+      Унос резултата
+    </a>
+    }
     } @else {
     <span class="page-link disabled">Резултати</span>
     <span class="page-link disabled">Распоред</span>

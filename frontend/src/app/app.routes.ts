@@ -6,6 +6,8 @@ import { LeaguePlayoffComponent } from './components/league-playoff/league-playo
 import { TeamDetailComponent } from './components/team-detail/team-detail.component';
 import { HomeComponent } from './components/home/home.component';
 import { LoginComponent } from './components/login/login.component';
+import { DelegateEntryComponent } from './components/delegate-entry/delegate-entry.component';
+import { roleGuard } from './guards/role.guard';
 
 export const routes: Routes = [
   {
@@ -36,6 +38,11 @@ export const routes: Routes = [
   {
     path: 'login',
     component: LoginComponent,
+  },
+  {
+    path: 'leagues/:leagueId/delegate',
+    component: DelegateEntryComponent,
+    canActivate: [roleGuard(['Delegate', 'Admin'])],
   },
 
 ];
