@@ -1,0 +1,18 @@
+<div class="stepper">
+  @if (label) {
+    <span class="stepper-label">{{ label }}</span>
+  }
+  <div class="stepper-controls">
+    <button
+      type="button"
+      class="stepper-btn"
+      [disabled]="value <= min"
+      (click)="decrement()"
+      aria-label="Умањи"
+    >
+      −
+    </button>
+    <span class="stepper-value">{{ value }}</span>
+    <button type="button" class="stepper-btn" (click)="increment()" aria-label="Увећај">+</button>
+  </div>
+</div>
