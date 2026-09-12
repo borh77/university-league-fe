@@ -7,6 +7,7 @@ import { TeamDetailComponent } from './components/team-detail/team-detail.compon
 import { HomeComponent } from './components/home/home.component';
 import { LoginComponent } from './components/login/login.component';
 import { DelegateEntryComponent } from './components/delegate-entry/delegate-entry.component';
+import { AdminScheduleComponent } from './components/admin-schedule/admin-schedule.component';
 import { roleGuard } from './guards/role.guard';
 
 export const routes: Routes = [
@@ -43,6 +44,11 @@ export const routes: Routes = [
     path: 'leagues/:leagueId/delegate',
     component: DelegateEntryComponent,
     canActivate: [roleGuard(['Delegate', 'Admin'])],
+  },
+  {
+    path: 'admin/schedule',
+    component: AdminScheduleComponent,
+    canActivate: [roleGuard(['Admin'])],
   },
 
 ];

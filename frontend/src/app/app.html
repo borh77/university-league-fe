@@ -97,6 +97,12 @@
     }
     <span class="page-link disabled">ПЛЕЈ-ОФ</span>
     }
+
+    @if (auth.isAdmin()) {
+    <a routerLink="/admin/schedule" routerLinkActive="active" class="page-link">
+      Администрација
+    </a>
+    }
   </nav>
   <h1 class="visually-hidden">Univerzitetska liga 2026 Novi Sad - studentski sportovi</h1>
 </header>

@@ -1,0 +1,241 @@
+<div class="result-form">
+  @if (match.sport === 'Basketball') {
+    <section class="score-section">
+      <h3 class="section-title">Резултат по четвртинама</h3>
+      <div class="score-live">{{ basketballHomeScore }} : {{ basketballAwayScore }}</div>
+
+      <div class="quarters-grid">
+        @for (q of quarters; track q.quarterNumber) {
+          <div class="quarter-row">
+            <span class="quarter-label">Четвртина {{ q.quarterNumber }}</span>
+            <div class="quarter-steppers">
+              <app-number-stepper
+                [value]="q.homeScore"
+                (valueChange)="setQuarterHome($index, $event)"
+              ></app-number-stepper>
+              <span class="quarter-sep">:</span>
+              <app-number-stepper
+                [value]="q.awayScore"
+                (valueChange)="setQuarterAway($index, $event)"
+              ></app-number-stepper>
+            </div>
+          </div>
+        }
+      </div>
+      <button type="button" class="link-button" (click)="addOvertimeQuarter()">
+        + Продужетак
+      </button>
+    </section>
+
+    <section class="players-section">
+      <h3 class="section-title">Поени по играчу — {{ match.homeTeamName }}</h3>
+      <p class="points-sum" [class.mismatch]="homePointsSum !== basketballHomeScore">
+        Збир: {{ homePointsSum }} / {{ basketballHomeScore }}
+      </p>
+      @for (row of homePlayerPoints; track row.player.id) {
+        <div class="player-row">
+          <label class="played-check">
+            <input
+              type="checkbox"
+              [checked]="row.played"
+              (change)="toggleHomePlayed($index, $any($event.target).checked)"
+            />
+            играо
+          </label>
+          <app-number-stepper
+            [label]="playerLabel(row.player)"
+            [value]="row.points"
+            (valueChange)="setHomePoints($index, $event)"
+          ></app-number-stepper>
+        </div>
+      }
+
+      <h3 class="section-title">Поени по играчу — {{ match.awayTeamName }}</h3>
+      <p class="points-sum" [class.mismatch]="awayPointsSum !== basketballAwayScore">
+        Збир: {{ awayPointsSum }} / {{ basketballAwayScore }}
+      </p>
+      @for (row of awayPlayerPoints; track row.player.id) {
+        <div class="player-row">
+          <label class="played-check">
+            <input
+              type="checkbox"
+              [checked]="row.played"
+              (change)="toggleAwayPlayed($index, $any($event.target).checked)"
+            />
+            играо
+          </label>
+          <app-number-stepper
+            [label]="playerLabel(row.player)"
+            [value]="row.points"
+            (valueChange)="setAwayPoints($index, $event)"
+          ></app-number-stepper>
+        </div>
+      }
+    </section>
+  }
+
+  @if (match.sport === 'Volleyball') {
+    <section class="score-section">
+      <h3 class="section-title">Сетови</h3>
+      <div class="score-live">{{ volleyballHomeSets }} : {{ volleyballAwaySets }}</div>
+
+      <div class="quarters-grid">
+        @for (s of sets; track s.setNumber) {
+          <div class="quarter-row">
+            <span class="quarter-label">Сет {{ s.setNumber }}</span>
+            <div class="quarter-steppers">
+              <app-number-stepper
+                [value]="s.homeScore"
+                (valueChange)="setSetHome($index, $event)"
+              ></app-number-stepper>
+              <span class="quarter-sep">:</span>
+              <app-number-stepper
+                [value]="s.awayScore"
+                (valueChange)="setSetAway($index, $event)"
+              ></app-number-stepper>
+            </div>
+          </div>
+        }
+      </div>
+
+      @if (hasTiedSet) {
+        <p class="status-text error">Сет не може да се заврши нерешено.</p>
+      } @else if (!volleyballMatchComplete) {
+        <p class="status-text error">Меч није завршен — потребна су три добијена сета.</p>
+      }
+
+      <div class="set-controls">
+        <button type="button" class="link-button" (click)="addSet()" [disabled]="sets.length >= 5">
+          + Сет
+        </button>
+        <button type="button" class="link-button" (click)="removeSet()" [disabled]="sets.length <= 1">
+          − Уклони сет
+        </button>
+      </div>
+    </section>
+
+    <section class="players-section">
+      <h3 class="section-title">Поени по играчу — {{ match.homeTeamName }}</h3>
+      <p class="points-sum" [class.mismatch]="homePointsSum !== volleyballHomePoints">
+        Збир: {{ homePointsSum }} / {{ volleyballHomePoints }}
+      </p>
+      @for (row of homePlayerPoints; track row.player.id) {
+        <div class="player-row">
+          <label class="played-check">
+            <input
+              type="checkbox"
+              [checked]="row.played"
+              (change)="toggleHomePlayed($index, $any($event.target).checked)"
+            />
+            играо
+          </label>
+          <app-number-stepper
+            [label]="playerLabel(row.player)"
+            [value]="row.points"
+            (valueChange)="setHomePoints($index, $event)"
+          ></app-number-stepper>
+        </div>
+      }
+
+      <h3 class="section-title">Поени по играчу — {{ match.awayTeamName }}</h3>
+      <p class="points-sum" [class.mismatch]="awayPointsSum !== volleyballAwayPoints">
+        Збир: {{ awayPointsSum }} / {{ volleyballAwayPoints }}
+      </p>
+      @for (row of awayPlayerPoints; track row.player.id) {
+        <div class="player-row">
+          <label class="played-check">
+            <input
+              type="checkbox"
+              [checked]="row.played"
+              (change)="toggleAwayPlayed($index, $any($event.target).checked)"
+            />
+            играо
+          </label>
+          <app-number-stepper
+            [label]="playerLabel(row.player)"
+            [value]="row.points"
+            (valueChange)="setAwayPoints($index, $event)"
+          ></app-number-stepper>
+        </div>
+      }
+    </section>
+  }
+
+  @if (match.sport === 'Football') {
+    <section class="score-section">
+      <h3 class="section-title">Голови</h3>
+      <div class="score-live">{{ footballHomeGoals }} : {{ footballAwayGoals }}</div>
+
+      <h4 class="goals-team-title">{{ match.homeTeamName }}</h4>
+      @for (row of goalRows; track $index) {
+        @if (row.isHomeTeamGoal) {
+          <div class="goal-row">
+            <select
+              class="goal-select"
+              [value]="row.playerId"
+              (change)="setGoalPlayer($index, +$any($event.target).value)"
+            >
+              @for (player of match.homeRoster; track player.id) {
+                <option [value]="player.id">{{ playerLabel(player) }}</option>
+              }
+            </select>
+            <app-number-stepper
+              [value]="row.minute"
+              [min]="1"
+              (valueChange)="setGoalMinute($index, $event)"
+            ></app-number-stepper>
+            <button type="button" class="remove-goal-btn" (click)="removeGoal($index)" aria-label="Уклони гол">
+              ✕
+            </button>
+          </div>
+        }
+      }
+      <button type="button" class="link-button" (click)="addGoal(true)">+ Гол ({{ match.homeTeamName }})</button>
+
+      <h4 class="goals-team-title">{{ match.awayTeamName }}</h4>
+      @for (row of goalRows; track $index) {
+        @if (!row.isHomeTeamGoal) {
+          <div class="goal-row">
+            <select
+              class="goal-select"
+              [value]="row.playerId"
+              (change)="setGoalPlayer($index, +$any($event.target).value)"
+            >
+              @for (player of match.awayRoster; track player.id) {
+                <option [value]="player.id">{{ playerLabel(player) }}</option>
+              }
+            </select>
+            <app-number-stepper
+              [value]="row.minute"
+              [min]="1"
+              (valueChange)="setGoalMinute($index, $event)"
+            ></app-number-stepper>
+            <button type="button" class="remove-goal-btn" (click)="removeGoal($index)" aria-label="Уклони гол">
+              ✕
+            </button>
+          </div>
+        }
+      }
+      <button type="button" class="link-button" (click)="addGoal(false)">+ Гол ({{ match.awayTeamName }})</button>
+
+      @if (isGoallessDraw) {
+        <label class="no-goals-check">
+          <input
+            type="checkbox"
+            [checked]="noGoalsConfirmed"
+            (change)="noGoalsConfirmed = $any($event.target).checked"
+          />
+          Меч је завршен без голова
+        </label>
+      }
+    </section>
+  }
+
+  @if (saveError) {
+    <p class="status-text error">{{ saveError }}</p>
+  }
+
+  <button type="button" class="submit-button" [disabled]="!canSubmit || saving" (click)="submit()">
+    {{ saving ? 'Чување...' : submitLabel }}
+  </button>
+</div>
