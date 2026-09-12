@@ -79,11 +79,21 @@
           Збир: {{ homePointsSum }} / {{ basketballHomeScore }}
         </p>
         @for (row of homePlayerPoints; track row.player.id) {
-          <app-number-stepper
-            [label]="playerLabel(row.player)"
-            [value]="row.points"
-            (valueChange)="row.points = $event"
-          ></app-number-stepper>
+          <div class="player-row">
+            <label class="played-check">
+              <input
+                type="checkbox"
+                [checked]="row.played"
+                (change)="toggleHomePlayed($index, $any($event.target).checked)"
+              />
+              играо
+            </label>
+            <app-number-stepper
+              [label]="playerLabel(row.player)"
+              [value]="row.points"
+              (valueChange)="setHomePoints($index, $event)"
+            ></app-number-stepper>
+          </div>
         }
 
         <h3 class="section-title">Поени по играчу — {{ match.awayTeamName }}</h3>
@@ -91,11 +101,21 @@
           Збир: {{ awayPointsSum }} / {{ basketballAwayScore }}
         </p>
         @for (row of awayPlayerPoints; track row.player.id) {
-          <app-number-stepper
-            [label]="playerLabel(row.player)"
-            [value]="row.points"
-            (valueChange)="row.points = $event"
-          ></app-number-stepper>
+          <div class="player-row">
+            <label class="played-check">
+              <input
+                type="checkbox"
+                [checked]="row.played"
+                (change)="toggleAwayPlayed($index, $any($event.target).checked)"
+              />
+              играо
+            </label>
+            <app-number-stepper
+              [label]="playerLabel(row.player)"
+              [value]="row.points"
+              (valueChange)="setAwayPoints($index, $event)"
+            ></app-number-stepper>
+          </div>
         }
       </section>
     }
@@ -124,6 +144,8 @@
 
         @if (hasTiedSet) {
           <p class="status-text error">Сет не може да се заврши нерешено.</p>
+        } @else if (!volleyballMatchComplete) {
+          <p class="status-text error">Меч није завршен — потребна су три добијена сета.</p>
         }
 
         <div class="set-controls">
@@ -142,11 +164,21 @@
           Збир: {{ homePointsSum }} / {{ volleyballHomePoints }}
         </p>
         @for (row of homePlayerPoints; track row.player.id) {
-          <app-number-stepper
-            [label]="playerLabel(row.player)"
-            [value]="row.points"
-            (valueChange)="row.points = $event"
-          ></app-number-stepper>
+          <div class="player-row">
+            <label class="played-check">
+              <input
+                type="checkbox"
+                [checked]="row.played"
+                (change)="toggleHomePlayed($index, $any($event.target).checked)"
+              />
+              играо
+            </label>
+            <app-number-stepper
+              [label]="playerLabel(row.player)"
+              [value]="row.points"
+              (valueChange)="setHomePoints($index, $event)"
+            ></app-number-stepper>
+          </div>
         }
 
         <h3 class="section-title">Поени по играчу — {{ match.awayTeamName }}</h3>
@@ -154,11 +186,21 @@
           Збир: {{ awayPointsSum }} / {{ volleyballAwayPoints }}
         </p>
         @for (row of awayPlayerPoints; track row.player.id) {
-          <app-number-stepper
-            [label]="playerLabel(row.player)"
-            [value]="row.points"
-            (valueChange)="row.points = $event"
-          ></app-number-stepper>
+          <div class="player-row">
+            <label class="played-check">
+              <input
+                type="checkbox"
+                [checked]="row.played"
+                (change)="toggleAwayPlayed($index, $any($event.target).checked)"
+              />
+              играо
+            </label>
+            <app-number-stepper
+              [label]="playerLabel(row.player)"
+              [value]="row.points"
+              (valueChange)="setAwayPoints($index, $event)"
+            ></app-number-stepper>
+          </div>
         }
       </section>
     }
@@ -219,6 +261,17 @@
           }
         }
         <button type="button" class="link-button" (click)="addGoal(false)">+ Гол ({{ match.awayTeamName }})</button>
+
+        @if (isGoallessDraw) {
+          <label class="no-goals-check">
+            <input
+              type="checkbox"
+              [checked]="noGoalsConfirmed"
+              (change)="noGoalsConfirmed = $any($event.target).checked"
+            />
+            Меч је завршен без голова
+          </label>
+        }
       </section>
     }
 

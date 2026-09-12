@@ -26,6 +26,7 @@ interface GoalRow {
 interface PlayerPointsRow {
   player: Player;
   points: number;
+  played: boolean;
 }
 
 @Component({
@@ -60,6 +61,8 @@ export class DelegateEntryComponent implements OnInit {
   goalRows: GoalRow[] = [];
   homePlayerPoints: PlayerPointsRow[] = [];
   awayPlayerPoints: PlayerPointsRow[] = [];
+
+  noGoalsConfirmed = false;
 
   submitting = false;
   submitError: string | null = null;
@@ -152,16 +155,48 @@ export class DelegateEntryComponent implements OnInit {
     this.goalRows = [];
     this.homePlayerPoints = [];
     this.awayPlayerPoints = [];
+    this.noGoalsConfirmed = false;
 
     if (match.sport === 'Basketball') {
       this.quarters = [1, 2, 3, 4].map((n) => ({ quarterNumber: n, homeScore: 0, awayScore: 0 }));
-      this.homePlayerPoints = match.homeRoster.map((player) => ({ player, points: 0 }));
-      this.awayPlayerPoints = match.awayRoster.map((player) => ({ player, points: 0 }));
+      this.homePlayerPoints = match.homeRoster.map((player) => ({ player, points: 0, played: false }));
+      this.awayPlayerPoints = match.awayRoster.map((player) => ({ player, points: 0, played: false }));
     } else if (match.sport === 'Volleyball') {
       this.sets = [1, 2, 3].map((n) => ({ setNumber: n, homeScore: 0, awayScore: 0 }));
-      this.homePlayerPoints = match.homeRoster.map((player) => ({ player, points: 0 }));
-      this.awayPlayerPoints = match.awayRoster.map((player) => ({ player, points: 0 }));
+      this.homePlayerPoints = match.homeRoster.map((player) => ({ player, points: 0, played: false }));
+      this.awayPlayerPoints = match.awayRoster.map((player) => ({ player, points: 0, played: false }));
     }
+  }
+
+  setHomePoints(index: number, points: number): void {
+    this.homePlayerPoints = this.withPoints(this.homePlayerPoints, index, points);
+  }
+
+  setAwayPoints(index: number, points: number): void {
+    this.awayPlayerPoints = this.withPoints(this.awayPlayerPoints, index, points);
+  }
+
+  toggleHomePlayed(index: number, played: boolean): void {
+    this.homePlayerPoints = this.withPlayed(this.homePlayerPoints, index, played);
+  }
+
+  toggleAwayPlayed(index: number, played: boolean): void {
+    this.awayPlayerPoints = this.withPlayed(this.awayPlayerPoints, index, played);
+  }
+
+  private withPoints(rows: PlayerPointsRow[], index: number, points: number): PlayerPointsRow[] {
+    const current = rows[index];
+    const updated: PlayerPointsRow = {
+      ...current,
+      points,
+      // Igrač koji je postigao poene je automatski "igrao" - ne traziti dodatni tap
+      played: points > 0 ? true : current.played,
+    };
+    return rows.map((row, i) => (i === index ? updated : row));
+  }
+
+  private withPlayed(rows: PlayerPointsRow[], index: number, played: boolean): PlayerPointsRow[] {
+    return rows.map((row, i) => (i === index ? { ...row, played } : row));
   }
 
   // ── Košarka ──────────────────────────────────────────────
@@ -222,6 +257,11 @@ export class DelegateEntryComponent implements OnInit {
     return this.sets.some((s) => s.homeScore === s.awayScore && (s.homeScore > 0 || s.awayScore > 0));
   }
 
+  // Odbojka se igra na tri dobijena seta
+  get volleyballMatchComplete(): boolean {
+    return this.volleyballHomeSets === 3 || this.volleyballAwaySets === 3;
+  }
+
   addSet(): void {
     if (this.sets.length >= 5) return;
     this.sets.push({ setNumber: this.sets.length + 1, homeScore: 0, awayScore: 0 });
@@ -243,9 +283,9 @@ export class DelegateEntryComponent implements OnInit {
   get volleyballValid(): boolean {
     return (
       !this.hasTiedSet &&
+      this.volleyballMatchComplete &&
       this.homePointsSum === this.volleyballHomePoints &&
-      this.awayPointsSum === this.volleyballAwayPoints &&
-      (this.volleyballHomeSets > 0 || this.volleyballAwaySets > 0)
+      this.awayPointsSum === this.volleyballAwayPoints
     );
   }
 
@@ -278,7 +318,12 @@ export class DelegateEntryComponent implements OnInit {
     this.goalRows[index] = { ...this.goalRows[index], playerId };
   }
 
+  get isGoallessDraw(): boolean {
+    return this.footballHomeGoals === 0 && this.footballAwayGoals === 0;
+  }
+
   get footballValid(): boolean {
+    if (this.isGoallessDraw) return this.noGoalsConfirmed;
     return this.goalRows.every((g) => g.playerId !== null);
   }
 
@@ -330,10 +375,10 @@ export class DelegateEntryComponent implements OnInit {
   private buildRequest(match: DelegateMatch): SubmitMatchResult {
     const playerStats: PlayerStatInput[] = [
       ...this.homePlayerPoints
-        .filter((row) => row.points > 0)
+        .filter((row) => row.played)
         .map((row) => ({ playerId: row.player.id, isHomeTeam: true, points: row.points })),
       ...this.awayPlayerPoints
-        .filter((row) => row.points > 0)
+        .filter((row) => row.played)
         .map((row) => ({ playerId: row.player.id, isHomeTeam: false, points: row.points })),
     ];
 

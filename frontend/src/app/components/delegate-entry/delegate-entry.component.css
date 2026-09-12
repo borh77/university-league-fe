@@ -179,14 +179,50 @@
   font-weight: 700;
 }
 
-.players-section app-number-stepper {
-  display: block;
+.player-row {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
   padding: 0.5rem 0;
   border-bottom: 1px solid var(--color-border);
 }
 
-.players-section app-number-stepper:last-of-type {
+.player-row app-number-stepper {
+  flex: 1;
+  min-width: 0;
+}
+
+.player-row:last-of-type {
   border-bottom: none;
+}
+
+.played-check {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.78rem;
+  color: var(--color-text-muted);
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.played-check input {
+  width: 1.1rem;
+  height: 1.1rem;
+}
+
+.no-goals-check {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 1rem;
+  font-size: 0.9rem;
+  color: var(--color-text);
+}
+
+.no-goals-check input {
+  width: 1.2rem;
+  height: 1.2rem;
 }
 
 .goals-team-title {
