@@ -1,13 +1,24 @@
 <header class="app-header">
 
   <div class="top-brand-panel">
-    <img
-      src="/logos/univerzitet-u-novom-sadu.png"
-      alt="Универзитет у Новом Саду"
-      class="brand-logo"
-      (error)="onBrandLogoError($event)"
-    />
-    <span class="brand-title">Универзитетска спортска лига у Новом Саду 2026.</span>
+    <a routerLink="/" class="brand-home-link">
+      <img
+        src="/logos/univerzitet-u-novom-sadu.png"
+        alt="Универзитет у Новом Саду"
+        class="brand-logo"
+        (error)="onBrandLogoError($event)"
+      />
+      <span class="brand-title">Универзитетска спортска лига у Новом Саду 2026.</span>
+    </a>
+
+    @if (auth.isLoggedIn()) {
+      <div class="auth-panel">
+        <span class="auth-user">{{ auth.currentUser()?.fullName }}</span>
+        <button type="button" class="auth-btn" (click)="logout()">Одјава</button>
+      </div>
+    } @else {
+      <a routerLink="/login" class="auth-btn">Пријава</a>
+    }
   </div>
 
   <!-- Navbar 1: izbor sporta -->

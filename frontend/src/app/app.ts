@@ -4,6 +4,7 @@ import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/rou
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { skip } from 'rxjs';
 import { SportKey, SportSelectionService, VolleyballGender } from './services/sport-selection.service';
+import { AuthService } from './services/auth.service';
 
 const FALLBACK_SPORT_LEAGUE_MAP: Record<string, number> = {
   football: -1,
@@ -29,6 +30,7 @@ export class App implements OnInit {
   private readonly cdr = inject(ChangeDetectorRef);
   private readonly platformId = inject(PLATFORM_ID);
   private readonly router = inject(Router);
+  readonly auth = inject(AuthService);
 
   selection = this.sportSelection;
   currentLeagueId = signal<number | null>(null);
@@ -125,6 +127,11 @@ export class App implements OnInit {
 
   setVolleyballGender(gender: VolleyballGender): void {
     this.sportSelection.setVolleyballGender(gender);
+  }
+
+  logout(): void {
+    this.auth.logout();
+    this.router.navigate(['/']);
   }
 
   onBrandLogoError(event: Event): void {

@@ -5,6 +5,7 @@ import { LeagueTopScorersComponent } from './components/league-top-scorers/leagu
 import { LeaguePlayoffComponent } from './components/league-playoff/league-playoff.component';
 import { TeamDetailComponent } from './components/team-detail/team-detail.component';
 import { HomeComponent } from './components/home/home.component';
+import { LoginComponent } from './components/login/login.component';
 
 export const routes: Routes = [
   {
@@ -31,6 +32,10 @@ export const routes: Routes = [
   {
     path: 'teams/:teamId',
     component: TeamDetailComponent,
+  },
+  {
+    path: 'login',
+    component: LoginComponent,
   },
 
 ];

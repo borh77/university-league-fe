@@ -1,0 +1,28 @@
+<div class="login-container">
+  <h2 class="login-title">Пријава</h2>
+
+  <form class="login-form" [formGroup]="form" (ngSubmit)="submit()">
+    <label class="form-field">
+      <span class="form-label">Корисничко име</span>
+      <input type="text" formControlName="username" class="form-input" autocomplete="username" />
+    </label>
+
+    <label class="form-field">
+      <span class="form-label">Лозинка</span>
+      <input
+        type="password"
+        formControlName="password"
+        class="form-input"
+        autocomplete="current-password"
+      />
+    </label>
+
+    @if (error) {
+      <p class="status-text error">{{ error }}</p>
+    }
+
+    <button type="submit" class="submit-button" [disabled]="form.invalid || loading">
+      {{ loading ? 'Пријављивање...' : 'Пријава' }}
+    </button>
+  </form>
+</div>
