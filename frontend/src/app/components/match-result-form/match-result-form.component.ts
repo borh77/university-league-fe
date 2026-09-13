@@ -239,9 +239,10 @@ export class MatchResultFormComponent implements OnChanges {
 
   addGoal(isHomeTeamGoal: boolean): void {
     const roster = isHomeTeamGoal ? this.match.homeRoster : this.match.awayRoster;
+    const lastTeamMinute = this.lastGoalMinuteForTeam(isHomeTeamGoal);
     this.goalRows = [
       ...this.goalRows,
-      { isHomeTeamGoal, playerId: roster?.[0]?.id ?? null, minute: 1 },
+      { isHomeTeamGoal, playerId: roster?.[0]?.id ?? null, minute: lastTeamMinute },
     ];
   }
 
@@ -249,8 +250,36 @@ export class MatchResultFormComponent implements OnChanges {
     this.goalRows = this.goalRows.filter((_, i) => i !== index);
   }
 
+  // Prethodni gol ISTOG tima pre datog reda - koristi se kao donja granica za minut
+  // (dozvoljeno je >=, ne >, jer dva gola mogu pasti u istom minutu)
+  previousTeamGoalMinute(index: number): number {
+    const isHomeTeamGoal = this.goalRows[index].isHomeTeamGoal;
+    for (let i = index - 1; i >= 0; i--) {
+      if (this.goalRows[i].isHomeTeamGoal === isHomeTeamGoal) return this.goalRows[i].minute;
+    }
+    return 1;
+  }
+
+  private lastGoalMinuteForTeam(isHomeTeamGoal: boolean): number {
+    for (let i = this.goalRows.length - 1; i >= 0; i--) {
+      if (this.goalRows[i].isHomeTeamGoal === isHomeTeamGoal) return this.goalRows[i].minute;
+    }
+    return 1;
+  }
+
   setGoalMinute(index: number, value: number): void {
     this.goalRows[index] = { ...this.goalRows[index], minute: value };
+
+    // Kasniji golovi istog tima ne smeju ostati ispod novog minuta
+    const isHomeTeamGoal = this.goalRows[index].isHomeTeamGoal;
+    let floor = value;
+    for (let i = index + 1; i < this.goalRows.length; i++) {
+      if (this.goalRows[i].isHomeTeamGoal !== isHomeTeamGoal) continue;
+      if (this.goalRows[i].minute < floor) {
+        this.goalRows[i] = { ...this.goalRows[i], minute: floor };
+      }
+      floor = this.goalRows[i].minute;
+    }
   }
 
   setGoalPlayer(index: number, playerId: number): void {
