@@ -180,8 +180,9 @@
               }
             </select>
             <app-number-stepper
+              label="Мин"
               [value]="row.minute"
-              [min]="1"
+              [min]="previousTeamGoalMinute($index)"
               (valueChange)="setGoalMinute($index, $event)"
             ></app-number-stepper>
             <button type="button" class="remove-goal-btn" (click)="removeGoal($index)" aria-label="Уклони гол">
@@ -206,8 +207,9 @@
               }
             </select>
             <app-number-stepper
+              label="Мин"
               [value]="row.minute"
-              [min]="1"
+              [min]="previousTeamGoalMinute($index)"
               (valueChange)="setGoalMinute($index, $event)"
             ></app-number-stepper>
             <button type="button" class="remove-goal-btn" (click)="removeGoal($index)" aria-label="Уклони гол">

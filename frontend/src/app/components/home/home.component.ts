@@ -3,7 +3,8 @@ import { CommonModule } from '@angular/common';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { finalize, switchMap, catchError, of, forkJoin } from 'rxjs';
 import { LeagueService } from '../../services/league.service';
-import { SportKey, SportSelectionService, VolleyballGender } from '../../services/sport-selection.service';
+import { LeagueLookupService } from '../../services/league-lookup.service';
+import { SportSelectionService } from '../../services/sport-selection.service';
 import { StandingsRow } from '../../models/standings-row.model';
 import { RouterLink } from '@angular/router';
 import { Match, splitRegularAndPlayoff } from '../../models/match.model';
@@ -12,13 +13,6 @@ interface Round {
   roundNumber: number;
   matches: Match[];
 }
-
-const FALLBACK_SPORT_LEAGUE_MAP: Record<string, number> = {
-  football: -1,
-  basketball: -4,
-  'volleyball-male': -2,
-  'volleyball-female': -3,
-};
 
 @Component({
   selector: 'app-home',
@@ -29,6 +23,7 @@ const FALLBACK_SPORT_LEAGUE_MAP: Record<string, number> = {
 })
 export class HomeComponent implements OnInit {
   private readonly leagueService = inject(LeagueService);
+  private readonly leagueLookup = inject(LeagueLookupService);
   private readonly sportSelection = inject(SportSelectionService);
   private readonly destroyRef = inject(DestroyRef);
   private readonly cdr = inject(ChangeDetectorRef);
@@ -55,44 +50,47 @@ export class HomeComponent implements OnInit {
           this.nextRound = null;
           this.cdr.detectChanges();
 
-          const leagueId = this.resolveLeagueId(sel.sport, sel.gender);
-          if (leagueId === null) {
-            this.error = 'Није могуће одредити лигу за изабрани спорт.';
-            return of({
-              standings: [] as StandingsRow[],
-              results: [] as Match[],
-              schedule: [] as Match[],
-            }).pipe(
-              finalize(() => {
-                this.loading = false;
-                this.cdr.detectChanges();
-              }),
-            );
-          }
+          return this.leagueLookup.resolveLeagueId(sel.sport, sel.gender).pipe(
+            switchMap((leagueId) => {
+              if (leagueId === null) {
+                this.error = 'Није могуће одредити лигу за изабрани спорт.';
+                return of({
+                  standings: [] as StandingsRow[],
+                  results: [] as Match[],
+                  schedule: [] as Match[],
+                }).pipe(
+                  finalize(() => {
+                    this.loading = false;
+                    this.cdr.detectChanges();
+                  }),
+                );
+              }
 
-          return forkJoin({
-            standings: this.leagueService.getStandings(sel.sport, sel.gender).pipe(
-              catchError(() => {
-                this.error = 'Грешка при учитавању података за почетну страницу.';
-                return of([] as StandingsRow[]);
-              }),
-            ),
-            results: this.leagueService.getResults(leagueId).pipe(
-              catchError(() => {
-                this.error = 'Грешка при учитавању података за почетну страницу.';
-                return of([] as Match[]);
-              }),
-            ),
-            schedule: this.leagueService.getSchedule(leagueId).pipe(
-              catchError(() => {
-                this.error = 'Грешка при учитавању података за почетну страницу.';
-                return of([] as Match[]);
-              }),
-            ),
-          }).pipe(
-            finalize(() => {
-              this.loading = false;
-              this.cdr.detectChanges();
+              return forkJoin({
+                standings: this.leagueService.getStandings(sel.sport, sel.gender).pipe(
+                  catchError(() => {
+                    this.error = 'Грешка при учитавању података за почетну страницу.';
+                    return of([] as StandingsRow[]);
+                  }),
+                ),
+                results: this.leagueService.getResults(leagueId).pipe(
+                  catchError(() => {
+                    this.error = 'Грешка при учитавању података за почетну страницу.';
+                    return of([] as Match[]);
+                  }),
+                ),
+                schedule: this.leagueService.getSchedule(leagueId).pipe(
+                  catchError(() => {
+                    this.error = 'Грешка при учитавању података за почетну страницу.';
+                    return of([] as Match[]);
+                  }),
+                ),
+              }).pipe(
+                finalize(() => {
+                  this.loading = false;
+                  this.cdr.detectChanges();
+                }),
+              );
             }),
           );
         }),
@@ -258,10 +256,5 @@ export class HomeComponent implements OnInit {
       roundNumber,
       matches: Array.from(matchMap.values()),
     };
-  }
-
-  private resolveLeagueId(sport: SportKey, gender?: VolleyballGender): number | null {
-    const fallbackKey = sport === 'volleyball' ? `volleyball-${gender ?? 'male'}` : sport;
-    return FALLBACK_SPORT_LEAGUE_MAP[fallbackKey] ?? null;
   }
 }
