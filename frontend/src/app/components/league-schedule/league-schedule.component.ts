@@ -118,10 +118,6 @@ export class LeagueScheduleComponent implements OnInit {
       .map(([roundNumber, matches]) => ({ roundNumber, matches }));
   }
 
-  private initializeSelectedRound(): void {
-    this.selectedRoundNumber = this.rounds[0]?.roundNumber ?? 0;
-  }
-
   private resolveCurrentRound(rounds: Round[], referenceDate = new Date()): Round | null {
     const sortedRounds = [...rounds].sort((a, b) => a.roundNumber - b.roundNumber);
     const weekBounds = this.getWeekBounds(referenceDate);

@@ -167,14 +167,4 @@ export class LeagueResultsComponent implements OnInit {
 
     return dates.reduce((earliest, current) => (current < earliest ? current : earliest));
   }
-
-  private initializeSelectedRound(): void {
-    if (this.rounds.length === 0) {
-      this.selectedRoundNumber = 0;
-      return;
-    }
-
-    // Default to the first available round if none selected earlier
-    this.selectedRoundNumber = this.rounds[0].roundNumber;
-  }
 }
