@@ -24,6 +24,16 @@
   font-weight: 600;
 }
 
+.status-text.warning {
+  flex-basis: 100%;
+  color: var(--color-brand-strong);
+  background: var(--color-brand-tint);
+  border-radius: 8px;
+  padding: 0.6rem 0.8rem;
+  margin: 0;
+  font-size: 0.85rem;
+}
+
 .league-selector {
   display: flex;
   flex-wrap: wrap;
