@@ -37,6 +37,7 @@ export class MatchResultFormComponent implements OnChanges {
   sets: SetScore[] = [];
   goalRows: GoalRow[] = [];
   noGoalsConfirmed = false;
+  legacyBasketballResult = false;
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['match']) {
@@ -53,14 +54,16 @@ export class MatchResultFormComponent implements OnChanges {
     this.sets = [];
     this.goalRows = [];
     this.noGoalsConfirmed = false;
+    this.legacyBasketballResult = false;
 
     if (match.sport === 'Basketball') {
       // Kosarka ide na dva poluvremena (brojevi 1 i 2) - javni prikaz meca
       // racuna drugo poluvreme kao ukupno minus prvo, pa forma ne sme praviti cetvrtine
-      this.quarters =
-        match.quarters?.length === 2
-          ? match.quarters.map((q) => ({ ...q }))
-          : [1, 2].map((n) => ({ quarterNumber: n, homeScore: 0, awayScore: 0 }));
+      const hasTwoHalves = match.quarters?.length === 2;
+      this.legacyBasketballResult = match.hasResult && !hasTwoHalves;
+      this.quarters = hasTwoHalves
+        ? match.quarters!.map((q) => ({ ...q }))
+        : [1, 2].map((n) => ({ quarterNumber: n, homeScore: 0, awayScore: 0 }));
     } else if (match.sport === 'Volleyball') {
       this.sets = match.sets?.length
         ? match.sets.map((s) => ({ ...s }))

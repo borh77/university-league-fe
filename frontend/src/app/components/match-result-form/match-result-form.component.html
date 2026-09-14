@@ -2,6 +2,14 @@
   @if (match.sport === 'Basketball') {
     <section class="score-section">
       <h3 class="section-title">Резултат по полувременима</h3>
+
+      @if (legacyBasketballResult) {
+        <p class="status-text warning">
+          Резултат је унет по старом формату са четвртинама — мора се унети поново по
+          полувременима.
+        </p>
+      }
+
       <div class="score-live">{{ basketballHomeScore }} : {{ basketballAwayScore }}</div>
 
       <div class="quarters-grid">
