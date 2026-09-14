@@ -1,76 +1,49 @@
 <div class="result-form">
   @if (match.sport === 'Basketball') {
     <section class="score-section">
-      <h3 class="section-title">Резултат по четвртинама</h3>
+      <h3 class="section-title">Резултат по полувременима</h3>
+
+      @if (legacyBasketballResult) {
+        <p class="status-text warning">
+          Резултат је унет по старом формату са четвртинама — мора се унети поново по
+          полувременима.
+        </p>
+      }
+
       <div class="score-live">{{ basketballHomeScore }} : {{ basketballAwayScore }}</div>
 
       <div class="quarters-grid">
         @for (q of quarters; track q.quarterNumber) {
           <div class="quarter-row">
-            <span class="quarter-label">Четвртина {{ q.quarterNumber }}</span>
+            <span class="quarter-label">Полувреме {{ q.quarterNumber }}</span>
             <div class="quarter-steppers">
-              <app-number-stepper
-                [value]="q.homeScore"
-                (valueChange)="setQuarterHome($index, $event)"
-              ></app-number-stepper>
+              <label class="score-field">
+                <span class="score-field-label">{{ match.homeTeamName }}</span>
+                <input
+                  type="number"
+                  inputmode="numeric"
+                  min="0"
+                  class="score-input"
+                  [value]="q.homeScore"
+                  (change)="setQuarterHome($index, +$any($event.target).value)"
+                />
+              </label>
               <span class="quarter-sep">:</span>
-              <app-number-stepper
-                [value]="q.awayScore"
-                (valueChange)="setQuarterAway($index, $event)"
-              ></app-number-stepper>
+              <label class="score-field">
+                <span class="score-field-label">{{ match.awayTeamName }}</span>
+                <input
+                  type="number"
+                  inputmode="numeric"
+                  min="0"
+                  class="score-input"
+                  [value]="q.awayScore"
+                  (change)="setQuarterAway($index, +$any($event.target).value)"
+                />
+              </label>
             </div>
           </div>
         }
       </div>
-      <button type="button" class="link-button" (click)="addOvertimeQuarter()">
-        + Продужетак
-      </button>
-    </section>
-
-    <section class="players-section">
-      <h3 class="section-title">Поени по играчу — {{ match.homeTeamName }}</h3>
-      <p class="points-sum" [class.mismatch]="homePointsSum !== basketballHomeScore">
-        Збир: {{ homePointsSum }} / {{ basketballHomeScore }}
-      </p>
-      @for (row of homePlayerPoints; track row.player.id) {
-        <div class="player-row">
-          <label class="played-check">
-            <input
-              type="checkbox"
-              [checked]="row.played"
-              (change)="toggleHomePlayed($index, $any($event.target).checked)"
-            />
-            играо
-          </label>
-          <app-number-stepper
-            [label]="playerLabel(row.player)"
-            [value]="row.points"
-            (valueChange)="setHomePoints($index, $event)"
-          ></app-number-stepper>
-        </div>
-      }
-
-      <h3 class="section-title">Поени по играчу — {{ match.awayTeamName }}</h3>
-      <p class="points-sum" [class.mismatch]="awayPointsSum !== basketballAwayScore">
-        Збир: {{ awayPointsSum }} / {{ basketballAwayScore }}
-      </p>
-      @for (row of awayPlayerPoints; track row.player.id) {
-        <div class="player-row">
-          <label class="played-check">
-            <input
-              type="checkbox"
-              [checked]="row.played"
-              (change)="toggleAwayPlayed($index, $any($event.target).checked)"
-            />
-            играо
-          </label>
-          <app-number-stepper
-            [label]="playerLabel(row.player)"
-            [value]="row.points"
-            (valueChange)="setAwayPoints($index, $event)"
-          ></app-number-stepper>
-        </div>
-      }
     </section>
   }
 
@@ -84,15 +57,29 @@
           <div class="quarter-row">
             <span class="quarter-label">Сет {{ s.setNumber }}</span>
             <div class="quarter-steppers">
-              <app-number-stepper
-                [value]="s.homeScore"
-                (valueChange)="setSetHome($index, $event)"
-              ></app-number-stepper>
+              <label class="score-field">
+                <span class="score-field-label">{{ match.homeTeamName }}</span>
+                <input
+                  type="number"
+                  inputmode="numeric"
+                  min="0"
+                  class="score-input"
+                  [value]="s.homeScore"
+                  (change)="setSetHome($index, +$any($event.target).value)"
+                />
+              </label>
               <span class="quarter-sep">:</span>
-              <app-number-stepper
-                [value]="s.awayScore"
-                (valueChange)="setSetAway($index, $event)"
-              ></app-number-stepper>
+              <label class="score-field">
+                <span class="score-field-label">{{ match.awayTeamName }}</span>
+                <input
+                  type="number"
+                  inputmode="numeric"
+                  min="0"
+                  class="score-input"
+                  [value]="s.awayScore"
+                  (change)="setSetAway($index, +$any($event.target).value)"
+                />
+              </label>
             </div>
           </div>
         }
@@ -101,63 +88,17 @@
       @if (hasTiedSet) {
         <p class="status-text error">Сет не може да се заврши нерешено.</p>
       } @else if (!volleyballMatchComplete) {
-        <p class="status-text error">Меч није завршен — потребна су три добијена сета.</p>
+        <p class="status-text error">Меч није завршен — потребна су два добијена сета.</p>
       }
 
       <div class="set-controls">
-        <button type="button" class="link-button" (click)="addSet()" [disabled]="sets.length >= 5">
+        <button type="button" class="link-button" (click)="addSet()" [disabled]="sets.length >= 3">
           + Сет
         </button>
         <button type="button" class="link-button" (click)="removeSet()" [disabled]="sets.length <= 1">
           − Уклони сет
         </button>
       </div>
-    </section>
-
-    <section class="players-section">
-      <h3 class="section-title">Поени по играчу — {{ match.homeTeamName }}</h3>
-      <p class="points-sum" [class.mismatch]="homePointsSum !== volleyballHomePoints">
-        Збир: {{ homePointsSum }} / {{ volleyballHomePoints }}
-      </p>
-      @for (row of homePlayerPoints; track row.player.id) {
-        <div class="player-row">
-          <label class="played-check">
-            <input
-              type="checkbox"
-              [checked]="row.played"
-              (change)="toggleHomePlayed($index, $any($event.target).checked)"
-            />
-            играо
-          </label>
-          <app-number-stepper
-            [label]="playerLabel(row.player)"
-            [value]="row.points"
-            (valueChange)="setHomePoints($index, $event)"
-          ></app-number-stepper>
-        </div>
-      }
-
-      <h3 class="section-title">Поени по играчу — {{ match.awayTeamName }}</h3>
-      <p class="points-sum" [class.mismatch]="awayPointsSum !== volleyballAwayPoints">
-        Збир: {{ awayPointsSum }} / {{ volleyballAwayPoints }}
-      </p>
-      @for (row of awayPlayerPoints; track row.player.id) {
-        <div class="player-row">
-          <label class="played-check">
-            <input
-              type="checkbox"
-              [checked]="row.played"
-              (change)="toggleAwayPlayed($index, $any($event.target).checked)"
-            />
-            играо
-          </label>
-          <app-number-stepper
-            [label]="playerLabel(row.player)"
-            [value]="row.points"
-            (valueChange)="setAwayPoints($index, $event)"
-          ></app-number-stepper>
-        </div>
-      }
     </section>
   }
 
@@ -179,12 +120,17 @@
                 <option [value]="player.id">{{ playerLabel(player) }}</option>
               }
             </select>
-            <app-number-stepper
-              label="Мин"
-              [value]="row.minute"
-              [min]="previousTeamGoalMinute($index)"
-              (valueChange)="setGoalMinute($index, $event)"
-            ></app-number-stepper>
+            <label class="minute-field">
+              <span class="score-field-label">Мин</span>
+              <input
+                type="number"
+                inputmode="numeric"
+                [min]="previousTeamGoalMinute($index)"
+                class="minute-input"
+                [value]="row.minute"
+                (change)="setGoalMinute($index, +$any($event.target).value)"
+              />
+            </label>
             <button type="button" class="remove-goal-btn" (click)="removeGoal($index)" aria-label="Уклони гол">
               ✕
             </button>
@@ -206,12 +152,17 @@
                 <option [value]="player.id">{{ playerLabel(player) }}</option>
               }
             </select>
-            <app-number-stepper
-              label="Мин"
-              [value]="row.minute"
-              [min]="previousTeamGoalMinute($index)"
-              (valueChange)="setGoalMinute($index, $event)"
-            ></app-number-stepper>
+            <label class="minute-field">
+              <span class="score-field-label">Мин</span>
+              <input
+                type="number"
+                inputmode="numeric"
+                [min]="previousTeamGoalMinute($index)"
+                class="minute-input"
+                [value]="row.minute"
+                (change)="setGoalMinute($index, +$any($event.target).value)"
+              />
+            </label>
             <button type="button" class="remove-goal-btn" (click)="removeGoal($index)" aria-label="Уклони гол">
               ✕
             </button>

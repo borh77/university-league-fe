@@ -8,6 +8,8 @@ export interface AdminTeam {
   id: number;
   name: string;
   logoUrl?: string | null;
+  // Sport lige u kojoj tim vec igra, prazno ako tim nigde ne igra
+  sport?: string | null;
 }
 
 export interface ScheduleMatchRequest {

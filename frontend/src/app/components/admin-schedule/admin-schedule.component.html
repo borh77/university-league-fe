@@ -38,7 +38,7 @@
           <select class="admin-select" [(ngModel)]="addTeamId" name="addTeamId">
             <option [ngValue]="null">Изабери тим за додавање...</option>
             @for (team of teamsNotInLeague(); track team.id) {
-              <option [ngValue]="team.id">{{ team.name }}</option>
+              <option [ngValue]="team.id">{{ teamOptionLabel(team) }}</option>
             }
           </select>
           <button
@@ -235,6 +235,12 @@
 
                   @if (isExpanded(match, 'result')) {
                     <div class="action-panel">
+                      @if (!isPlayoff(match) && playoffAlreadyPlayed) {
+                        <p class="status-text warning">
+                          Пажња: плеј-оф ове лиге је већ одигран — исправка резултата неће
+                          променити већ одигран жреб.
+                        </p>
+                      }
                       @if (resultLoading) {
                         <p class="status-text">Учитавање меча...</p>
                       } @else if (resultError) {

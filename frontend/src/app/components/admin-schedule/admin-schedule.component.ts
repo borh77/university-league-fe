@@ -101,6 +101,16 @@ export class AdminScheduleComponent implements OnInit {
     return this.rounds.find((r) => r.roundNumber === this.selectedRoundNumber) ?? null;
   }
 
+  get selectedLeague(): AdminLeague | null {
+    return this.leagues.find((l) => l.id === this.selectedLeagueId) ?? null;
+  }
+
+  // Plej-of vec ima odigran mec u ovoj ligi - ispravka rezultata regularnog dela
+  // nece izmeniti vec odigran zreb
+  get playoffAlreadyPlayed(): boolean {
+    return this.rounds.some((r) => r.matches.some((m) => isPlayoffMatch(m) && !!m.result));
+  }
+
   ngOnInit(): void {
     this.loading = true;
     this.error = null;
@@ -136,9 +146,19 @@ export class AdminScheduleComponent implements OnInit {
     return `${sport} (${league.gender === 'Male' ? 'М' : 'Ж'})`;
   }
 
+  // Tim se moze dodati samo ako nigde ne igra ili vec igra bas ovaj sport
+  // (backend inace odbija dodavanje - AdminLeagueService.AddTeamToLeague)
   teamsNotInLeague(): AdminTeam[] {
     const inLeagueIds = new Set(this.leagueTeams.map((t) => t.id));
-    return this.allTeams.filter((t) => !inLeagueIds.has(t.id));
+    const sport = this.selectedLeague?.sport;
+    return this.allTeams.filter(
+      (t) => !inLeagueIds.has(t.id) && (!t.sport || t.sport === sport),
+    );
+  }
+
+  teamOptionLabel(team: AdminTeam): string {
+    if (!team.sport) return team.name;
+    return `${team.name} (${SPORT_LABELS[team.sport] ?? team.sport})`;
   }
 
   selectLeague(leagueId: number): void {
