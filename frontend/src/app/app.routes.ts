@@ -46,7 +46,7 @@ export const routes: Routes = [
     canActivate: [roleGuard(['Delegate', 'Admin'])],
   },
   {
-    path: 'admin/schedule',
+    path: 'leagues/:leagueId/admin',
     component: AdminScheduleComponent,
     canActivate: [roleGuard(['Admin'])],
   },

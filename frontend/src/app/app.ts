@@ -1,9 +1,21 @@
-import { ChangeDetectorRef, Component, DestroyRef, OnInit, PLATFORM_ID, inject, signal } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  DestroyRef,
+  OnInit,
+  PLATFORM_ID,
+  inject,
+  signal,
+} from '@angular/core';
 import { isPlatformBrowser, CommonModule } from '@angular/common';
 import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { map, skip, switchMap } from 'rxjs';
-import { SportKey, SportSelectionService, VolleyballGender } from './services/sport-selection.service';
+import {
+  SportKey,
+  SportSelectionService,
+  VolleyballGender,
+} from './services/sport-selection.service';
 import { AuthService } from './services/auth.service';
 import { LeagueLookupService } from './services/league-lookup.service';
 
@@ -74,7 +86,9 @@ export class App implements OnInit {
       .pipe(
         skip(1),
         switchMap((sel) =>
-          this.leagueLookup.resolveLeagueId(sel.sport, sel.gender).pipe(map((leagueId) => ({ sel, leagueId }))),
+          this.leagueLookup
+            .resolveLeagueId(sel.sport, sel.gender)
+            .pipe(map((leagueId) => ({ sel, leagueId }))),
         ),
         takeUntilDestroyed(this.destroyRef),
       )
@@ -93,6 +107,10 @@ export class App implements OnInit {
         const url = this.router.url;
         if (url.includes('/results')) {
           this.router.navigate(['/leagues', newLeagueId, 'results']);
+        } else if (url.includes('/admin')) {
+          this.router.navigate(['/leagues', newLeagueId, 'admin']);
+        } else if (url.includes('/delegate')) {
+          this.router.navigate(['/leagues', newLeagueId, 'delegate']);
         } else if (url.includes('/schedule')) {
           this.router.navigate(['/leagues', newLeagueId, 'schedule']);
         } else if (url.includes('/top-scorers')) {
@@ -135,5 +153,4 @@ export class App implements OnInit {
     img.src =
       'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22%3E%3Ccircle cx=%2216%22 cy=%2216%22 r=%2216%22 fill=%22%233a86ff%22/%3E%3Ctext x=%2216%22 y=%2221%22 text-anchor=%22middle%22 font-size=%2214%22 font-weight=%22bold%22 fill=%22%23fff%22%3EU%3C/text%3E%3C/svg%3E';
   }
-
 }
