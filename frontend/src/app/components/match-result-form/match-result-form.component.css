@@ -12,8 +12,7 @@
   color: var(--color-danger);
 }
 
-.score-section,
-.players-section {
+.score-section {
   margin-bottom: 1.5rem;
   padding: 1rem;
   background: var(--color-surface);
@@ -91,47 +90,29 @@
   flex-wrap: wrap;
 }
 
-.points-sum {
-  font-size: 0.85rem;
-  color: var(--color-text-muted);
-  margin: 0 0 0.6rem;
-}
-
-.points-sum.mismatch {
-  color: var(--color-danger);
-  font-weight: 700;
-}
-
-.player-row {
+.score-field {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 0.6rem;
-  padding: 0.5rem 0;
-  border-bottom: 1px solid var(--color-border);
+  gap: 0.2rem;
 }
 
-.player-row app-number-stepper {
-  flex: 1;
-  min-width: 0;
-}
-
-.player-row:last-of-type {
-  border-bottom: none;
-}
-
-.played-check {
-  display: flex;
-  align-items: center;
-  gap: 0.3rem;
-  font-size: 0.78rem;
+.score-field-label {
+  font-size: 0.72rem;
   color: var(--color-text-muted);
-  flex-shrink: 0;
   white-space: nowrap;
 }
 
-.played-check input {
-  width: 1.1rem;
-  height: 1.1rem;
+.score-input {
+  width: 3.4rem;
+  min-height: 2.75rem;
+  text-align: center;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  background: var(--color-surface);
 }
 
 .no-goals-check {
@@ -173,9 +154,23 @@
   background: var(--color-surface);
 }
 
-.goal-row app-number-stepper {
-  flex: 1 1 auto;
-  min-width: 0;
+.minute-field {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex-shrink: 0;
+}
+
+.minute-input {
+  width: 3.6rem;
+  min-height: 2.75rem;
+  text-align: center;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  background: var(--color-surface);
 }
 
 .remove-goal-btn {
@@ -208,8 +203,7 @@
 }
 
 @media (max-width: 480px) {
-  .score-section,
-  .players-section {
+  .score-section {
     padding: 0.75rem;
   }
 }

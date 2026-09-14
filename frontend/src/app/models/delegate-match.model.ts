@@ -55,17 +55,10 @@ export interface DelegateMatch {
   playerStats?: PlayerStatLine[] | null;
 }
 
-export interface PlayerStatInput {
-  playerId: number;
-  isHomeTeam: boolean;
-  points: number;
-}
-
 export interface SubmitMatchResult {
   homeScore: number;
   awayScore: number;
   quarters?: QuarterScore[];
   sets?: SetScore[];
   goals?: GoalEntry[];
-  playerStats?: PlayerStatInput[];
 }

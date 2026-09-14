@@ -3,13 +3,11 @@ import { CommonModule } from '@angular/common';
 import {
   DelegateMatch,
   GoalEntry,
-  Player,
-  PlayerStatInput,
   QuarterScore,
   SetScore,
   SubmitMatchResult,
+  Player,
 } from '../../models/delegate-match.model';
-import { NumberStepperComponent } from '../shared/number-stepper/number-stepper.component';
 
 interface GoalRow {
   isHomeTeamGoal: boolean;
@@ -17,19 +15,13 @@ interface GoalRow {
   minute: number;
 }
 
-interface PlayerPointsRow {
-  player: Player;
-  points: number;
-  played: boolean;
-}
-
 // Deljena forma za unos rezultata - koristi je admin ekran za izmenu rezultata.
-// Isti obrazac steppera/validacije kao DelegateEntryComponent, ali kao samostalna
-// komponenta koja moze da se predpopuni postojecim rezultatom (delegate ekran to ne radi).
+// Ista validacija kao DelegateEntryComponent, ali kao samostalna komponenta koja
+// moze da se predpopuni postojecim rezultatom (delegate ekran to ne radi).
 @Component({
   selector: 'app-match-result-form',
   standalone: true,
-  imports: [CommonModule, NumberStepperComponent],
+  imports: [CommonModule],
   templateUrl: './match-result-form.component.html',
   styleUrl: './match-result-form.component.css',
 })
@@ -44,8 +36,6 @@ export class MatchResultFormComponent implements OnChanges {
   quarters: QuarterScore[] = [];
   sets: SetScore[] = [];
   goalRows: GoalRow[] = [];
-  homePlayerPoints: PlayerPointsRow[] = [];
-  awayPlayerPoints: PlayerPointsRow[] = [];
   noGoalsConfirmed = false;
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -62,22 +52,19 @@ export class MatchResultFormComponent implements OnChanges {
     this.quarters = [];
     this.sets = [];
     this.goalRows = [];
-    this.homePlayerPoints = [];
-    this.awayPlayerPoints = [];
     this.noGoalsConfirmed = false;
 
     if (match.sport === 'Basketball') {
-      this.quarters = match.quarters?.length
-        ? match.quarters.map((q) => ({ ...q }))
-        : [1, 2, 3, 4].map((n) => ({ quarterNumber: n, homeScore: 0, awayScore: 0 }));
-      this.homePlayerPoints = this.buildPointsRows(match.homeRoster, match.playerStats, true);
-      this.awayPlayerPoints = this.buildPointsRows(match.awayRoster, match.playerStats, false);
+      // Kosarka ide na dva poluvremena (brojevi 1 i 2) - javni prikaz meca
+      // racuna drugo poluvreme kao ukupno minus prvo, pa forma ne sme praviti cetvrtine
+      this.quarters =
+        match.quarters?.length === 2
+          ? match.quarters.map((q) => ({ ...q }))
+          : [1, 2].map((n) => ({ quarterNumber: n, homeScore: 0, awayScore: 0 }));
     } else if (match.sport === 'Volleyball') {
       this.sets = match.sets?.length
         ? match.sets.map((s) => ({ ...s }))
         : [1, 2, 3].map((n) => ({ setNumber: n, homeScore: 0, awayScore: 0 }));
-      this.homePlayerPoints = this.buildPointsRows(match.homeRoster, match.playerStats, true);
-      this.awayPlayerPoints = this.buildPointsRows(match.awayRoster, match.playerStats, false);
     } else if (match.sport === 'Football') {
       this.goalRows = (match.goals ?? []).map((goal) => ({
         isHomeTeamGoal: goal.isHomeTeamGoal,
@@ -91,51 +78,9 @@ export class MatchResultFormComponent implements OnChanges {
     }
   }
 
-  private buildPointsRows(
-    roster: Player[],
-    playerStats: DelegateMatch['playerStats'],
-    isHomeTeam: boolean,
-  ): PlayerPointsRow[] {
-    return roster.map((player) => {
-      const stat = playerStats?.find((s) => s.playerId === player.id && s.isHomeTeam === isHomeTeam);
-      return { player, points: stat?.points ?? 0, played: stat !== undefined };
-    });
-  }
-
   private findPlayerIdByName(roster: Player[], scorerName: string): number | null {
     const found = roster.find((p) => `${p.firstName} ${p.lastName}` === scorerName);
     return found?.id ?? null;
-  }
-
-  setHomePoints(index: number, points: number): void {
-    this.homePlayerPoints = this.withPoints(this.homePlayerPoints, index, points);
-  }
-
-  setAwayPoints(index: number, points: number): void {
-    this.awayPlayerPoints = this.withPoints(this.awayPlayerPoints, index, points);
-  }
-
-  toggleHomePlayed(index: number, played: boolean): void {
-    this.homePlayerPoints = this.withPlayed(this.homePlayerPoints, index, played);
-  }
-
-  toggleAwayPlayed(index: number, played: boolean): void {
-    this.awayPlayerPoints = this.withPlayed(this.awayPlayerPoints, index, played);
-  }
-
-  private withPoints(rows: PlayerPointsRow[], index: number, points: number): PlayerPointsRow[] {
-    const current = rows[index];
-    const updated: PlayerPointsRow = {
-      ...current,
-      points,
-      // Igrac koji je postigao poene je automatski "igrao" - ne traziti dodatni tap
-      played: points > 0 ? true : current.played,
-    };
-    return rows.map((row, i) => (i === index ? updated : row));
-  }
-
-  private withPlayed(rows: PlayerPointsRow[], index: number, played: boolean): PlayerPointsRow[] {
-    return rows.map((row, i) => (i === index ? { ...row, played } : row));
   }
 
   // ── Kosarka ──────────────────────────────────────────────
@@ -147,32 +92,16 @@ export class MatchResultFormComponent implements OnChanges {
     return this.quarters.reduce((sum, q) => sum + q.awayScore, 0);
   }
 
-  get homePointsSum(): number {
-    return this.homePlayerPoints.reduce((sum, row) => sum + row.points, 0);
-  }
-
-  get awayPointsSum(): number {
-    return this.awayPlayerPoints.reduce((sum, row) => sum + row.points, 0);
-  }
-
-  addOvertimeQuarter(): void {
-    this.quarters.push({ quarterNumber: this.quarters.length + 1, homeScore: 0, awayScore: 0 });
-  }
-
   setQuarterHome(index: number, value: number): void {
-    this.quarters[index] = { ...this.quarters[index], homeScore: value };
+    this.quarters[index] = { ...this.quarters[index], homeScore: Math.max(0, value || 0) };
   }
 
   setQuarterAway(index: number, value: number): void {
-    this.quarters[index] = { ...this.quarters[index], awayScore: value };
+    this.quarters[index] = { ...this.quarters[index], awayScore: Math.max(0, value || 0) };
   }
 
   get basketballValid(): boolean {
-    return (
-      this.homePointsSum === this.basketballHomeScore &&
-      this.awayPointsSum === this.basketballAwayScore &&
-      (this.basketballHomeScore > 0 || this.basketballAwayScore > 0)
-    );
+    return this.basketballHomeScore > 0 || this.basketballAwayScore > 0;
   }
 
   // ── Odbojka ──────────────────────────────────────────────
@@ -184,25 +113,17 @@ export class MatchResultFormComponent implements OnChanges {
     return this.sets.filter((s) => s.awayScore > s.homeScore).length;
   }
 
-  get volleyballHomePoints(): number {
-    return this.sets.reduce((sum, s) => sum + s.homeScore, 0);
-  }
-
-  get volleyballAwayPoints(): number {
-    return this.sets.reduce((sum, s) => sum + s.awayScore, 0);
-  }
-
   get hasTiedSet(): boolean {
     return this.sets.some((s) => s.homeScore === s.awayScore && (s.homeScore > 0 || s.awayScore > 0));
   }
 
-  // Odbojka se igra na tri dobijena seta
+  // Liga igra na dva dobijena seta
   get volleyballMatchComplete(): boolean {
-    return this.volleyballHomeSets === 3 || this.volleyballAwaySets === 3;
+    return this.volleyballHomeSets === 2 || this.volleyballAwaySets === 2;
   }
 
   addSet(): void {
-    if (this.sets.length >= 5) return;
+    if (this.sets.length >= 3) return;
     this.sets.push({ setNumber: this.sets.length + 1, homeScore: 0, awayScore: 0 });
   }
 
@@ -212,20 +133,15 @@ export class MatchResultFormComponent implements OnChanges {
   }
 
   setSetHome(index: number, value: number): void {
-    this.sets[index] = { ...this.sets[index], homeScore: value };
+    this.sets[index] = { ...this.sets[index], homeScore: Math.max(0, value || 0) };
   }
 
   setSetAway(index: number, value: number): void {
-    this.sets[index] = { ...this.sets[index], awayScore: value };
+    this.sets[index] = { ...this.sets[index], awayScore: Math.max(0, value || 0) };
   }
 
   get volleyballValid(): boolean {
-    return (
-      !this.hasTiedSet &&
-      this.volleyballMatchComplete &&
-      this.homePointsSum === this.volleyballHomePoints &&
-      this.awayPointsSum === this.volleyballAwayPoints
-    );
+    return !this.hasTiedSet && this.volleyballMatchComplete;
   }
 
   // ── Fudbal ───────────────────────────────────────────────
@@ -267,12 +183,15 @@ export class MatchResultFormComponent implements OnChanges {
     return 1;
   }
 
+  // Minut se sada kuca rucno, pa se pravilo proverava na unetoj vrednosti
   setGoalMinute(index: number, value: number): void {
-    this.goalRows[index] = { ...this.goalRows[index], minute: value };
+    const minAllowed = this.previousTeamGoalMinute(index);
+    const validMinute = Math.max(minAllowed, value || minAllowed);
+    this.goalRows[index] = { ...this.goalRows[index], minute: validMinute };
 
     // Kasniji golovi istog tima ne smeju ostati ispod novog minuta
     const isHomeTeamGoal = this.goalRows[index].isHomeTeamGoal;
-    let floor = value;
+    let floor = validMinute;
     for (let i = index + 1; i < this.goalRows.length; i++) {
       if (this.goalRows[i].isHomeTeamGoal !== isHomeTeamGoal) continue;
       if (this.goalRows[i].minute < floor) {
@@ -313,21 +232,11 @@ export class MatchResultFormComponent implements OnChanges {
   }
 
   private buildRequest(match: DelegateMatch): SubmitMatchResult {
-    const playerStats: PlayerStatInput[] = [
-      ...this.homePlayerPoints
-        .filter((row) => row.played)
-        .map((row) => ({ playerId: row.player.id, isHomeTeam: true, points: row.points })),
-      ...this.awayPlayerPoints
-        .filter((row) => row.played)
-        .map((row) => ({ playerId: row.player.id, isHomeTeam: false, points: row.points })),
-    ];
-
     if (match.sport === 'Basketball') {
       return {
         homeScore: this.basketballHomeScore,
         awayScore: this.basketballAwayScore,
         quarters: this.quarters,
-        playerStats,
       };
     }
 
@@ -336,7 +245,6 @@ export class MatchResultFormComponent implements OnChanges {
         homeScore: this.volleyballHomeSets,
         awayScore: this.volleyballAwaySets,
         sets: this.sets,
-        playerStats,
       };
     }
 
