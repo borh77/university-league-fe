@@ -2,6 +2,7 @@ import { ChangeDetectorRef, Component, DestroyRef, OnInit, inject } from '@angul
 import { CommonModule } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
+import { ActivatedRoute, ParamMap } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { catchError, finalize, forkJoin, of } from 'rxjs';
 import { AdminService } from '../../services/admin.service';
@@ -37,6 +38,7 @@ export class AdminScheduleComponent implements OnInit {
   private readonly adminService = inject(AdminService);
   private readonly leagueService = inject(LeagueService);
   private readonly delegateService = inject(DelegateService);
+  private readonly route = inject(ActivatedRoute);
   private readonly destroyRef = inject(DestroyRef);
   private readonly cdr = inject(ChangeDetectorRef);
 
@@ -105,6 +107,13 @@ export class AdminScheduleComponent implements OnInit {
     return this.leagues.find((l) => l.id === this.selectedLeagueId) ?? null;
   }
 
+  // Naslov ekrana - da administrator zna o kojoj je ligi rec, pošto liga
+  // dolazi iz rute (spolja, iz izbora sporta u zaglavlju), ne iz sopstvenog izbornika
+  get leagueTitle(): string | null {
+    const league = this.selectedLeague;
+    return league ? this.leagueLabel(league) : null;
+  }
+
   // Plej-of vec ima odigran mec u ovoj ligi - ispravka rezultata regularnog dela
   // nece izmeniti vec odigran zreb
   get playoffAlreadyPlayed(): boolean {
@@ -112,8 +121,23 @@ export class AdminScheduleComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    // Liga se prati iz rute (izbor sporta u zaglavlju) - isto kao delegatski ekran
+    this.route.paramMap
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((params) => this.loadForRoute(params));
+  }
+
+  private loadForRoute(params: ParamMap): void {
+    const leagueId = Number(params.get('leagueId'));
+
     this.loading = true;
     this.error = null;
+
+    if (!Number.isFinite(leagueId)) {
+      this.loading = false;
+      this.error = 'Неисправан ID лиге.';
+      return;
+    }
 
     forkJoin({
       leagues: this.adminService.getLeagues(),
@@ -121,7 +145,7 @@ export class AdminScheduleComponent implements OnInit {
     })
       .pipe(
         catchError(() => {
-          this.error = 'Грешка при учитавању лига.';
+          this.error = 'Грешка при учитавању лиге.';
           return of({ leagues: [] as AdminLeague[], teams: [] as AdminTeam[] });
         }),
         finalize(() => {
@@ -133,9 +157,12 @@ export class AdminScheduleComponent implements OnInit {
       .subscribe(({ leagues, teams }) => {
         this.leagues = leagues ?? [];
         this.allTeams = teams ?? [];
-        if (this.leagues.length > 0) {
-          this.selectLeague(this.leagues[0].id);
+        if (!this.leagues.some((l) => l.id === leagueId)) {
+          this.error = 'Лига није пронађена.';
+          this.cdr.detectChanges();
+          return;
         }
+        this.selectLeague(leagueId);
         this.cdr.detectChanges();
       });
   }
@@ -151,9 +178,7 @@ export class AdminScheduleComponent implements OnInit {
   teamsNotInLeague(): AdminTeam[] {
     const inLeagueIds = new Set(this.leagueTeams.map((t) => t.id));
     const sport = this.selectedLeague?.sport;
-    return this.allTeams.filter(
-      (t) => !inLeagueIds.has(t.id) && (!t.sport || t.sport === sport),
-    );
+    return this.allTeams.filter((t) => !inLeagueIds.has(t.id) && (!t.sport || t.sport === sport));
   }
 
   teamOptionLabel(team: AdminTeam): string {
@@ -161,7 +186,7 @@ export class AdminScheduleComponent implements OnInit {
     return `${team.name} (${SPORT_LABELS[team.sport] ?? team.sport})`;
   }
 
-  selectLeague(leagueId: number): void {
+  private selectLeague(leagueId: number): void {
     this.selectedLeagueId = leagueId;
     this.closeMatchActions();
     this.addTeamId = null;
@@ -240,7 +265,9 @@ export class AdminScheduleComponent implements OnInit {
       .sort(([a], [b]) => a - b)
       .map(([roundNumber, roundMatches]) => ({
         roundNumber,
-        matches: roundMatches.sort((a, b) => new Date(a.scheduledAt).getTime() - new Date(b.scheduledAt).getTime()),
+        matches: roundMatches.sort(
+          (a, b) => new Date(a.scheduledAt).getTime() - new Date(b.scheduledAt).getTime(),
+        ),
       }));
   }
 
@@ -553,7 +580,10 @@ export class AdminScheduleComponent implements OnInit {
       .clearResult(match.id)
       .pipe(
         catchError((err: HttpErrorResponse) => {
-          this.clearResultError = this.extractErrorMessage(err, 'Грешка при поништавању резултата.');
+          this.clearResultError = this.extractErrorMessage(
+            err,
+            'Грешка при поништавању резултата.',
+          );
           return of('error' as const);
         }),
         finalize(() => {

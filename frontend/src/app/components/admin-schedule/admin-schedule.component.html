@@ -1,297 +1,314 @@
 <div class="admin-container">
-  <h2 class="admin-title">Администрација — распоред</h2>
+  <h2 class="admin-title">Администрација{{ leagueTitle ? ' — ' + leagueTitle : '' }}</h2>
 
   @if (loading) {
-    <p class="status-text">Учитавање лига...</p>
+    <p class="status-text">Учитавање лиге...</p>
   } @else if (error) {
     <p class="status-text error">{{ error }}</p>
-  } @else if (leagues.length === 0) {
-    <p class="status-text">Нема лига.</p>
   } @else {
-    <div class="league-selector" aria-label="Избор лиге">
-      @for (league of leagues; track league.id) {
+    <section class="admin-section">
+      <h3 class="section-title">Тимови у лиги</h3>
+      @if (leagueTeamsLoading) {
+        <p class="status-text">Учитавање тимова...</p>
+      } @else {
+        <ul class="team-list">
+          @for (team of leagueTeams; track team.id) {
+            <li class="team-chip">{{ team.name }}</li>
+          }
+        </ul>
+      }
+
+      <div class="inline-form">
+        <select class="admin-select" [(ngModel)]="addTeamId" name="addTeamId">
+          <option [ngValue]="null">Изабери тим за додавање...</option>
+          @for (team of teamsNotInLeague(); track team.id) {
+            <option [ngValue]="team.id">{{ teamOptionLabel(team) }}</option>
+          }
+        </select>
         <button
           type="button"
-          class="league-btn"
-          [class.active]="league.id === selectedLeagueId"
-          (click)="selectLeague(league.id)"
+          class="action-btn primary"
+          [disabled]="addTeamId === null || addTeamSubmitting"
+          (click)="submitAddTeam()"
         >
-          {{ leagueLabel(league) }}
+          {{ addTeamSubmitting ? 'Додавање...' : 'Додај у лигу' }}
         </button>
+      </div>
+      @if (addTeamError) {
+        <p class="status-text error">{{ addTeamError }}</p>
       }
-    </div>
+      @if (addTeamSuccess) {
+        <p class="status-text success">Тим је додат у лигу.</p>
+      }
+    </section>
 
-    @if (selectedLeagueId) {
-      <section class="admin-section">
-        <h3 class="section-title">Тимови у лиги</h3>
-        @if (leagueTeamsLoading) {
-          <p class="status-text">Учитавање тимова...</p>
-        } @else {
-          <ul class="team-list">
+    <section class="admin-section">
+      <h3 class="section-title">Заказивање новог меча</h3>
+      <div class="schedule-form">
+        <label class="form-field">
+          <span>Коло</span>
+          <input
+            class="admin-input"
+            type="number"
+            min="1"
+            [(ngModel)]="scheduleRoundNumber"
+            name="roundNumber"
+          />
+        </label>
+        <label class="form-field">
+          <span>Домаћин</span>
+          <select class="admin-select" [(ngModel)]="scheduleHomeTeamId" name="homeTeamId">
+            <option [ngValue]="null">Изабери тим...</option>
             @for (team of leagueTeams; track team.id) {
-              <li class="team-chip">{{ team.name }}</li>
+              <option [ngValue]="team.id">{{ team.name }}</option>
+            }
+          </select>
+        </label>
+        <label class="form-field">
+          <span>Гост</span>
+          <select class="admin-select" [(ngModel)]="scheduleAwayTeamId" name="awayTeamId">
+            <option [ngValue]="null">Изабери тим...</option>
+            @for (team of leagueTeams; track team.id) {
+              <option [ngValue]="team.id">{{ team.name }}</option>
+            }
+          </select>
+        </label>
+        <label class="form-field">
+          <span>Датум и време</span>
+          <input
+            class="admin-input"
+            type="datetime-local"
+            [(ngModel)]="scheduleAt"
+            name="scheduledAt"
+          />
+        </label>
+        <button
+          type="button"
+          class="action-btn primary"
+          [disabled]="!canSchedule || scheduleSubmitting"
+          (click)="submitSchedule()"
+        >
+          {{ scheduleSubmitting ? 'Заказивање...' : 'Закажи меч' }}
+        </button>
+      </div>
+      @if (scheduleError) {
+        <p class="status-text error">{{ scheduleError }}</p>
+      }
+    </section>
+
+    <section class="admin-section">
+      <h3 class="section-title">Мечеви</h3>
+
+      @if (matchesLoading) {
+        <p class="status-text">Учитавање мечева...</p>
+      } @else if (matchesError) {
+        <p class="status-text error">{{ matchesError }}</p>
+      } @else if (rounds.length === 0) {
+        <p class="status-text">Нема мечева за ову лигу.</p>
+      } @else {
+        <div class="round-selector round-selector-desktop" aria-label="Избор кола">
+          @for (round of rounds; track round.roundNumber) {
+            <button
+              type="button"
+              class="round-button"
+              [class.active]="round.roundNumber === selectedRoundNumber"
+              (click)="selectRound(round.roundNumber)"
+            >
+              Коло {{ round.roundNumber }}
+            </button>
+          }
+        </div>
+
+        <div class="round-selector-mobile" aria-label="Избор кола">
+          <details class="round-picker">
+            <summary class="round-picker-toggle">Изабери коло</summary>
+            <div class="round-picker-grid" role="group" aria-label="Брзи избор кола">
+              @for (round of rounds; track round.roundNumber) {
+                <button
+                  type="button"
+                  class="round-picker-btn"
+                  [class.active]="round.roundNumber === selectedRoundNumber"
+                  (click)="selectRound(round.roundNumber)"
+                >
+                  {{ round.roundNumber }}
+                </button>
+              }
+            </div>
+          </details>
+        </div>
+
+        @if (selectedRound; as round) {
+          <ul class="match-list">
+            @for (match of round.matches; track match.id) {
+              <li class="match-card">
+                <div class="match-header">
+                  @if (isPlayoff(match)) {
+                    <span class="playoff-badge">ПЛЕЈ-ОФ</span>
+                  }
+                  <span class="match-teams"
+                    >{{ match.homeTeamName }} — {{ match.awayTeamName }}</span
+                  >
+                  <span class="match-date">{{
+                    match.scheduledAt | date: 'dd.MM.yyyy. HH:mm'
+                  }}</span>
+                  @if (match.result) {
+                    <span class="match-result">{{ match.result }}</span>
+                  }
+                </div>
+
+                <div class="match-actions">
+                  <button type="button" class="action-btn" (click)="toggleReschedule(match)">
+                    Помери термин
+                  </button>
+                  @if (canChangeTeams(match)) {
+                    <button type="button" class="action-btn" (click)="toggleTeamsEdit(match)">
+                      Промени тимове
+                    </button>
+                  }
+                  <button type="button" class="action-btn" (click)="openResultForm(match)">
+                    {{ match.result ? 'Измени резултат' : 'Унеси резултат' }}
+                  </button>
+                  @if (match.result) {
+                    <button type="button" class="action-btn danger" (click)="askClearResult(match)">
+                      Поништи резултат
+                    </button>
+                  }
+                  @if (!match.result) {
+                    <button type="button" class="action-btn danger" (click)="askDeleteMatch(match)">
+                      Обриши меч
+                    </button>
+                  }
+                </div>
+
+                @if (isExpanded(match, 'reschedule')) {
+                  <div class="action-panel">
+                    <label class="form-field">
+                      <span>Нови термин</span>
+                      <input
+                        class="admin-input"
+                        type="datetime-local"
+                        [(ngModel)]="rescheduleValue"
+                        name="rescheduleValue"
+                      />
+                    </label>
+                    <button
+                      type="button"
+                      class="action-btn primary"
+                      [disabled]="rescheduleSubmitting"
+                      (click)="saveReschedule(match)"
+                    >
+                      {{ rescheduleSubmitting ? 'Чување...' : 'Сачувај термин' }}
+                    </button>
+                    @if (rescheduleError) {
+                      <p class="status-text error">{{ rescheduleError }}</p>
+                    }
+                  </div>
+                }
+
+                @if (isExpanded(match, 'teams')) {
+                  <div class="action-panel">
+                    <label class="form-field">
+                      <span>Домаћин</span>
+                      <select class="admin-select" [(ngModel)]="teamsHomeId" name="teamsHomeId">
+                        @for (team of leagueTeams; track team.id) {
+                          <option [ngValue]="team.id">{{ team.name }}</option>
+                        }
+                      </select>
+                    </label>
+                    <label class="form-field">
+                      <span>Гост</span>
+                      <select class="admin-select" [(ngModel)]="teamsAwayId" name="teamsAwayId">
+                        @for (team of leagueTeams; track team.id) {
+                          <option [ngValue]="team.id">{{ team.name }}</option>
+                        }
+                      </select>
+                    </label>
+                    <button
+                      type="button"
+                      class="action-btn primary"
+                      [disabled]="teamsSubmitting"
+                      (click)="saveTeams(match)"
+                    >
+                      {{ teamsSubmitting ? 'Чување...' : 'Сачувај тимове' }}
+                    </button>
+                    @if (teamsError) {
+                      <p class="status-text error">{{ teamsError }}</p>
+                    }
+                  </div>
+                }
+
+                @if (isExpanded(match, 'result')) {
+                  <div class="action-panel">
+                    @if (!isPlayoff(match) && playoffAlreadyPlayed) {
+                      <p class="status-text warning">
+                        Пажња: плеј-оф ове лиге је већ одигран — исправка резултата неће променити
+                        већ одигран жреб.
+                      </p>
+                    }
+                    @if (resultLoading) {
+                      <p class="status-text">Учитавање меча...</p>
+                    } @else if (resultError) {
+                      <p class="status-text error">{{ resultError }}</p>
+                    } @else if (resultMatch) {
+                      <app-match-result-form
+                        [match]="resultMatch"
+                        [saving]="resultSaving"
+                        [saveError]="resultSaveError"
+                        submitLabel="Сачувај резултат"
+                        (save)="saveResult($event)"
+                      ></app-match-result-form>
+                    }
+                  </div>
+                }
+
+                @if (deleteConfirmMatchId === match.id) {
+                  <div class="action-panel confirm">
+                    <p class="confirm-text">Обрисати овај меч?</p>
+                    <div class="confirm-buttons">
+                      <button
+                        type="button"
+                        class="action-btn danger"
+                        [disabled]="deleteSubmitting"
+                        (click)="confirmDeleteMatch(match)"
+                      >
+                        {{ deleteSubmitting ? 'Брисање...' : 'Да, обриши' }}
+                      </button>
+                      <button type="button" class="action-btn" (click)="cancelDeleteMatch()">
+                        Откажи
+                      </button>
+                    </div>
+                    @if (deleteError) {
+                      <p class="status-text error">{{ deleteError }}</p>
+                    }
+                  </div>
+                }
+
+                @if (clearResultConfirmMatchId === match.id) {
+                  <div class="action-panel confirm">
+                    <p class="confirm-text">Поништити унети резултат?</p>
+                    <div class="confirm-buttons">
+                      <button
+                        type="button"
+                        class="action-btn danger"
+                        [disabled]="clearResultSubmitting"
+                        (click)="confirmClearResult(match)"
+                      >
+                        {{ clearResultSubmitting ? 'Поништавање...' : 'Да, поништи' }}
+                      </button>
+                      <button type="button" class="action-btn" (click)="cancelClearResult()">
+                        Откажи
+                      </button>
+                    </div>
+                    @if (clearResultError) {
+                      <p class="status-text error">{{ clearResultError }}</p>
+                    }
+                  </div>
+                }
+              </li>
             }
           </ul>
         }
-
-        <div class="inline-form">
-          <select class="admin-select" [(ngModel)]="addTeamId" name="addTeamId">
-            <option [ngValue]="null">Изабери тим за додавање...</option>
-            @for (team of teamsNotInLeague(); track team.id) {
-              <option [ngValue]="team.id">{{ teamOptionLabel(team) }}</option>
-            }
-          </select>
-          <button
-            type="button"
-            class="action-btn primary"
-            [disabled]="addTeamId === null || addTeamSubmitting"
-            (click)="submitAddTeam()"
-          >
-            {{ addTeamSubmitting ? 'Додавање...' : 'Додај у лигу' }}
-          </button>
-        </div>
-        @if (addTeamError) {
-          <p class="status-text error">{{ addTeamError }}</p>
-        }
-        @if (addTeamSuccess) {
-          <p class="status-text success">Тим је додат у лигу.</p>
-        }
-      </section>
-
-      <section class="admin-section">
-        <h3 class="section-title">Заказивање новог меча</h3>
-        <div class="schedule-form">
-          <label class="form-field">
-            <span>Коло</span>
-            <input class="admin-input" type="number" min="1" [(ngModel)]="scheduleRoundNumber" name="roundNumber" />
-          </label>
-          <label class="form-field">
-            <span>Домаћин</span>
-            <select class="admin-select" [(ngModel)]="scheduleHomeTeamId" name="homeTeamId">
-              <option [ngValue]="null">Изабери тим...</option>
-              @for (team of leagueTeams; track team.id) {
-                <option [ngValue]="team.id">{{ team.name }}</option>
-              }
-            </select>
-          </label>
-          <label class="form-field">
-            <span>Гост</span>
-            <select class="admin-select" [(ngModel)]="scheduleAwayTeamId" name="awayTeamId">
-              <option [ngValue]="null">Изабери тим...</option>
-              @for (team of leagueTeams; track team.id) {
-                <option [ngValue]="team.id">{{ team.name }}</option>
-              }
-            </select>
-          </label>
-          <label class="form-field">
-            <span>Датум и време</span>
-            <input class="admin-input" type="datetime-local" [(ngModel)]="scheduleAt" name="scheduledAt" />
-          </label>
-          <button
-            type="button"
-            class="action-btn primary"
-            [disabled]="!canSchedule || scheduleSubmitting"
-            (click)="submitSchedule()"
-          >
-            {{ scheduleSubmitting ? 'Заказивање...' : 'Закажи меч' }}
-          </button>
-        </div>
-        @if (scheduleError) {
-          <p class="status-text error">{{ scheduleError }}</p>
-        }
-      </section>
-
-      <section class="admin-section">
-        <h3 class="section-title">Мечеви</h3>
-
-        @if (matchesLoading) {
-          <p class="status-text">Учитавање мечева...</p>
-        } @else if (matchesError) {
-          <p class="status-text error">{{ matchesError }}</p>
-        } @else if (rounds.length === 0) {
-          <p class="status-text">Нема мечева за ову лигу.</p>
-        } @else {
-          <div class="round-selector round-selector-desktop" aria-label="Избор кола">
-            @for (round of rounds; track round.roundNumber) {
-              <button
-                type="button"
-                class="round-button"
-                [class.active]="round.roundNumber === selectedRoundNumber"
-                (click)="selectRound(round.roundNumber)"
-              >
-                Коло {{ round.roundNumber }}
-              </button>
-            }
-          </div>
-
-          <div class="round-selector-mobile" aria-label="Избор кола">
-            <details class="round-picker">
-              <summary class="round-picker-toggle">Изабери коло</summary>
-              <div class="round-picker-grid" role="group" aria-label="Брзи избор кола">
-                @for (round of rounds; track round.roundNumber) {
-                  <button
-                    type="button"
-                    class="round-picker-btn"
-                    [class.active]="round.roundNumber === selectedRoundNumber"
-                    (click)="selectRound(round.roundNumber)"
-                  >
-                    {{ round.roundNumber }}
-                  </button>
-                }
-              </div>
-            </details>
-          </div>
-
-          @if (selectedRound; as round) {
-            <ul class="match-list">
-              @for (match of round.matches; track match.id) {
-                <li class="match-card">
-                  <div class="match-header">
-                    @if (isPlayoff(match)) {
-                      <span class="playoff-badge">ПЛЕЈ-ОФ</span>
-                    }
-                    <span class="match-teams">{{ match.homeTeamName }} — {{ match.awayTeamName }}</span>
-                    <span class="match-date">{{ match.scheduledAt | date : 'dd.MM.yyyy. HH:mm' }}</span>
-                    @if (match.result) {
-                      <span class="match-result">{{ match.result }}</span>
-                    }
-                  </div>
-
-                  <div class="match-actions">
-                    <button type="button" class="action-btn" (click)="toggleReschedule(match)">
-                      Помери термин
-                    </button>
-                    @if (canChangeTeams(match)) {
-                      <button type="button" class="action-btn" (click)="toggleTeamsEdit(match)">
-                        Промени тимове
-                      </button>
-                    }
-                    <button type="button" class="action-btn" (click)="openResultForm(match)">
-                      {{ match.result ? 'Измени резултат' : 'Унеси резултат' }}
-                    </button>
-                    @if (match.result) {
-                      <button type="button" class="action-btn danger" (click)="askClearResult(match)">
-                        Поништи резултат
-                      </button>
-                    }
-                    @if (!match.result) {
-                      <button type="button" class="action-btn danger" (click)="askDeleteMatch(match)">
-                        Обриши меч
-                      </button>
-                    }
-                  </div>
-
-                  @if (isExpanded(match, 'reschedule')) {
-                    <div class="action-panel">
-                      <label class="form-field">
-                        <span>Нови термин</span>
-                        <input class="admin-input" type="datetime-local" [(ngModel)]="rescheduleValue" name="rescheduleValue" />
-                      </label>
-                      <button
-                        type="button"
-                        class="action-btn primary"
-                        [disabled]="rescheduleSubmitting"
-                        (click)="saveReschedule(match)"
-                      >
-                        {{ rescheduleSubmitting ? 'Чување...' : 'Сачувај термин' }}
-                      </button>
-                      @if (rescheduleError) {
-                        <p class="status-text error">{{ rescheduleError }}</p>
-                      }
-                    </div>
-                  }
-
-                  @if (isExpanded(match, 'teams')) {
-                    <div class="action-panel">
-                      <label class="form-field">
-                        <span>Домаћин</span>
-                        <select class="admin-select" [(ngModel)]="teamsHomeId" name="teamsHomeId">
-                          @for (team of leagueTeams; track team.id) {
-                            <option [ngValue]="team.id">{{ team.name }}</option>
-                          }
-                        </select>
-                      </label>
-                      <label class="form-field">
-                        <span>Гост</span>
-                        <select class="admin-select" [(ngModel)]="teamsAwayId" name="teamsAwayId">
-                          @for (team of leagueTeams; track team.id) {
-                            <option [ngValue]="team.id">{{ team.name }}</option>
-                          }
-                        </select>
-                      </label>
-                      <button
-                        type="button"
-                        class="action-btn primary"
-                        [disabled]="teamsSubmitting"
-                        (click)="saveTeams(match)"
-                      >
-                        {{ teamsSubmitting ? 'Чување...' : 'Сачувај тимове' }}
-                      </button>
-                      @if (teamsError) {
-                        <p class="status-text error">{{ teamsError }}</p>
-                      }
-                    </div>
-                  }
-
-                  @if (isExpanded(match, 'result')) {
-                    <div class="action-panel">
-                      @if (!isPlayoff(match) && playoffAlreadyPlayed) {
-                        <p class="status-text warning">
-                          Пажња: плеј-оф ове лиге је већ одигран — исправка резултата неће
-                          променити већ одигран жреб.
-                        </p>
-                      }
-                      @if (resultLoading) {
-                        <p class="status-text">Учитавање меча...</p>
-                      } @else if (resultError) {
-                        <p class="status-text error">{{ resultError }}</p>
-                      } @else if (resultMatch) {
-                        <app-match-result-form
-                          [match]="resultMatch"
-                          [saving]="resultSaving"
-                          [saveError]="resultSaveError"
-                          submitLabel="Сачувај резултат"
-                          (save)="saveResult($event)"
-                        ></app-match-result-form>
-                      }
-                    </div>
-                  }
-
-                  @if (deleteConfirmMatchId === match.id) {
-                    <div class="action-panel confirm">
-                      <p class="confirm-text">Обрисати овај меч?</p>
-                      <div class="confirm-buttons">
-                        <button type="button" class="action-btn danger" [disabled]="deleteSubmitting" (click)="confirmDeleteMatch(match)">
-                          {{ deleteSubmitting ? 'Брисање...' : 'Да, обриши' }}
-                        </button>
-                        <button type="button" class="action-btn" (click)="cancelDeleteMatch()">Откажи</button>
-                      </div>
-                      @if (deleteError) {
-                        <p class="status-text error">{{ deleteError }}</p>
-                      }
-                    </div>
-                  }
-
-                  @if (clearResultConfirmMatchId === match.id) {
-                    <div class="action-panel confirm">
-                      <p class="confirm-text">Поништити унети резултат?</p>
-                      <div class="confirm-buttons">
-                        <button type="button" class="action-btn danger" [disabled]="clearResultSubmitting" (click)="confirmClearResult(match)">
-                          {{ clearResultSubmitting ? 'Поништавање...' : 'Да, поништи' }}
-                        </button>
-                        <button type="button" class="action-btn" (click)="cancelClearResult()">Откажи</button>
-                      </div>
-                      @if (clearResultError) {
-                        <p class="status-text error">{{ clearResultError }}</p>
-                      }
-                    </div>
-                  }
-                </li>
-              }
-            </ul>
-          }
-        }
-      </section>
-    }
+      }
+    </section>
   }
 </div>

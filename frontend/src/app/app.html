@@ -1,5 +1,4 @@
 <header class="app-header">
-
   <div class="top-brand-panel">
     <a routerLink="/" class="brand-home-link">
       <img
@@ -24,84 +23,108 @@
   <!-- Navbar 1: izbor sporta -->
   <nav class="nav-sports">
     @for (s of sports; track s.key) {
-    <button type="button"
-            class="sport-btn"
-            [class.active]="selection.snapshot.sport === s.key"
-            (click)="setSport(s.key)">
-      {{ s.label }}
-    </button>
+      <button
+        type="button"
+        class="sport-btn"
+        [class.active]="selection.snapshot.sport === s.key"
+        (click)="setSport(s.key)"
+      >
+        {{ s.label }}
+      </button>
     }
 
     @if (selection.snapshot.sport === 'volleyball') {
-    <div class="gender-toggle">
-      <button type="button"
-              class="gender-btn"
-              [class.active]="selection.snapshot.gender === 'male'"
-              (click)="setVolleyballGender('male')">
-        М
-      </button>
-      <button type="button"
-              class="gender-btn"
-              [class.active]="selection.snapshot.gender === 'female'"
-              (click)="setVolleyballGender('female')">
-        Ж
-      </button>
-    </div>
+      <div class="gender-toggle">
+        <button
+          type="button"
+          class="gender-btn"
+          [class.active]="selection.snapshot.gender === 'male'"
+          (click)="setVolleyballGender('male')"
+        >
+          М
+        </button>
+        <button
+          type="button"
+          class="gender-btn"
+          [class.active]="selection.snapshot.gender === 'female'"
+          (click)="setVolleyballGender('female')"
+        >
+          Ж
+        </button>
+      </div>
     }
   </nav>
 
   <!-- Navbar 2: izbor funkcionalnosti -->
   <nav class="nav-pages">
-    <a routerLink="/"
-       routerLinkActive="active"
-       [routerLinkActiveOptions]="{ exact: true }"
-       class="page-link">
+    <a
+      routerLink="/"
+      routerLinkActive="active"
+      [routerLinkActiveOptions]="{ exact: true }"
+      class="page-link"
+    >
       Почетна
     </a>
 
     @if (currentLeagueId()) {
-    <a [routerLink]="['/leagues', currentLeagueId(), 'results']"
-       routerLinkActive="active"
-       class="page-link">
-      Резултати
-    </a>
-    <a [routerLink]="['/leagues', currentLeagueId(), 'schedule']"
-       routerLinkActive="active"
-       class="page-link">
-      Распоред
-    </a>
-    @if (isFootballSelected()) {
-    <a [routerLink]="['/leagues', currentLeagueId(), 'top-scorers']"
-       routerLinkActive="active"
-       class="page-link">
-      Стрелци
-    </a>
-    }
-    <a [routerLink]="['/leagues', currentLeagueId(), 'playoff']"
-       routerLinkActive="active"
-       class="page-link">
-      ПЛЕЈ-ОФ
-    </a>
-    @if (auth.isDelegate() || auth.isAdmin()) {
-    <a [routerLink]="['/leagues', currentLeagueId(), 'delegate']"
-       routerLinkActive="active"
-       class="page-link">
-      Унос резултата
-    </a>
-    }
+      <a
+        [routerLink]="['/leagues', currentLeagueId(), 'results']"
+        routerLinkActive="active"
+        class="page-link"
+      >
+        Резултати
+      </a>
+      <a
+        [routerLink]="['/leagues', currentLeagueId(), 'schedule']"
+        routerLinkActive="active"
+        class="page-link"
+      >
+        Распоред
+      </a>
+      @if (isFootballSelected()) {
+        <a
+          [routerLink]="['/leagues', currentLeagueId(), 'top-scorers']"
+          routerLinkActive="active"
+          class="page-link"
+        >
+          Стрелци
+        </a>
+      }
+      <a
+        [routerLink]="['/leagues', currentLeagueId(), 'playoff']"
+        routerLinkActive="active"
+        class="page-link"
+      >
+        ПЛЕЈ-ОФ
+      </a>
+      @if (auth.isDelegate() || auth.isAdmin()) {
+        <a
+          [routerLink]="['/leagues', currentLeagueId(), 'delegate']"
+          routerLinkActive="active"
+          class="page-link"
+        >
+          Унос резултата
+        </a>
+      }
+      @if (auth.isAdmin()) {
+        <a
+          [routerLink]="['/leagues', currentLeagueId(), 'admin']"
+          routerLinkActive="active"
+          class="page-link"
+        >
+          Администрација
+        </a>
+      }
     } @else {
-    <span class="page-link disabled">Резултати</span>
-    <span class="page-link disabled">Распоред</span>
-    @if (isFootballSelected()) {
-    <span class="page-link disabled">Стрелци</span>
-    }
-    <span class="page-link disabled">ПЛЕЈ-ОФ</span>
-    }
-
-    @if (auth.isAdmin()) {
-    <a routerLink="/admin/schedule" routerLinkActive="active" class="page-link">
-      Администрација
-    </a>
+      <span class="page-link disabled">Резултати</span>
+      <span class="page-link disabled">Распоред</span>
+      @if (isFootballSelected()) {
+        <span class="page-link disabled">Стрелци</span>
+      }
+      <span class="page-link disabled">ПЛЕЈ-ОФ</span>
+      @if (auth.isAdmin()) {
+        <span class="page-link disabled">Администрација</span>
+      }
     }
   </nav>
   <h1 class="visually-hidden">Univerzitetska liga 2026 Novi Sad - studentski sportovi</h1>
